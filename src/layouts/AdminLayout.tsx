@@ -41,9 +41,9 @@ const AdminLayout = ({
             backgroundSize: '40px 40px',
           }}
         />
-        <div className="relative p-8 max-w-7xl mx-auto w-full">
+        <div className="relative w-full min-w-0 px-6 sm:px-8 lg:px-10 py-6 sm:py-8">
           <AdminPageHeader title={title} subtitle={subtitle} showBack={showBack} backTo={backTo} />
-          {children}
+          <div className="w-full">{children}</div>
         </div>
       </main>
     </div>

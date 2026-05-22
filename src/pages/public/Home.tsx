@@ -1,28 +1,77 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  LogIn,
-  UserPlus,
-  Shield,
   ChevronRight,
   Sparkles,
+  BookOpen,
+  ArrowUpRight,
+  Target,
+  Users,
+  Award,
+  Globe,
 } from "lucide-react";
+import { CATALOG_COURSES, type CatalogCourse } from "../../data/courses";
+import PublicCourseCard from "../../components/public/PublicCourseCard";
+import PublicCourseDetailModal from "../../components/public/PublicCourseDetailModal";
+import RegisterOverlay from "../../components/public/RegisterOverlay";
+import SignInOverlay from "../../components/public/SignInOverlay";
+import HomeSidebar from "../../components/public/HomeSidebar";
 
-const EyeIcon = ({ show }: { show: boolean }) =>
-  show ? <Eye size={18} /> : <EyeOff size={18} />;
+const FEATURED_COUNT = 6;
+
+const aboutPillars = [
+  {
+    icon: Target,
+    title: "Career-focused programmes",
+    text: "Certificate and diploma pathways in business, technology, hospitality, theology, and social sciences.",
+  },
+  {
+    icon: Globe,
+    title: "Blended delivery",
+    text: "Learn on campus and online with schedules designed for working professionals and school leavers.",
+  },
+  {
+    icon: Award,
+    title: "Recognised credentials",
+    text: "Structured units, assessments, and certificates that reflect real workplace and academic standards.",
+  },
+];
+
+const galleryImages = [
+  { src: "/images/campus.svg", alt: "Trilevel campus learning environment", caption: "Modern learning spaces" },
+  { src: "/images/students.svg", alt: "Students at Trilevel College", caption: "A diverse student community" },
+  { src: "/images/graduation.svg", alt: "Graduation and achievement", caption: "Pathways to success" },
+];
 
 export default function TrilevelLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [userType, setUserType] = useState<"student" | "admin">("student");
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
-  const navigate = useNavigate();
+  const [selectedCourse, setSelectedCourse] = useState<CatalogCourse | null>(null);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const openSignIn = useCallback(() => setShowSignIn(true), []);
+  const closeSignIn = useCallback(() => setShowSignIn(false), []);
+  const openRegister = useCallback(() => setShowRegister(true), []);
+  const closeRegister = useCallback(() => setShowRegister(false), []);
+  const openRegisterFromSignIn = useCallback(() => {
+    setShowSignIn(false);
+    setShowRegister(true);
+  }, []);
+
+  const scrollToAbout = useCallback(() => {
+    document.getElementById("about-trilevel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  useEffect(() => {
+    const register = searchParams.get("register") === "1";
+    const signin = searchParams.get("signin") === "1";
+    if (register) setShowRegister(true);
+    if (signin) setShowSignIn(true);
+    if (register || signin) setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  const modalOpen = showRegister || showSignIn;
 
   const tags = [
     "15 Programmes",
@@ -31,362 +80,267 @@ export default function TrilevelLogin() {
     "Accredited College",
   ];
 
-  const features = [
-    "Access all your courses in one place",
-    "Track your progress and assignments",
-    "Download certificates upon completion",
-  ];
-
-  const handleLogin = () => {
-    if (userType === "student") {
-      navigate("/student/dashboard");
-    } else {
-      navigate("/admin/dashboard");
-    }
-  };
-
   const highlights = [
     { label: "Programmes", value: "15+" },
     { label: "Formats", value: "Cert & Diploma" },
     { label: "Delivery", value: "Blended" },
+    { label: "Departments", value: "6+" },
   ];
 
+  const featuredCourses = CATALOG_COURSES.slice(0, FEATURED_COUNT);
+
   return (
-    <div className="min-h-screen flex flex-row bg-linear-to-br from-[#f8f6f2] to-[#f0ede8] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden">
-      {/* Mesh + grid backdrop */}
-      <div className="absolute inset-0 pointer-events-none bg-linear-to-br from-[#f8f6f2] via-[#f5f2ec] to-[#f0ede8]" />
+    <div className="h-screen flex bg-[#f8f6f2] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden">
+      <HomeSidebar
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+        onSignIn={openSignIn}
+        onRegister={openRegister}
+        onScrollToAbout={scrollToAbout}
+      />
+
       <div
-        className="absolute inset-0 opacity-[0.4] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(74,106,155,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(74,106,155,0.04) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
+        className={`flex-1 min-h-0 min-w-0 relative bg-linear-to-br from-[#f8f6f2] to-[#f0ede8] transition-[filter,transform] duration-500 ease-out ${
+          modalOpen ? "blur-[8px] brightness-[0.94] pointer-events-none select-none" : ""
+        }`}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.3]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(74,106,155,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(74,106,155,0.035) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+          }}
+        />
+        <div className="absolute w-[min(40rem,50vw)] h-[min(40rem,50vh)] bg-[#4a6a9b]/7 rounded-full blur-[120px] -top-24 right-[10%] pointer-events-none" />
+        <div className="absolute w-80 h-80 bg-[#2F2FE4]/5 rounded-full blur-[100px] bottom-0 left-[30%] pointer-events-none" />
+
+        <main className="scrollbar-none relative z-10 h-full overflow-y-auto overflow-x-hidden">
+          <div className="home-page-shell px-5 sm:px-8 lg:px-12 xl:px-14 py-8 sm:py-10 lg:py-12">
+            {/* Hero — logo & brand */}
+            <section className="home-section mb-16 lg:mb-20">
+              <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 xl:gap-16 items-center w-full">
+                <div className="w-full min-w-0">
+                  <div className="flex flex-wrap items-center gap-4 sm:gap-5 mb-8">
+                    <img
+                      src="/logo.png"
+                      alt="Trilevel College logo"
+                      width={88}
+                      height={88}
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-contain shrink-0"
+                      loading="eager"
+                      fetchPriority="high"
+                    />
+                    <div className="min-w-0">
+                      <p
+                        className="text-base sm:text-lg font-bold tracking-[0.12em] text-[#b70c0c] uppercase leading-tight"
+                        style={{ fontFamily: "Georgia, serif" }}
+                      >
+                        Trilevel College
+                      </p>
+                      <p
+                        className="text-sm sm:text-base font-semibold tracking-[0.1em] text-[#b70c0c]/90 uppercase"
+                        style={{ fontFamily: "Georgia, serif" }}
+                      >
+                        of Professional Studies
+                      </p>
+                      <p className="text-[10px] tracking-[0.18em] text-[#9b9288] uppercase mt-1.5">
+                        Student &amp; staff portal
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#e8e2d9]/90 bg-white/55 text-xs text-[#6b645a] mb-5">
+                    <Sparkles size={12} className="text-[#4a6a9b]" aria-hidden />
+                    Welcome to your learning gateway
+                  </div>
+
+                  <h1
+                    className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-bold leading-[1.1] mb-5 text-[#2F2FE4]"
+                    style={{ fontFamily: "'Palatino Linotype', Palatino, Georgia, serif" }}
+                  >
+                    Your academic future starts here.
+                  </h1>
+
+                  <p
+                    className="text-base sm:text-lg text-[#555] leading-relaxed mb-6 max-w-2xl"
+                    style={{ fontFamily: "Georgia, serif" }}
+                  >
+                    Certificate and diploma programmes across business, technology, hospitality, theology, and
+                    community development — delivered through one calm, modern portal built for Trilevel learners.
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {tags.map((t) => (
+                      <span
+                        key={t}
+                        className="px-3 py-1.5 rounded-full border border-[#e8e2d9]/80 text-xs text-[#555] bg-white/55"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-wrap gap-3">
+                    <button type="button" onClick={openSignIn} className="btn-primary px-6 py-3 rounded-xl text-sm font-semibold">
+                      Sign in to portal
+                    </button>
+                    <button type="button" onClick={openRegister} className="btn-secondary px-6 py-3 rounded-xl text-sm font-medium">
+                      Create an account
+                    </button>
+                    <Link to="/courses" className="btn-ghost inline-flex items-center gap-1.5 px-5 py-3 rounded-xl text-sm font-medium">
+                      Browse programmes
+                      <ArrowUpRight size={14} aria-hidden />
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="relative w-full min-w-0">
+                  <div className="absolute -inset-3 sm:-inset-5 bg-linear-to-br from-[#4a6a9b]/8 to-[#2F2FE4]/4 rounded-3xl blur-2xl pointer-events-none" />
+                  <img
+                    src="/images/graduation.svg"
+                    alt="Graduation at Trilevel College"
+                    className="relative w-full rounded-2xl border border-[#e8e2d9]/75 shadow-[0_20px_50px_-20px_rgba(74,106,155,0.2)] object-cover aspect-[16/10] bg-[#f8f6f2]"
+                    loading="eager"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Stats — full width */}
+            <section className="home-section mb-16 lg:mb-20">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 w-full">
+                {highlights.map((h) => (
+                  <div
+                    key={h.label}
+                    className="p-5 lg:p-6 rounded-2xl border border-white/70 bg-white/45 backdrop-blur-sm hover:bg-white/65 hover:shadow-[0_8px_30px_-12px_rgba(74,106,155,0.12)] transition-all duration-300"
+                  >
+                    <p className="text-[10px] uppercase tracking-[0.14em] text-[#9b9288] mb-1.5">{h.label}</p>
+                    <p className="text-2xl lg:text-3xl font-semibold text-[#2c2824]">{h.value}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* About */}
+            <section id="about-trilevel" className="home-section mb-16 lg:mb-20 scroll-mt-6">
+              <div className="grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-14 items-start w-full">
+                <div>
+                  <div className="flex items-center gap-2 text-[#4a6a9b] mb-3">
+                    <Users size={16} aria-hidden />
+                    <span className="text-[10px] uppercase tracking-[0.2em] font-medium">About us</span>
+                  </div>
+                  <h2
+                    className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#2c2824] mb-5"
+                    style={{ fontFamily: "Georgia, serif" }}
+                  >
+                    Why Trilevel College?
+                  </h2>
+                  <p className="text-[#555] leading-relaxed text-base sm:text-lg" style={{ fontFamily: "Georgia, serif" }}>
+                    Trilevel College of Professional Studies prepares learners for meaningful careers through practical,
+                    industry-aligned programmes. Our certificate and diploma courses combine structured academics with
+                    real-world skills — supported by experienced faculty and a dedicated online portal for every student.
+                  </p>
+                </div>
+                <div className="grid sm:grid-cols-1 gap-4 w-full">
+                  {aboutPillars.map((pillar) => (
+                    <div
+                      key={pillar.title}
+                      className="flex gap-4 p-5 rounded-2xl border border-[#e8e2d9]/75 bg-white/50 hover:bg-white/70 hover:shadow-sm transition-all duration-300"
+                    >
+                      <div className="w-11 h-11 rounded-xl bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] flex items-center justify-center shrink-0">
+                        <pillar.icon size={20} className="text-[#4a6a9b]" aria-hidden />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-semibold text-[#2c2824] mb-1">{pillar.title}</h3>
+                        <p className="text-sm text-[#6b645a] leading-relaxed">{pillar.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Gallery */}
+            <section className="home-section mb-16 lg:mb-20">
+              <h2 className="text-xl sm:text-2xl font-semibold text-[#2c2824] mb-6 lg:mb-8" style={{ fontFamily: "Georgia, serif" }}>
+                Life at Trilevel
+              </h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 w-full">
+                {galleryImages.map((img) => (
+                  <figure
+                    key={img.src}
+                    className="group overflow-hidden rounded-2xl border border-[#e8e2d9]/75 bg-white/40 hover:shadow-[0_12px_40px_-16px_rgba(74,106,155,0.15)] transition-shadow duration-300"
+                  >
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.015]"
+                    />
+                    <figcaption className="px-4 py-3.5 text-sm font-medium text-[#6b645a] border-t border-[#e8e2d9]/55 bg-white/55">
+                      {img.caption}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </section>
+
+            {/* Programmes */}
+            <section className="home-section pb-8 lg:pb-12">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 w-full">
+                <div>
+                  <div className="flex items-center gap-2 text-[#4a6a9b] mb-2">
+                    <BookOpen size={16} aria-hidden />
+                    <span className="text-[10px] uppercase tracking-[0.2em] font-medium">Programme catalogue</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-semibold text-[#2c2824]" style={{ fontFamily: "Georgia, serif" }}>
+                    Explore our courses
+                  </h2>
+                  <p className="text-sm text-[#9b9288] mt-2">Preview programmes — sign in to enrol</p>
+                </div>
+                <Link
+                  to="/courses"
+                  className="btn-ghost inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium shrink-0"
+                >
+                  View all {CATALOG_COURSES.length}
+                  <ArrowUpRight size={14} aria-hidden />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 w-full">
+                {featuredCourses.map((course) => (
+                  <PublicCourseCard key={course.id} course={course} variant="compact" onView={setSelectedCourse} />
+                ))}
+              </div>
+              <div className="mt-8 flex flex-wrap gap-3 justify-center sm:justify-start">
+                <Link
+                  to="/courses"
+                  className="btn-secondary inline-flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-medium"
+                >
+                  Browse full catalogue
+                  <ChevronRight size={16} aria-hidden />
+                </Link>
+                <button type="button" onClick={openSignIn} className="btn-primary inline-flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-semibold">
+                  Sign in to enrol
+                </button>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+
+      {showSignIn && <SignInOverlay onClose={closeSignIn} onOpenRegister={openRegisterFromSignIn} />}
+      {showRegister && <RegisterOverlay onClose={closeRegister} />}
+
+      <PublicCourseDetailModal
+        course={selectedCourse}
+        onClose={() => setSelectedCourse(null)}
+        onSignIn={() => {
+          setSelectedCourse(null);
+          openSignIn();
         }}
       />
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-[32rem] h-[32rem] bg-[#4a6a9b]/8 rounded-full blur-[100px] -top-40 -left-32" />
-        <div className="absolute w-[28rem] h-[28rem] bg-[#2F2FE4]/6 rounded-full blur-[90px] top-1/3 left-[20%]" />
-        <div className="absolute w-72 h-72 bg-[#b70c0c]/4 rounded-full blur-[80px] bottom-0 right-[30%]" />
-      </div>
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(16)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1.5 h-1.5 bg-[#4a6a9b]/15 rounded-full"
-            style={{
-              left: `${(i * 17) % 100}%`,
-              top: `${(i * 23) % 100}%`,
-              animation: `portal-float ${6 + (i % 5)}s ease-in-out infinite`,
-              animationDelay: `${i * 0.4}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
-          50% { transform: translateY(-20px) translateX(10px); opacity: 0.5; }
-        }
-        @keyframes shimmer {
-          0% { background-position: -1000px 0; }
-          100% { background-position: 1000px 0; }
-        }
-        @keyframes slideInFromLeft {
-          0% { transform: translateX(-20px); opacity: 0; }
-          100% { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes fadeInUp {
-          0% { transform: translateY(20px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes glow {
-          0%, 100% { box-shadow: 0 0 5px rgba(74, 106, 155, 0.2); }
-          50% { box-shadow: 0 0 20px rgba(74, 106, 155, 0.4), 0 0 30px rgba(74, 106, 155, 0.1); }
-        }
-        .animate-slide-in {
-          animation: slideInFromLeft 0.6s ease-out forwards;
-        }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
-        }
-      `}</style>
-
-      {/* ── Left Panel - Hero Section ── */}
-      <div className="flex-1 flex flex-col justify-center px-10 lg:px-16 py-12 relative overflow-hidden z-10">
-        {/* Enhanced background pattern */}
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
-          <div className="absolute inset-0" style={{
-            backgroundImage: "radial-gradient(circle at 20% 40%, #4a6a9b 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }} />
-        </div>
-
-        {/* Logo - with subtle hover effect */}
-        <div className="flex items-center gap-3 mb-14 animate-slide-in group cursor-default">
-          <div className="relative">
-            <img 
-              src="/logo.png" 
-              alt="Trilevel College Logo" 
-              className="w-30 h-30 transition-transform duration-500 group-hover:scale-105" 
-            />
-            <div className="absolute inset-0 bg-linear-to-br from-[#4a6a9b]/0 to-[#4a6a9b]/0 group-hover:from-[#4a6a9b]/5 group-hover:to-transparent rounded-lg transition-all duration-500" />
-          </div>
-          <div className="relative">
-            <p className="text-[22px] font-bold tracking-[0.18em] text-[#b70c0c] uppercase mt-0.5 transition-all duration-300 group-hover:tracking-[0.2em]" style={{ fontFamily: "Georgia, serif" }}>
-              Trilevel College
-            </p>
-            <p className="text-[20px] font-semibold tracking-[0.18em] text-[#b70c0c] uppercase mt-0.5 transition-all duration-300 group-hover:tracking-[0.2em]" style={{ fontFamily: "Georgia, serif" }}>
-              of Professional Studies
-            </p>
-            {/* Subtle underline animation */}
-            <div className="h-0.5 w-0 group-hover:w-full bg-linear-to-r from-[#b70c0c] to-transparent transition-all duration-700 mt-1" />
-          </div>
-        </div>
-
-        {/* Hero text - with staggered animation - FIXED COLOR */}
-        <div className="max-w-xl mb-8 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-          <h1
-            className="text-6xl font-bold leading-[1.08] mb-2 relative"
-            style={{ 
-              fontFamily: "'Palatino Linotype', Palatino, Georgia, serif", 
-              letterSpacing: "-0.01em",
-              color: "#2F2FE4" // Added consistent color
-            }}
-          >
-            <span className="inline-block hover:transform hover:scale-105 transition-transform duration-300 cursor-default">Your academic</span>
-            <br />
-            <span className="inline-block hover:transform hover:scale-105 transition-transform duration-300 cursor-default">future starts</span>
-            <br />
-            <span className="inline-flex items-center gap-2 hover:transform hover:scale-105 transition-transform duration-300 cursor-default">
-              here.
-              <Sparkles size={32} className="text-[#2F2FE4] animate-pulse" style={{ animationDuration: "3s" }} />
-            </span>
-            
-             </h1>
-        </div>
-
-        <p className="text-[24px] text-[#555] leading-relaxed max-w-md mb-8 animate-fade-in-up" style={{ fontFamily: "Georgia, serif", animationDelay: "0.3s" }}>
-          Enrol in Certificate and Diploma programmes — AI, Business, Theology, Hospitality, Social Work, and Computer Studies — delivered on a modern academic platform.
-        </p>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-8 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-          {tags.map((t) => (
-            <span
-              key={t}
-              className="px-3 py-1.5 rounded-full border border-[#e8e2d9]/80 text-[12px] text-[#555] bg-white/50 backdrop-blur-md hover:bg-white/80 hover:border-[#4a6a9b]/40 hover:text-[#4a6a9b] transition-all duration-300"
-              style={{ fontFamily: "Georgia, serif" }}
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-
-        {/* Bento highlights */}
-        <div className="grid grid-cols-3 gap-3 max-w-lg animate-fade-in-up" style={{ animationDelay: "0.55s" }}>
-          {highlights.map((h) => (
-            <div
-              key={h.label}
-              className="group p-4 rounded-2xl border border-white/60 bg-white/40 backdrop-blur-md hover:bg-white/60 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <p className="text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1">{h.label}</p>
-              <p className="text-lg font-semibold text-[#2c2824] group-hover:text-[#4a6a9b] transition-colors">{h.value}</p>
-            </div>
-          ))}
-        </div>
-
-      </div>
-
-      {/* ── Right Panel - Login Form (full-height column) ── */}
-      <div className="w-120 shrink-0 flex flex-col items-center justify-center px-8 py-12 relative z-10 min-h-screen bg-white/70 backdrop-blur-md border-l border-[#e8e2d9]/50 shadow-2xl">
-        <div className="absolute inset-0 opacity-[0.015] pointer-events-none">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: "radial-gradient(circle, #4a6a9b 1px, transparent 1px)",
-              backgroundSize: "24px 24px",
-            }}
-          />
-        </div>
-        <div className="absolute inset-0 bg-linear-to-br from-white/50 via-transparent to-[#4a6a9b]/5 pointer-events-none" />
-
-        <div className="relative z-10 w-full max-w-sm">
-          {/* Welcome Section - with enhanced icon and FIXED TEXT COLOR */}
-          <div className="text-center mb-8 animate-fade-in-up">
-            <div className="w-16 h-16 mx-auto mb-4 bg-linear-to-br from-[#4a6a9b] to-[#2c4a7a] rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 relative overflow-hidden group cursor-default">
-              <div className="absolute inset-0 bg-linear-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <LogIn size={28} className="text-white relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
-                background: "linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%)",
-                backgroundSize: "200% 200%",
-                animation: "shimmer 2s infinite"
-              }} />
-            </div>
-            <h2 className="text-2xl font-semibold text-[#2c2824] mb-2">Welcome back</h2>
-            <p className="text-sm text-[#9b9288]">Sign in to your learning portal</p>
-          </div>
-
-          {/* User Type Toggle - enhanced */}
-          <div className="flex gap-2 mb-6 bg-[#f0ece6] rounded-lg p-1 shadow-inner animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-            <button
-              onClick={() => setUserType("student")}
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-all duration-300 relative overflow-hidden ${
-                userType === "student"
-                  ? "bg-white text-[#2c4a7a] shadow-md scale-105"
-                  : "text-[#6b645a] hover:text-[#2c2824] hover:bg-white/50"
-              }`}
-            >
-              <span className="relative z-10">Student</span>
-              {userType === "student" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-[#4a6a9b] to-transparent" />
-              )}
-            </button>
-            <button
-              onClick={() => setUserType("admin")}
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-all duration-300 relative overflow-hidden ${
-                userType === "admin"
-                  ? "bg-white text-[#2c4a7a] shadow-md scale-105"
-                  : "text-[#6b645a] hover:text-[#2c2824] hover:bg-white/50"
-              }`}
-            >
-              <span className="relative z-10">Administrator</span>
-              {userType === "admin" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-[#4a6a9b] to-transparent" />
-              )}
-            </button>
-          </div>
-
-          {/* Email Field - enhanced with glow effect */}
-          <div className="mb-5 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-            <label className="block text-[10px] tracking-[0.15em] uppercase text-[#9b9288] mb-2 font-medium">
-              Email Address
-            </label>
-            <div className="relative group">
-              <Mail size={16} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300 ${
-                emailFocused ? "text-[#4a6a9b] scale-110" : "text-[#b0a89e]"
-              }`} />
-              <input
-                type="email"
-                placeholder="you@trilevel.ac.ke"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setEmailFocused(true)}
-                onBlur={() => setEmailFocused(false)}
-                className={`w-full pl-10 pr-4 py-2.5 bg-white border rounded-lg text-sm text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none transition-all duration-300 ${
-                  emailFocused 
-                    ? "border-[#4a6a9b] shadow-lg ring-4 ring-[#4a6a9b]/10" 
-                    : "border-[#e0d9d0] shadow-sm hover:border-[#4a6a9b]/50 hover:shadow-md"
-                }`}
-                style={emailFocused ? { animation: "glow 2s ease-in-out infinite" } : {}}
-              />
-              {emailFocused && (
-                <div className="absolute -inset-0.5 bg-linear-to-r from-[#4a6a9b]/20 to-[#2c4a7a]/20 rounded-lg -z-10 blur" />
-              )}
-            </div>
-          </div>
-
-          {/* Password Field - enhanced with glow effect */}
-          <div className="mb-3 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-            <label className="block text-[10px] tracking-[0.15em] uppercase text-[#9b9288] mb-2 font-medium">
-              Password
-            </label>
-            <div className="relative group">
-              <Lock size={16} className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300 ${
-                passwordFocused ? "text-[#4a6a9b] scale-110" : "text-[#b0a89e]"
-              }`} />
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={() => setPasswordFocused(true)}
-                onBlur={() => setPasswordFocused(false)}
-                className={`w-full pl-10 pr-10 py-2.5 bg-white border rounded-lg text-sm text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none transition-all duration-300 ${
-                  passwordFocused 
-                    ? "border-[#4a6a9b] shadow-lg ring-4 ring-[#4a6a9b]/10" 
-                    : "border-[#e0d9d0] shadow-sm hover:border-[#4a6a9b]/50 hover:shadow-md"
-                }`}
-                style={passwordFocused ? { animation: "glow 2s ease-in-out infinite" } : {}}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#b0a89e] hover:text-[#4a6a9b] hover:scale-110 transition-all duration-200"
-              >
-                <EyeIcon show={showPassword} />
-              </button>
-              {passwordFocused && (
-                <div className="absolute -inset-0.5 bg-linear-to-r from-[#4a6a9b]/20 to-[#2c4a7a]/20 rounded-lg -z-10 blur" />
-              )}
-            </div>
-          </div>
-
-          {/* Forgot Password */}
-          <div className="flex justify-end mb-6 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-            <a href="#" className="text-[11px] text-[#9b9288] hover:text-[#4a6a9b] transition-all duration-200 relative group">
-              Forgot password?
-              <span className="absolute bottom-0 left-0 w-0 h-px bg-[#4a6a9b] group-hover:w-full transition-all duration-300" />
-            </a>
-          </div>
-
-          {/* Login Button - enhanced with shimmer */}
-          <button
-            onClick={handleLogin}
-            className="w-full bg-linear-to-r from-[#2F2FE4] to-[#3d5a86] hover:from-[#3d5a86] hover:to-[#2c4a7a] text-white text-sm font-medium py-2.5 rounded-lg transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2 mb-3 relative overflow-hidden group animate-fade-in-up"
-            style={{ animationDelay: "0.5s" }}
-          >
-            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-            <LogIn size={16} className="relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-            <span className="relative z-10">Sign in as {userType === "student" ? "Student" : "Admin"}</span>
-          </button>
-
-          {/* Admin Note - enhanced */}
-          {userType === "admin" && (
-            <div className="bg-linear-to-r from-[#e8f0fe]/40 to-[#e8f0fe]/20 rounded-lg p-3 mb-4 border border-[#d4e2f7] backdrop-blur-sm animate-fade-in-up shadow-sm" style={{ animationDelay: "0.6s" }}>
-              <div className="flex items-center gap-2">
-                <Shield size={14} className="text-[#4a6a9b] animate-pulse" style={{ animationDuration: "3s" }} />
-                <p className="text-[11px] text-[#6b645a]">Admin access requires additional verification</p>
-              </div>
-            </div>
-          )}
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-6 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-[#e0d9d0] to-transparent" />
-            <span className="text-[10px] text-[#9b9288] uppercase tracking-wide">New to Trilevel?</span>
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-[#e0d9d0] to-transparent" />
-          </div>
-
-          {/* Create Account Button - enhanced */}
-          <button
-            type="button"
-            onClick={() => navigate("/register")}
-            className="w-full border border-[#e0d9d0] bg-white hover:bg-[#faf8f5] text-[#2c2824] text-sm font-medium py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:border-[#4a6a9b] hover:-translate-y-0.5 relative overflow-hidden group animate-fade-in-up"
-            style={{ animationDelay: "0.8s" }}
-          >
-            <UserPlus size={16} className="relative z-10 group-hover:scale-110 transition-transform duration-300" />
-            <span className="relative z-10">Create an account</span>
-            <div className="absolute inset-0 bg-linear-to-r from-[#4a6a9b]/0 via-[#4a6a9b]/5 to-[#4a6a9b]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-          </button>
-
-          <div className="mt-8 pt-6 border-t border-[#e8e2d9] animate-fade-in-up" style={{ animationDelay: "0.9s" }}>
-            <div className="space-y-2">
-              {features.map((feature, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-2 text-[11px] text-[#6b645a] hover:text-[#2c2824] transition-all duration-300 cursor-default group"
-                >
-                  <ChevronRight size={12} className="text-[#4a6a9b] group-hover:translate-x-1 transition-transform duration-300" />
-                  <span className="group-hover:translate-x-0.5 transition-transform duration-300">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

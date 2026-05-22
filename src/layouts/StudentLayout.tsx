@@ -54,9 +54,9 @@ const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: S
           </div>
         )}
 
-        <div className="p-8 max-w-7xl mx-auto w-full">
+        <div className="relative w-full min-w-0 px-6 sm:px-8 lg:px-10 py-6 sm:py-8">
           <StudentPageHeader title={title} subtitle={subtitle} showBack={showBack} backTo={backTo} />
-          {children}
+          <div className="w-full">{children}</div>
         </div>
       </main>
     </div>

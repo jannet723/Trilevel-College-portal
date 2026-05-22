@@ -125,7 +125,7 @@ const Login = () => {
           </button>
 
           <div className="f-or"><span>New to Trilevel?</span></div>
-          <Link to="/register">
+          <Link to="/?register=1">
             <button
               className="fbtn"
               style={{
