@@ -237,7 +237,7 @@ const MyCourses = () => {
                     </div>
 
                     <button
-                      onClick={() => navigate(`/student/course/${course.title.toLowerCase().replace(/\s+/g, '-')}`)}
+                      onClick={() => navigate(`/student/learn/${course.id}`)}
                       className={`w-full py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                         course.status === 'completed'
                           ? 'bg-linear-to-r from-[#eef5f0] to-[#e0ebe5] text-[#4a7c5e] hover:from-[#e0ebe5] hover:to-[#d4e5da]'

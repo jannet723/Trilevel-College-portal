@@ -4,7 +4,7 @@ import AppRoutes from './routes'
 
 function App() {
   return (
-    <div className="app">
+    <div className="app portal-light">
       <AppRoutes />
     </div>
   )

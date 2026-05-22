@@ -24,15 +24,15 @@ const StudentPageHeader = ({
   };
 
   return (
-    <div className="mb-6">
+    <header className="portal-page-header mb-6">
       <nav className="flex items-center gap-2 text-xs text-[#9b9288] mb-4 flex-wrap">
         <button
           type="button"
           onClick={() => navigate(homeTo)}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#e8e2d9] bg-white/60 hover:bg-white hover:text-[#4a6a9b] hover:border-[#4a6a9b]/30 transition-all duration-200"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#e8e2d9] bg-white text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#4a6a9b] hover:border-[#4a6a9b]/30 transition-all duration-200"
         >
-          <Home size={13} />
-          <span>Home</span>
+          <Home size={13} className="text-[#9b9288]" />
+          <span className="text-[#6b645a]">Home</span>
         </button>
         {showBack && (
           <>
@@ -40,17 +40,17 @@ const StudentPageHeader = ({
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#e8e2d9] bg-white/60 hover:bg-white hover:text-[#4a6a9b] hover:border-[#4a6a9b]/30 transition-all duration-200"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#e8e2d9] bg-white text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#4a6a9b] hover:border-[#4a6a9b]/30 transition-all duration-200"
             >
-              <ArrowLeft size={13} />
-              <span>Back</span>
+              <ArrowLeft size={13} className="text-[#9b9288]" />
+              <span className="text-[#6b645a]">Back</span>
             </button>
           </>
         )}
       </nav>
-      <h1 className="text-2xl font-semibold text-[#2c2824] tracking-tight">{title}</h1>
+      <h1 className="text-2xl font-semibold text-[#2c2824] tracking-tight !text-[#2c2824]">{title}</h1>
       {subtitle && <p className="text-sm text-[#6b645a] mt-1 max-w-2xl">{subtitle}</p>}
-    </div>
+    </header>
   );
 };
 

@@ -135,13 +135,15 @@ const HomeSidebar = ({
         <button
           type="button"
           onClick={onToggleCollapse}
-          className={`mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[#9b9288] hover:text-[#2c2824] hover:bg-white/50 text-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4a6a9b]/20 ${
-            isCollapsed ? '' : 'border border-transparent hover:border-[#e8e2d9]/60'
+          className={`mt-3 w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-xl text-[#9b9288] hover:text-[#2c2824] hover:bg-white/50 text-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4a6a9b]/20 ${
+            isCollapsed ? '' : 'flex-row gap-2 border border-transparent hover:border-[#e8e2d9]/60'
           }`}
-          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={isCollapsed ? 'Open menu' : 'Collapse menu'}
         >
-          {isCollapsed ? <PanelLeft size={16} /> : <PanelLeftClose size={16} />}
-          {!isCollapsed && <span>Collapse menu</span>}
+          {isCollapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={16} />}
+          <span className={isCollapsed ? 'text-[9px] font-medium' : ''}>
+            {isCollapsed ? 'Menu' : 'Collapse menu'}
+          </span>
         </button>
       </div>
     </aside>

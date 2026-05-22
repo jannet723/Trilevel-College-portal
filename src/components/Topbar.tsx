@@ -9,7 +9,7 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({ title, userInitials = 'JW' }) => {
   return (
     <header className="topbar">
-      <div className="tb-title">{title}</div>
+      <div className="tb-title text-[#2c2824]">{title}</div>
       <div className="tb-actions">
         <div className="tb-btn">
           <svg viewBox="0 0 24 24">

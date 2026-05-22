@@ -200,3 +200,6 @@ export const CATALOG_COURSES: CatalogCourse[] = [
     iconKey: 'business',
   },
 ];
+
+export const getCourseById = (id: number): CatalogCourse | undefined =>
+  CATALOG_COURSES.find((c) => c.id === id);

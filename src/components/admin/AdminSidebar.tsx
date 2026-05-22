@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, Menu, Users, FileText, Upload } from 'lucide-react';
+import { BookOpen, Menu, Users, FileText, Upload, GraduationCap } from 'lucide-react';
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
@@ -11,6 +11,7 @@ const navItems = [
   { icon: Menu, label: 'Dashboard', path: '/admin/dashboard' },
   { icon: Users, label: 'Students', path: '/admin/manage-students' },
   { icon: BookOpen, label: 'Courses', path: '/admin/manage-courses' },
+  { icon: GraduationCap, label: 'Course Learning', path: '/admin/course-learning' },
   { icon: FileText, label: 'Approvals', path: '/admin/approvals' },
   { icon: Upload, label: 'Upload Materials', path: '/admin/upload-materials' },
 ];
@@ -57,7 +58,10 @@ const AdminSidebar = ({ isCollapsed, onToggleCollapse, onSignOut }: AdminSidebar
         <ul className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = location.pathname === item.path;
+            const active =
+              item.path === '/admin/course-learning'
+                ? location.pathname.startsWith('/admin/course-learning')
+                : location.pathname === item.path;
             return (
               <li key={item.path}>
                 <button

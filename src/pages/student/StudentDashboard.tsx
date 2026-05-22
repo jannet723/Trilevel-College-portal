@@ -226,7 +226,12 @@ const Dashboard: React.FC = () => {
                         <div className="bg-linear-to-r from-[#4a6a9b] to-[#6b8cb5] rounded-full h-full transition-all duration-500" style={{ width: `${course.progress}%` }}></div>
                       </div>
                     </div>
-                    <button className="bg-[#e8f0fe] hover:bg-[#dce6f5] mt-4 py-2 rounded-lg w-full font-medium text-[#4a6a9b] text-xs transition">Continue →</button>
+                    <button
+                      onClick={() => navigate(`/student/learn/${course.id}`)}
+                      className="bg-[#e8f0fe] hover:bg-[#dce6f5] mt-4 py-2 rounded-lg w-full font-medium text-[#4a6a9b] text-xs transition"
+                    >
+                      Continue →
+                    </button>
                   </div>
                 ))}
               </div>

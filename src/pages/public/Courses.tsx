@@ -49,7 +49,7 @@ const Courses = () => {
       <div className="fixed -top-32 -left-32 w-96 h-96 bg-[#4a6a9b]/8 rounded-full blur-[100px] pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-72 h-72 bg-[#2F2FE4]/5 rounded-full blur-[90px] pointer-events-none" />
 
-      <header className="sticky top-0 z-30 border-b border-[#e8e2d9]/80 bg-white/60 backdrop-blur-xl">
+      <header className="portal-page-header sticky top-0 z-30 border-b border-[#e8e2d9]/80 bg-white/95 backdrop-blur-xl text-[#2c2824]">
         <div className="w-full px-6 sm:px-8 lg:px-10 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2 group">

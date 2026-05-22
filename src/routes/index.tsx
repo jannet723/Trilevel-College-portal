@@ -8,12 +8,14 @@ import ForgotPassword from '../pages/public/ForgotPassword';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import MyCourses from '../pages/student/MyCourses';
 import CourseView from '../pages/student/CourseView';
+import StudentCourseLearning from '../pages/student/StudentCourseLearning';
 import Profile from '../pages/student/Profile';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import ManageStudents from '../pages/admin/ManageStudents';
 import ManageCourses from '../pages/admin/ManageCourses';
 import Approvals from '../pages/admin/Approvals';
 import UploadMaterials from '../pages/admin/UploadMaterials';
+import AdminCourseLearning from '../pages/admin/AdminCourseLearning';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -31,6 +33,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/student/my-courses" element={<MyCourses />} />
         <Route path="/student/courses" element={<CourseView />} />
         <Route path="/student/course/:courseId" element={<CourseView />} />
+        <Route path="/student/learn/:courseId" element={<StudentCourseLearning />} />
         <Route path="/student/profile" element={<Profile />} />
 
         {/* Admin Routes */}
@@ -39,6 +42,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/admin/manage-courses" element={<ManageCourses />} />
         <Route path="/admin/approvals" element={<Approvals />} />
         <Route path="/admin/upload-materials" element={<UploadMaterials />} />
+        <Route path="/admin/course-learning" element={<AdminCourseLearning />} />
+        <Route path="/admin/course-learning/:courseId" element={<AdminCourseLearning />} />
       </Routes>
     </Router>
   );

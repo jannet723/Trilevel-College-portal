@@ -5,12 +5,15 @@ import './styles/dashboard.css'
 import App from './App.tsx'
 import { AuthProvider } from './context/AuthContext'
 import { EnrollmentProvider } from './context/EnrollmentContext'
+import { CourseResourcesProvider } from './context/CourseResourcesContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
       <EnrollmentProvider>
-        <App />
+        <CourseResourcesProvider>
+          <App />
+        </CourseResourcesProvider>
       </EnrollmentProvider>
     </AuthProvider>
   </StrictMode>,

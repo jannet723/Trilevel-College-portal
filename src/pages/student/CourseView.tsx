@@ -8,7 +8,6 @@ import {
   Filter,
   LayoutGrid,
   List,
-  Check,
   Plus,
 } from 'lucide-react';
 import { CATALOG_COURSES } from '../../data/courses';
@@ -51,30 +50,33 @@ const CourseView = () => {
 
   const renderEnrollButton = (courseId: number, compact = false) => {
     const enrolled = isEnrolled(courseId);
+    if (enrolled) {
+      return (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/student/learn/${courseId}`);
+          }}
+          className={`flex items-center justify-center gap-1.5 font-medium transition-all duration-300 ${
+            compact ? 'px-2.5 py-1 text-xs rounded-md' : 'w-full py-2.5 text-sm rounded-lg mt-3'
+          } bg-[#e8f0fe] text-[#4a6a9b] border border-[#d4e2f7] hover:bg-[#dce6f5]`}
+        >
+          <BookOpen size={compact ? 12 : 14} />
+          Open learning
+        </button>
+      );
+    }
     return (
       <button
         type="button"
-        onClick={(e) => (enrolled ? e.stopPropagation() : handleEnroll(e, courseId))}
-        disabled={enrolled}
+        onClick={(e) => handleEnroll(e, courseId)}
         className={`flex items-center justify-center gap-1.5 font-medium transition-all duration-300 ${
           compact ? 'px-2.5 py-1 text-xs rounded-md' : 'w-full py-2.5 text-sm rounded-lg mt-3'
-        } ${
-          enrolled
-            ? 'bg-[#eef5f0] text-[#4a7c5e] border border-[#ddebe2] cursor-default'
-            : 'bg-linear-to-r from-[#2F2FE4] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm hover:shadow-md'
-        }`}
+        } bg-linear-to-r from-[#2F2FE4] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm hover:shadow-md`}
       >
-        {enrolled ? (
-          <>
-            <Check size={compact ? 12 : 14} />
-            Enrolled
-          </>
-        ) : (
-          <>
-            <Plus size={compact ? 12 : 14} />
-            Enrol Now
-          </>
-        )}
+        <Plus size={compact ? 12 : 14} />
+        Enrol Now
       </button>
     );
   };

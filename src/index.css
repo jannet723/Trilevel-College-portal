@@ -32,6 +32,53 @@
   }
 }
 
+/* Trilevel portal pages use light surfaces — keep readable text when OS is in dark mode */
+.portal-light {
+  color-scheme: light;
+  --text: #6b645a;
+  --text-h: #2c2824;
+  --bg: #f8f6f2;
+  --border: #e8e2d9;
+  --code-bg: #f4f3ec;
+  color: #2c2824;
+}
+
+.portal-light h1,
+.portal-light h2,
+.portal-light h3,
+.portal-light h4,
+.portal-light h5,
+.portal-light h6 {
+  color: #2c2824;
+}
+
+.portal-light .topbar {
+  background: #ffffff;
+  border-bottom-color: #e8e2d9;
+}
+
+.portal-light .tb-title {
+  color: #2c2824;
+}
+
+.portal-light .tb-search input {
+  color: #2c2824;
+}
+
+.portal-light .tb-search input::placeholder {
+  color: #9b9288;
+}
+
+.portal-page-header nav button,
+.portal-page-header nav button span {
+  color: #6b645a;
+}
+
+.portal-page-header nav button:hover,
+.portal-page-header nav button:hover span {
+  color: #4a6a9b;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
@@ -218,6 +265,61 @@ code {
 
 .home-section {
   width: 100%;
+}
+
+.home-hero-title {
+  color: #3d5a86;
+  text-wrap: balance;
+}
+
+.home-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #4a6a9b;
+  margin-bottom: 0.75rem;
+}
+
+.home-view-all-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2c4a7a;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(74, 106, 155, 0.35);
+  box-shadow: 0 4px 14px -6px rgba(74, 106, 155, 0.2);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.home-view-all-link:hover {
+  background: #fff;
+  border-color: rgba(74, 106, 155, 0.5);
+  box-shadow: 0 8px 22px -8px rgba(74, 106, 155, 0.25);
+}
+
+.home-view-all-link:active {
+  transform: scale(0.98);
+}
+
+.home-content-panel {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(232, 226, 217, 0.75);
+  background: rgba(255, 255, 255, 0.35);
+  padding: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .home-content-panel {
+    padding: 2rem 2.25rem;
+  }
 }
 
 .btn-primary {

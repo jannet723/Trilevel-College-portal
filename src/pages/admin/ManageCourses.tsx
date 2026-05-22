@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   BookOpen,
   Search,
@@ -56,6 +57,7 @@ const EmptyState: React.FC<{
 );
 
 const ManageCourses = () => {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<AdminCourse[]>(() => [...CATALOG_COURSES]);
   const [activeTab, setActiveTab] = useState<'all' | 'active' | 'pending'>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -335,19 +337,30 @@ const ManageCourses = () => {
                       <span>{course.units} units</span>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-2">
                       <button
-                        onClick={() => openEditModal(course)}
-                        className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#e0d9d0] text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#2c2824] transition-all duration-200"
+                        type="button"
+                        onClick={() => navigate(`/admin/course-learning/${course.id}`)}
+                        className="w-full py-2.5 rounded-lg text-sm font-medium bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm transition-all duration-200"
                       >
-                        Edit Course
+                        Manage Learning
                       </button>
-                      <button
-                        onClick={() => openViewModal(course)}
-                        className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm transition-all duration-200"
-                      >
-                        View Details
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEditModal(course)}
+                          className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#e0d9d0] text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#2c2824] transition-all duration-200"
+                        >
+                          Edit Course
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openViewModal(course)}
+                          className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#4a6a9b]/25 text-[#4a6a9b] hover:bg-[#e8f0fe]/50 transition-all duration-200"
+                        >
+                          View Details
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
