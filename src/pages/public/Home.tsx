@@ -30,7 +30,7 @@ export default function TrilevelLogin() {
 
   const handleLogin = () => {
     if (userType === "student") {
-      navigate("/dashboard");
+      navigate("/student/dashboard");
     } else {
       navigate("/admin/dashboard");
     }

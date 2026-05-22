@@ -1,13 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   BookOpen,
   Search,
   CheckSquare,
-  Bell,
-  User,
-  Menu,
-  GraduationCap,
   Users,
   Plus,
   Edit,
@@ -17,12 +13,17 @@ import {
   Download,
   Check,
   AlertCircle,
-  Calendar,
   Award,
+  Menu,
+  Bell,
+  User,
+  Calendar,
+  Clock,
 } from 'lucide-react';
 
 const ManageStudents = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -176,7 +177,7 @@ const ManageStudents = () => {
         <div className={`p-6 border-b border-[#e8e2d9] ${isSidebarCollapsed ? 'px-4' : ''}`}>
           <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
             <div className="w-10 h-10 bg-linear-to-br from-[#4a6a9b] to-[#2c4a7a] rounded-xl flex items-center justify-center shadow-sm shrink-0">
-              <GraduationCap size={20} className="text-white" />
+              <img src="/logo.png" alt="Trilevel Logo" className="w-10 h-10 object-contain" />
             </div>
             {!isSidebarCollapsed && (
               <div>
@@ -195,39 +196,18 @@ const ManageStudents = () => {
           <ul className="space-y-1.5">
             {[
               { icon: <Menu size={18} />, label: "Dashboard", path: "/admin/dashboard" },
-              { icon: <Users size={18} />, label: "Students", path: "/admin/students", active: true },
-              { icon: <BookOpen size={18} />, label: "Courses", path: "/admin/courses" },
+              { icon: <Users size={18} />, label: "Students", path: "/admin/manage-students" },
+              { icon: <BookOpen size={18} />, label: "Courses", path: "/admin/manage-courses" },
               { icon: <CheckSquare size={18} />, label: "Approvals", path: "/admin/approvals" },
             ].map((item, idx) => (
               <li key={idx}>
                 <button
                   onClick={() => navigate(item.path)}
                   className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    item.active 
+                    location.pathname === item.path
                       ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
                       : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
                   }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 mt-8 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Management' : '📋'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Calendar size={18} />, label: "Schedule", path: "/admin/schedule" },
-              { icon: <Award size={18} />, label: "Analytics", path: "/admin/analytics" },
-              { icon: <SettingsIcon size={18} />, label: "Settings", path: "/admin/settings" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824] transition-all duration-200"
                 >
                   {item.icon}
                   {!isSidebarCollapsed && <span>{item.label}</span>}
@@ -241,13 +221,17 @@ const ManageStudents = () => {
           </div>
           <ul className="space-y-1.5">
             {[
-              { icon: <Bell size={18} />, label: "Notifications", path: "/notifications" },
-              { icon: <User size={18} />, label: "Profile", path: "/profile" },
+              { icon: <Bell size={18} />, label: "Notifications", path: "/admin/notifications" },
+              { icon: <User size={18} />, label: "Profile", path: "/admin/profile" },
             ].map((item, idx) => (
               <li key={idx}>
                 <button
                   onClick={() => navigate(item.path)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824] transition-all duration-200"
+                  className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
+                    location.pathname === item.path
+                      ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
+                      : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
+                  }`}
                 >
                   {item.icon}
                   {!isSidebarCollapsed && <span>{item.label}</span>}
@@ -361,7 +345,7 @@ const ManageStudents = () => {
                   <p className="text-2xl font-semibold text-[#2c2824] mt-1">{students.filter(s => s.status === 'Pending').length}</p>
                 </div>
                 <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#fef5e8] to-[#faeedc] flex items-center justify-center">
-                  <ClockIcon size={18} className="text-[#d4a34b]" />
+                  <Clock size={18} className="text-[#d4a34b]" />
                 </div>
               </div>
             </div>
@@ -577,21 +561,5 @@ const ManageStudents = () => {
     </div>
   );
 };
-
-// Settings Icon component
-const SettingsIcon = ({ size }: { size: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="3" />
-    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-  </svg>
-);
-
-// Clock Icon component
-const ClockIcon = ({ size, className }: { size: number; className?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-    <circle cx="12" cy="12" r="10" />
-    <polyline points="12 6 12 12 16 14" />
-  </svg>
-);
 
 export default ManageStudents;

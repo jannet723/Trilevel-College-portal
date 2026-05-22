@@ -23,9 +23,6 @@ const Sidebar: React.FC<SidebarProps> = ({ role, isCollapsed, onToggleCollapse, 
   const studentItems: SidebarItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊', path: '/student/dashboard' },
     { id: 'my-courses', label: 'My Courses', icon: '📚', path: '/student/my-courses', badge: 4 },
-    { id: 'browse', label: 'Browse Courses', icon: '🔍', path: '/student/courses' },
-    { id: 'assignments', label: 'Assignments', icon: '✓', path: '/student/assignments', badge: 2 },
-    { id: 'notifications', label: 'Notifications', icon: '🔔', path: '/student/notifications', badge: 5 },
     { id: 'profile', label: 'Profile', icon: '👤', path: '/student/profile' },
   ];
 
@@ -59,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, isCollapsed, onToggleCollapse, 
         <div className="s-section">
           {role === 'student' ? 'Main' : 'Administration'}
         </div>
-        {items.slice(0, role === 'student' ? 4 : 5).map((item) => (
+        {items.slice(0, role === 'student' ? 2 : 5).map((item) => (
           <button
             key={item.id}
             className={`s-item ${location.pathname === item.path ? 'active' : ''}`}
@@ -74,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, isCollapsed, onToggleCollapse, 
         {role === 'student' && (
           <>
             <div className="s-section">Account</div>
-            {items.slice(4).map((item) => (
+            {items.slice(2).map((item) => (
               <button
                 key={item.id}
                 className={`s-item ${location.pathname === item.path ? 'active' : ''}`}

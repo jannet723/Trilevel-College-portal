@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   BookOpen,
-  Bell,
-  User,
   Menu,
   GraduationCap,
   Users,
@@ -19,14 +17,13 @@ import {
   MoreHorizontal,
   ChevronRight,
   Activity,
-  Calendar,
-  DollarSign,
+  Upload,
 } from 'lucide-react';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [] = useState('overview');
 
   const stats = [
     {
@@ -120,60 +117,20 @@ const AdminDashboard = () => {
           </div>
           <ul className="space-y-1.5">
             {[
-              { icon: <Menu size={18} />, label: "Dashboard", path: "/admin/dashboard", active: true },
-              { icon: <Users size={18} />, label: "Students", path: "/admin/students" },
-              { icon: <BookOpen size={18} />, label: "Courses", path: "/admin/courses" },
+              { icon: <Menu size={18} />, label: "Dashboard", path: "/admin/dashboard" },
+              { icon: <Users size={18} />, label: "Students", path: "/admin/manage-students" },
+              { icon: <BookOpen size={18} />, label: "Courses", path: "/admin/manage-courses" },
               { icon: <FileText size={18} />, label: "Approvals", path: "/admin/approvals" },
+              { icon: <Upload size={18} />, label: "Upload Materials", path: "/admin/upload-materials" },
             ].map((item, idx) => (
               <li key={idx}>
                 <button
                   onClick={() => navigate(item.path)}
                   className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    item.active 
+                    location.pathname === item.path
                       ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
                       : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
                   }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 mt-8 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Management' : '📋'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Calendar size={18} />, label: "Schedule", path: "/admin/schedule" },
-              { icon: <DollarSign size={18} />, label: "Finance", path: "/admin/finance" },
-              { icon: <Settings size={18} />, label: "Settings", path: "/admin/settings" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824] transition-all duration-200"
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 mt-8 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Account' : '⚙️'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Bell size={18} />, label: "Notifications", path: "/notifications" },
-              { icon: <User size={18} />, label: "Profile", path: "/profile" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824] transition-all duration-200"
                 >
                   {item.icon}
                   {!isSidebarCollapsed && <span>{item.label}</span>}
