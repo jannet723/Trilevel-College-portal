@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  BookOpen,
+  Search,
+  Menu,
+} from "lucide-react";
+ 
+
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSidebarCollapsed] = useState(false);
+  
   return (
-    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]">
+    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]" style={{ fontFamily: "Georgia, serif" }}>
       {/* SIDEBAR - Refined  */}
       <aside className="w-64 bg-white/40 backdrop-blur-xl text-[#2c2824] flex flex-col shrink-0 border-r border-[#e8e2d9] shadow-sm">
         {/* Logo area - softer */}
@@ -19,14 +28,16 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Navigation - subtle hover */}
+        {/* Navigation */}
         <nav className="flex-1 p-4">
-          <div className="text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 px-3">Main</div>
+          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
+            {!isSidebarCollapsed ? 'Main' : '≡'}
+          </div>
           <ul className="space-y-1.5">
             {[
-              { icon: <><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></>, label: "Dashboard", path: "/student/dashboard" },
-              { icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></>, label: "My Courses", path: "/student/my-courses" },
-              { icon: <><circle cx="10" cy="10" r="7" /><path d="m21 21-6-6" /></>, label: "Browse Courses", path: "/student/courseview" },
+              { icon: <Menu size={18} />, label: "Dashboard", path: "/student/dashboard" },
+              { icon: <BookOpen size={18} />, label: "My Courses", path: "/student/my-courses" },
+              { icon: <Search size={18} />, label: " Courses", path: "/student/courses" },
 
             ].map((item, idx) => (
               <li key={idx}>
@@ -41,7 +52,6 @@ const Dashboard: React.FC = () => {
           <div className="text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 px-3 mt-8">Account</div>
           <ul className="space-y-1.5">
             {[
-              { icon: <><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></>, label: "Notifications", path: "/student/notifications" },
               { icon: <><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></>, label: "Profile", path: "/student/profile" },
             ].map((item, idx) => (
               <li key={idx}>

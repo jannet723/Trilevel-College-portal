@@ -109,7 +109,7 @@ const CourseView = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]">
+    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]" style={{ fontFamily: "Georgia, serif" }}>
       {/* Sidebar - same refined style */}
       <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-white/40 backdrop-blur-xl text-[#2c2824] flex flex-col shrink-0 border-r border-[#e8e2d9] shadow-sm transition-all duration-300`}>
        {/* Logo area - softer */}
@@ -132,7 +132,7 @@ const CourseView = () => {
             {[
               { icon: <Menu size={18} />, label: "Dashboard", path: "/student/dashboard" },
               { icon: <BookOpen size={18} />, label: "My Courses", path: "/student/my-courses" },
-              { icon: <Search size={18} />, label: "Browse Courses", path: "/student/courses" },
+              { icon: <Search size={18} />, label: " Courses", path: "/student/course-view" },
              
             ].map((item, idx) => (
               <li key={idx}>

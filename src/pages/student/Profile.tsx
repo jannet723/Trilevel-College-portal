@@ -13,7 +13,6 @@ import {
   X,
   BookOpen,
   Search,
-  Bell,
   Menu,
 } from "lucide-react";
 
@@ -39,7 +38,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]">
+    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]" style={{ fontFamily: "Georgia, serif" }}>
       {/* Sidebar - same refined style as Dashboard */}
       <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-white/40 backdrop-blur-xl text-[#2c2824] flex flex-col shrink-0 border-r border-[#e8e2d9] shadow-sm transition-all duration-300`}>
         {/* Logo area - softer */}
@@ -61,7 +60,7 @@ const Profile = () => {
             {[
               { icon: <Menu size={18} />, label: "Dashboard", path: "/student/dashboard" },
               { icon: <BookOpen size={18} />, label: "My Courses", path: "/student/my-courses" },
-              { icon: <Search size={18} />, label: "Browse Courses", path: "/student/courses" },
+              { icon: <Search size={18} />, label: " Courses", path: "/student/course-view" },
             
             ].map((item, idx) => (
               <li key={idx}>
@@ -132,34 +131,13 @@ const Profile = () => {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
         {/* Header */}
-        <header className="bg-white/60 backdrop-blur-md border-b border-[#e8e2d9] px-8 py-4 sticky top-0 z-20">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <p className="text-xs text-[#9b9288] tracking-wide">Welcome back</p>
-              <h1 className="text-2xl font-semibold text-[#2c2824] tracking-tight">Profile</h1>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="relative hidden md:block">
-                <input
-                  type="text"
-                  placeholder="Search courses..."
-                  className="pl-10 pr-4 py-2.5 bg-white/80 border border-[#e0d9d0] rounded-xl w-72 focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20 focus:border-[#4a6a9b]/30 text-sm text-[#2c2824] placeholder:text-[#b0a89e] transition-all"
-                />
-                <Search size={16} className="absolute left-3 top-3 text-[#b0a89e]" />
-              </div>
-              <button className="w-10 h-10 rounded-xl border border-[#e0d9d0] bg-white/60 hover:bg-white transition flex items-center justify-center text-[#6b645a] hover:text-[#2c2824]">
-                <Bell size={16} />
-              </button>
-              <div className="w-10 h-10 bg-linear-to-br from-[#4a6a9b] to-[#2c4a7a] rounded-xl flex items-center justify-center text-white font-semibold shadow-sm text-sm">JW</div>
-            </div>
-          </div>
-        </header>
+        
 
         {/* Profile Content */}
         <div className="p-8">
           {/* Header */}
           <div className="mb-8">
-            <p className="text-xs text-[#9b9288] tracking-wide">Manage your account</p>
+            <p className="text-xl text-[#9b9288] tracking-wide">Manage your account</p>
             <h2 className="text-2xl font-semibold text-[#2c2824] tracking-tight mt-1">
               Profile Settings
             </h2>

@@ -6,7 +6,7 @@ interface TopbarProps {
   userInitials?: string;
 }
 
-const Topbar: React.FC<TopbarProps> = ({ title, onSearch, userInitials = 'JW' }) => {
+const Topbar: React.FC<TopbarProps> = ({ title, userInitials = 'JW' }) => {
   return (
     <header className="topbar">
       <div className="tb-title">{title}</div>
