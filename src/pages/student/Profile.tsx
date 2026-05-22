@@ -60,7 +60,7 @@ const Profile = () => {
             {[
               { icon: <Menu size={18} />, label: "Dashboard", path: "/student/dashboard" },
               { icon: <BookOpen size={18} />, label: "My Courses", path: "/student/my-courses" },
-              { icon: <Search size={18} />, label: " Courses", path: "/student/course-view" },
+              { icon: <Search size={18} />, label: " Courses", path: "/student/courses" },
             
             ].map((item, idx) => (
               <li key={idx}>
