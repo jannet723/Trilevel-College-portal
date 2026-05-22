@@ -1,4 +1,5 @@
 import './App.css'
+import './styles/dashboard.css'
 import AppRoutes from './routes'
 
 function App() {
