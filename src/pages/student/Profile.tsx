@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import {
   User,
   Mail,
@@ -11,20 +10,11 @@ import {
   Pencil,
   Save,
   X,
-  BookOpen,
-  Search,
-  Menu,
 } from "lucide-react";
+import StudentLayout from "../../layouts/StudentLayout";
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [isEditing, setIsEditing] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-  const handleSignOut = () => {
-    navigate("/");
-  };
 
   const userInfo = {
     name: "Jane Wanjiku",
@@ -38,111 +28,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]" style={{ fontFamily: "Georgia, serif" }}>
-      {/* Sidebar - same refined style as Dashboard */}
-      <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-white/40 backdrop-blur-xl text-[#2c2824] flex flex-col shrink-0 border-r border-[#e8e2d9] shadow-sm transition-all duration-300`}>
-        {/* Logo area - softer */}
-        <div className="p-6 border-b border-[#e8e2d9]">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Trilevel Logo" className="w-15 h-15 object-contain" />
-            <div>
-              <div className="font-semibold text-xl tracking-tight bg-linear-to-r from-[#2c2824] to-[#5a5248] bg-clip-text text-transparent"> Trilevel College</div>
-              <div className="text-[10px] tracking-[0.2em] text-[#9b9288] uppercase">Student Portal</div>
-            </div>
-          </div>
-        </div>
-        {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Main' : '≡'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Menu size={18} />, label: "Dashboard", path: "/student/dashboard" },
-              { icon: <BookOpen size={18} />, label: "My Courses", path: "/student/my-courses" },
-              { icon: <Search size={18} />, label: " Courses", path: "/student/courses" },
-            
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    location.pathname === item.path
-                      ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
-                      : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
-                  }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 mt-8 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Account' : '⚙️'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <User size={18} />, label: "Profile", path: "/student/profile" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    location.pathname === item.path
-                      ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
-                      : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
-                  }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Footer */}
-        <div className="p-5 border-t border-[#e8e2d9] space-y-2">
-          <button 
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="text-[#9b9288] text-xs hover:text-[#2c2824] transition flex items-center gap-2 w-full"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d={isSidebarCollapsed ? "m9 18 6-6-6-6" : "m15 18-6-6 6-6"} />
-            </svg>
-            {!isSidebarCollapsed && "Collapse sidebar"}
-          </button>
-          <button 
-            onClick={handleSignOut}
-            className="text-[#9b9288] text-xs hover:text-[#2c2824] transition flex items-center gap-2 w-full"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            {!isSidebarCollapsed && "Sign out"}
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        {/* Header */}
-        
-
-        {/* Profile Content */}
-        <div className="p-8">
-          {/* Header */}
-          <div className="mb-8">
-            <p className="text-xl text-[#9b9288] tracking-wide">Manage your account</p>
-            <h2 className="text-2xl font-semibold text-[#2c2824] tracking-tight mt-1">
-              Profile Settings
-            </h2>
-          </div>
-
+    <StudentLayout title="Profile Settings" subtitle="Manage your account details" backTo="/student/dashboard">
           {/* Layout */}
           <div className="grid grid-cols-[340px_1fr] gap-6">
             {/* LEFT PROFILE CARD */}
@@ -393,9 +279,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+    </StudentLayout>
   );
 };
 

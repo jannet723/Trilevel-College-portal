@@ -4,11 +4,14 @@ import './index.css'
 import './styles/dashboard.css'
 import App from './App.tsx'
 import { AuthProvider } from './context/AuthContext'
+import { EnrollmentProvider } from './context/EnrollmentContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <App />
+      <EnrollmentProvider>
+        <App />
+      </EnrollmentProvider>
     </AuthProvider>
   </StrictMode>,
 )

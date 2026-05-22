@@ -1,459 +1,565 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import {
   BookOpen,
   Search,
-  CheckSquare,
   Users,
   Plus,
   Edit,
   Trash2,
   Eye,
-  TrendingUp,
-  Download,
   Check,
+  Clock,
   AlertCircle,
-  Menu,
-  Bell,
-  User,
+  ChevronRight,
+  X,
 } from 'lucide-react';
+import { CATALOG_COURSES, type CatalogCourse } from '../../data/courses';
+import AdminLayout from '../../layouts/AdminLayout';
+
+type AdminCourse = CatalogCourse;
+
+type CourseFormData = Omit<AdminCourse, 'id' | 'students' | 'progress'>;
+
+const emptyForm = (): CourseFormData => ({
+  title: '',
+  code: '',
+  department: '',
+  description: '',
+  units: 10,
+  status: 'Pending',
+  level: 'Certificate',
+  duration: '6 months',
+  iconKey: 'technology',
+});
+
+const EmptyState: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  action?: { label: string; onClick: () => void };
+}> = ({ icon, title, desc, action }) => (
+  <div className="flex flex-col items-center justify-center bg-white/50 backdrop-blur-sm rounded-xl border border-dashed border-[#d4cfc8] p-12 text-center">
+    <div className="w-16 h-16 bg-[#f0ece6] rounded-xl flex items-center justify-center mx-auto mb-4 text-[#b0a89e]">
+      {icon}
+    </div>
+    <h3 className="text-base font-medium text-[#6b645a] mb-1">{title}</h3>
+    <p className="text-sm text-[#b0a89e] max-w-xs leading-relaxed mb-5">{desc}</p>
+    {action && (
+      <button
+        onClick={action.onClick}
+        className="px-5 py-2 bg-[#4a6a9b]/10 hover:bg-[#4a6a9b]/20 text-[#4a6a9b] rounded-lg text-sm font-medium transition"
+      >
+        {action.label}
+      </button>
+    )}
+  </div>
+);
 
 const ManageCourses = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [courses, setCourses] = useState<AdminCourse[]>(() => [...CATALOG_COURSES]);
+  const [activeTab, setActiveTab] = useState<'all' | 'active' | 'pending'>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
 
-  const courses = [
-    { 
-      id: 1,
-      title: 'Introduction to Artificial Intelligence', 
-      code: 'CS-AI101',
-      department: 'Technology',
-      students: 42, 
-      units: 12,
-      status: 'Active',
-      level: 'Certificate',
-      enrolled: 'Jan 2024',
-      progress: 78,
-    },
-    { 
-      id: 2,
-      title: 'Diploma in Business Administration', 
-      code: 'BUS-DBA201',
-      department: 'Business',
-      students: 78, 
-      units: 18,
-      status: 'Active',
-      level: 'Diploma',
-      enrolled: 'Feb 2024',
-      progress: 65,
-    },
-    { 
-      id: 3,
-      title: 'Social Work & Community Development', 
-      code: 'SOC-SW301',
-      department: 'Social Sciences',
-      students: 55, 
-      units: 10,
-      status: 'Active',
-      level: 'Certificate',
-      enrolled: 'Jan 2024',
-      progress: 82,
-    },
-    { 
-      id: 4,
-      title: 'Hospitality Management', 
-      code: 'HOS-HM401',
-      department: 'Hospitality',
-      students: 34, 
-      units: 14,
-      status: 'Pending',
-      level: 'Diploma',
-      enrolled: 'Mar 2024',
-      progress: 45,
-    },
-    { 
-      id: 5,
-      title: 'Theology & Ministry', 
-      code: 'THE-TM501',
-      department: 'Theology',
-      students: 28, 
-      units: 8,
-      status: 'Active',
-      level: 'Certificate',
-      enrolled: 'Feb 2024',
-      progress: 91,
-    },
-  ];
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
+  const [selectedCourse, setSelectedCourse] = useState<AdminCourse | null>(null);
+  const [formData, setFormData] = useState<CourseFormData>(emptyForm());
 
-  const handleSignOut = () => {
-    navigate('/');
+  const filteredCourses = courses.filter((course) => {
+    const matchesSearch =
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.department.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTab =
+      activeTab === 'all' ||
+      (activeTab === 'active' && course.status === 'Active') ||
+      (activeTab === 'pending' && course.status === 'Pending');
+    return matchesSearch && matchesTab;
+  });
+
+  const getTabCount = (tab: typeof activeTab) => {
+    if (tab === 'all') return courses.length;
+    if (tab === 'active') return courses.filter((c) => c.status === 'Active').length;
+    return courses.filter((c) => c.status === 'Pending').length;
   };
 
-  const handleDeleteClick = (course: any) => {
+  const openAddModal = () => {
+    setFormMode('add');
+    setSelectedCourse(null);
+    setFormData(emptyForm());
+    setShowFormModal(true);
+  };
+
+  const openEditModal = (course: AdminCourse) => {
+    setFormMode('edit');
+    setSelectedCourse(course);
+    setFormData({
+      title: course.title,
+      code: course.code,
+      department: course.department,
+      description: course.description,
+      units: course.units,
+      status: course.status,
+      level: course.level,
+      duration: course.duration,
+      iconKey: course.iconKey,
+    });
+    setShowFormModal(true);
+  };
+
+  const openViewModal = (course: AdminCourse) => {
+    setSelectedCourse(course);
+    setShowViewModal(true);
+  };
+
+  const handleDeleteClick = (course: AdminCourse) => {
     setSelectedCourse(course);
     setShowDeleteModal(true);
   };
 
   const handleConfirmDelete = () => {
-    // Handle deletion logic here
-    console.log('Deleting course:', selectedCourse);
+    if (selectedCourse) {
+      setCourses((prev) => prev.filter((c) => c.id !== selectedCourse.id));
+    }
     setShowDeleteModal(false);
     setSelectedCourse(null);
   };
 
-  const filteredCourses = courses.filter(course => {
-    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.department.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || course.status === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
+  const handleSaveCourse = () => {
+    if (!formData.title.trim() || !formData.code.trim()) return;
 
-  const getStatusColor = (status: string) => {
-    switch(status) {
-      case 'Active': return 'bg-[#eef5f0] text-[#4a7c5e]';
-      case 'Pending': return 'bg-[#fef5e8] text-[#d4a34b]';
-      default: return 'bg-[#f0ece6] text-[#9b9288]';
+    if (formMode === 'add') {
+      const newCourse: AdminCourse = {
+        id: Date.now(),
+        ...formData,
+        students: 0,
+        progress: 0,
+      };
+      setCourses((prev) => [newCourse, ...prev]);
+    } else if (selectedCourse) {
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.id === selectedCourse.id ? { ...c, ...formData } : c
+        )
+      );
     }
-  };
-
-  const getLevelColor = (level: string) => {
-    switch(level) {
-      case 'Diploma': return 'bg-linear-to-r from-[#eef5f0] to-[#ddebe2] text-[#4a7c5e]';
-      default: return 'bg-linear-to-r from-[#e8f0fe] to-[#d4e2f7] text-[#4a6a9b]';
-    }
+    setShowFormModal(false);
+    setSelectedCourse(null);
+    setFormData(emptyForm());
   };
 
   return (
-    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]" style={{ fontFamily: "Georgia, serif" }}>
-      {/* Sidebar - same refined style */}
-      <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-white/40 backdrop-blur-xl text-[#2c2824] flex flex-col shrink-0 border-r border-[#e8e2d9] shadow-sm transition-all duration-300`}>
-        {/* Logo area */}
-        <div className={`p-6 border-b border-[#e8e2d9] ${isSidebarCollapsed ? 'px-4' : ''}`}>
-          <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
-            <div className="w-10 h-10 bg-linear-to-br from-[#4a6a9b] to-[#2c4a7a] rounded-xl flex items-center justify-center shadow-sm shrink-0">
-              <img src="/logo.png" alt="Trilevel Logo" className="w-10 h-10 object-contain" />
-            </div>
-            {!isSidebarCollapsed && (
-              <div>
-                <div className="font-semibold text-xl tracking-tight bg-linear-to-r from-[#2c2824] to-[#5a5248] bg-clip-text text-transparent">Inleed</div>
-                <div className="text-[10px] tracking-[0.2em] text-[#9b9288] uppercase">Admin Portal</div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Main' : '≡'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Menu size={18} />, label: "Dashboard", path: "/admin/dashboard" },
-              { icon: <Users size={18} />, label: "Students", path: "/admin/manage-students" },
-              { icon: <BookOpen size={18} />, label: "Courses", path: "/admin/manage-courses" },
-              { icon: <CheckSquare size={18} />, label: "Approvals", path: "/admin/approvals" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    location.pathname === item.path
-                      ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
-                      : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
-                  }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 mt-8 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Account' : '⚙️'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Bell size={18} />, label: "Notifications", path: "/admin/notifications" },
-              { icon: <User size={18} />, label: "Profile", path: "/admin/profile" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    location.pathname === item.path
-                      ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
-                      : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
-                  }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Footer */}
-        <div className="p-5 border-t border-[#e8e2d9] space-y-2">
-          <button 
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="text-[#9b9288] text-xs hover:text-[#2c2824] transition flex items-center gap-2 w-full"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d={isSidebarCollapsed ? "m9 18 6-6-6-6" : "m15 18-6-6 6-6"} />
-            </svg>
-            {!isSidebarCollapsed && "Collapse sidebar"}
-          </button>
-          <button 
-            onClick={handleSignOut}
-            className="text-[#9b9288] text-xs hover:text-[#2c2824] transition flex items-center gap-2 w-full"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            {!isSidebarCollapsed && "Sign out"}
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        {/* Header */}
-        <header className="bg-white/60 backdrop-blur-md border-b border-[#e8e2d9] px-8 py-4 sticky top-0 z-20">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <p className="text-xs text-[#9b9288] tracking-wide">Course management</p>
-              <h1 className="text-2xl font-semibold text-[#2c2824] tracking-tight">Manage Courses</h1>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="relative hidden md:block">
-                <input
-                  type="text"
-                  placeholder="Search courses..."
-                  className="pl-10 pr-4 py-2.5 bg-white/80 border border-[#e0d9d0] rounded-xl w-80 focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20 focus:border-[#4a6a9b]/30 text-sm text-[#2c2824] placeholder:text-[#b0a89e] transition-all"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <Search size={16} className="absolute left-3 top-3 text-[#b0a89e]" />
-              </div>
-              <button className="w-10 h-10 rounded-xl border border-[#e0d9d0] bg-white/60 hover:bg-white transition flex items-center justify-center text-[#6b645a] hover:text-[#2c2824] relative">
-                <Bell size={16} />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-[#d4a34b] rounded-full"></span>
-              </button>
-              <div className="w-10 h-10 bg-linear-to-br from-[#4a6a9b] to-[#2c4a7a] rounded-xl flex items-center justify-center text-white font-semibold shadow-sm text-sm">AD</div>
-            </div>
-          </div>
-        </header>
-
-          {/* Course Management Content */}
-          <div className="p-8">
-            {/* Header Section */}
-            <div className="mb-6 flex flex-wrap justify-between items-center gap-4">
-            <div>
-              <p className="text-xs text-[#9b9288] tracking-wide">All programmes</p>
-              <h2 className="text-xl font-semibold text-[#2c2824] tracking-tight mt-1">
-                Course Catalog
-              </h2>
-            </div>
-            <button 
-              onClick={() => navigate('/admin/courses/new')}
-              className="px-5 py-2.5 bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white rounded-lg text-sm font-medium hover:from-[#3d5a86] hover:to-[#2c4a7a] transition shadow-sm flex items-center gap-2"
+    <AdminLayout title="Courses" subtitle="Manage certificate and diploma programmes" backTo="/admin/dashboard">
+          <div className="mb-6 flex flex-wrap justify-end items-center gap-4">
+            <button
+              type="button"
+              onClick={openAddModal}
+              className="px-5 py-2.5 bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white rounded-xl text-sm font-medium hover:from-[#3d5a86] hover:to-[#2c4a7a] transition shadow-sm flex items-center gap-2"
             >
               <Plus size={16} />
-              New Course
+              Add Course
             </button>
           </div>
 
-          {/* Stats Overview */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-[#e8e2d9] p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Total Courses</p>
-                  <p className="text-2xl font-semibold text-[#2c2824] mt-1">{courses.length}</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] flex items-center justify-center">
-                  <BookOpen size={18} className="text-[#4a6a9b]" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-[#e8e2d9] p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Active Courses</p>
-                  <p className="text-2xl font-semibold text-[#2c2824] mt-1">{courses.filter(c => c.status === 'Active').length}</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#eef5f0] to-[#ddebe2] flex items-center justify-center">
-                  <Check size={18} className="text-[#4a7c5e]" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-[#e8e2d9] p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Total Students</p>
-                  <p className="text-2xl font-semibold text-[#2c2824] mt-1">237</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#f3eef9] to-[#e8e0f2] flex items-center justify-center">
-                  <Users size={18} className="text-[#7a5b9e]" />
-                </div>
-              </div>
-            </div>
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl border border-[#e8e2d9] p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Completion Rate</p>
-                  <p className="text-2xl font-semibold text-[#2c2824] mt-1">72%</p>
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#fef5e8] to-[#faeedc] flex items-center justify-center">
-                  <TrendingUp size={18} className="text-[#d4a34b]" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {[
+              {
+                label: 'Total Courses',
+                value: courses.length,
+                icon: <BookOpen size={18} className="text-[#4a6a9b]" />,
+                color: 'from-[#e8f0fe] to-[#d4e2f7]',
+                hasData: courses.length > 0,
+              },
+              {
+                label: 'Active',
+                value: courses.filter((c) => c.status === 'Active').length,
+                icon: <Check size={18} className="text-[#4a7c5e]" />,
+                color: 'from-[#eef5f0] to-[#ddebe2]',
+                hasData: courses.some((c) => c.status === 'Active'),
+              },
+              {
+                label: 'Pending Review',
+                value: courses.filter((c) => c.status === 'Pending').length,
+                icon: <Clock size={18} className="text-[#d4a34b]" />,
+                color: 'from-[#fef5e8] to-[#faeedc]',
+                hasData: courses.some((c) => c.status === 'Pending'),
+              },
+            ].map((stat, idx) => (
+              <div
+                key={idx}
+                className={`bg-white/60 backdrop-blur-sm rounded-xl border p-4 transition-all duration-300 ${
+                  stat.hasData ? 'border-[#e8e2d9]' : 'border-dashed border-[#d4cfc8]'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">{stat.label}</p>
+                    <p className={`text-2xl font-semibold mt-1 transition-colors ${stat.hasData ? 'text-[#2c2824]' : 'text-[#c0b8ae]'}`}>
+                      {stat.value}
+                    </p>
+                  </div>
+                  <div className={`w-10 h-10 rounded-lg bg-linear-to-br ${stat.color} flex items-center justify-center ${!stat.hasData ? 'opacity-40' : ''}`}>
+                    {stat.icon}
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-            <div className="flex gap-2">
-              {['all', 'Active', 'Pending'].map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilterStatus(status.toLowerCase())}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
-                    filterStatus === status.toLowerCase()
-                      ? 'bg-[#4a6a9b] text-white shadow-sm'
-                      : 'bg-white/60 text-[#6b645a] hover:bg-[#eae5dd] border border-[#e8e2d9]'
+          <div className="relative mb-6 max-w-md">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
+            <input
+              type="text"
+              placeholder="Search by title, code, or department..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-white/80 border border-[#e0d9d0] rounded-lg text-sm text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20 focus:border-[#4a6a9b]/30 transition-all"
+            />
+          </div>
+
+          <div className="flex gap-2 mb-6 border-b border-[#e8e2d9]">
+            {(
+              [
+                { id: 'all' as const, label: 'All Courses' },
+                { id: 'active' as const, label: 'Active' },
+                { id: 'pending' as const, label: 'Pending' },
+              ] as const
+            ).map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2.5 text-sm font-medium transition-all duration-200 border-b-2 ${
+                  activeTab === tab.id
+                    ? 'border-[#4a6a9b] text-[#2c4a7a]'
+                    : 'border-transparent text-[#9b9288] hover:text-[#6b645a] hover:border-[#d0c8be]'
+                }`}
+              >
+                {tab.label}
+                <span
+                  className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                    activeTab === tab.id ? 'bg-[#4a6a9b]/10 text-[#2c4a7a]' : 'bg-[#f0ece6] text-[#9b9288]'
                   }`}
                 >
-                  {status === 'all' ? 'All Courses' : status}
-                </button>
+                  {getTabCount(tab.id)}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {filteredCourses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filteredCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="relative bg-white/80 backdrop-blur-sm rounded-xl border border-[#e8e2d9] overflow-hidden hover:shadow-md transition-all duration-200 group"
+                >
+                  <div className="absolute top-3 right-3 z-10 flex items-center gap-1">
+                    <button
+                      onClick={() => openViewModal(course)}
+                      className="w-7 h-7 rounded-lg bg-[#f5f0eb] hover:bg-[#e8f0fe] text-[#9b9288] hover:text-[#4a6a9b] flex items-center justify-center transition"
+                      title="View"
+                    >
+                      <Eye size={14} />
+                    </button>
+                    <button
+                      onClick={() => openEditModal(course)}
+                      className="w-7 h-7 rounded-lg bg-[#f5f0eb] hover:bg-[#eef5f0] text-[#9b9288] hover:text-[#4a7c5e] flex items-center justify-center transition"
+                      title="Edit"
+                    >
+                      <Edit size={14} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(course)}
+                      className="w-7 h-7 rounded-lg bg-[#f5f0eb] hover:bg-[#fef5e8] text-[#9b9288] hover:text-[#d4a34b] flex items-center justify-center transition"
+                      title="Delete"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+
+                  <div className="p-5 border-b border-[#e8e2d9] bg-linear-to-r from-[#faf8f5] to-white">
+                    <div className="flex items-start justify-between mb-3 pr-24">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <span
+                            className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
+                              course.level === 'Diploma'
+                                ? 'bg-linear-to-r from-[#eef5f0] to-[#e0ebe5] text-[#4a7c5e]'
+                                : 'bg-linear-to-r from-[#e8f0fe] to-[#d4e2f7] text-[#4a6a9b]'
+                            }`}
+                          >
+                            {course.level}
+                          </span>
+                          <span className="text-[10px] text-[#b0a89e]">{course.department}</span>
+                          <span
+                            className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                              course.status === 'Active'
+                                ? 'bg-[#eef5f0] text-[#4a7c5e]'
+                                : 'bg-[#fef5e8] text-[#d4a34b]'
+                            }`}
+                          >
+                            {course.status}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-semibold text-[#2c2824] group-hover:text-[#4a6a9b] transition-colors">
+                          {course.title}
+                        </h3>
+                        <p className="text-[10px] font-mono text-[#9b9288] mt-1">{course.code}</p>
+                      </div>
+                      <ChevronRight size={18} className="text-[#c0b8ae] group-hover:text-[#4a6a9b] transition-colors shrink-0" />
+                    </div>
+                    <p className="text-sm text-[#6b645a] leading-relaxed line-clamp-2">{course.description}</p>
+                  </div>
+
+                  <div className="p-5">
+                    <div className="mb-4">
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-[#6b645a]">Enrolment fill</span>
+                        <span className="font-medium text-[#2c2824]">{course.progress}%</span>
+                      </div>
+                      <div className="h-2 bg-[#e8e2d9] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-linear-to-r from-[#4a6a9b] to-[#6b8cb5] rounded-full transition-all duration-500"
+                          style={{ width: `${course.progress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-4 text-xs text-[#6b645a]">
+                      <span className="flex items-center gap-1">
+                        <Users size={14} className="text-[#b0a89e]" />
+                        {course.students} students
+                      </span>
+                      <span>{course.units} units</span>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => openEditModal(course)}
+                        className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#e0d9d0] text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#2c2824] transition-all duration-200"
+                      >
+                        Edit Course
+                      </button>
+                      <button
+                        onClick={() => openViewModal(course)}
+                        className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm transition-all duration-200"
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
-            <button className="text-xs text-[#6b645a] hover:text-[#2c2824] transition flex items-center gap-1">
-              <Download size={12} />
-              Export List
-            </button>
-          </div>
+          ) : (
+            <EmptyState
+              icon={
+                activeTab === 'pending' ? (
+                  <Clock size={28} />
+                ) : activeTab === 'active' ? (
+                  <Check size={28} />
+                ) : (
+                  <BookOpen size={28} />
+                )
+              }
+              title={
+                searchTerm
+                  ? 'No courses match your search'
+                  : activeTab === 'pending'
+                  ? 'No pending courses'
+                  : activeTab === 'active'
+                  ? 'No active courses'
+                  : 'No courses in catalog'
+              }
+              desc={
+                searchTerm
+                  ? 'Try a different search term or clear the filter.'
+                  : 'Add a new programme to build your course catalog.'
+              }
+              action={
+                searchTerm
+                  ? { label: 'Clear search', onClick: () => setSearchTerm('') }
+                  : { label: 'Add Course', onClick: openAddModal }
+              }
+            />
+          )}
 
-          {/* Courses Table */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-[#e8e2d9] overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-[#faf8f5] border-b border-[#e8e2d9]">
-                  <tr>
-                    <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Course</th>
-                    <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Code</th>
-                    <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Department</th>
-                    <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Students</th>
-                    <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Units</th>
-                    <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Status</th>
-                    <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Level</th>
-                    <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredCourses.map((course, idx) => (
-                    <tr key={idx} className="border-b border-[#e8e2d9] hover:bg-[#faf8f5] transition-colors group">
-                      <td className="px-5 py-3">
-                        <div>
-                          <p className="text-sm font-medium text-[#2c2824]">{course.title}</p>
-                          <p className="text-[10px] text-[#9b9288] mt-0.5">Enrolled: {course.enrolled}</p>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3">
-                        <code className="text-xs font-mono text-[#6b645a]">{course.code}</code>
-                      </td>
-                      <td className="px-5 py-3 text-sm text-[#6b645a]">{course.department}</td>
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-[#2c2824]">{course.students}</span>
-                          <div className="w-16 h-1.5 bg-[#e8e2d9] rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-linear-to-r from-[#4a6a9b] to-[#6b8cb5] rounded-full"
-                              style={{ width: `${course.progress}%` }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3 text-sm text-[#6b645a]">{course.units}</td>
-                      <td className="px-5 py-3">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${getStatusColor(course.status)}`}>
-                          {course.status}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${getLevelColor(course.level)}`}>
-                          {course.level}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => navigate(`/admin/courses/${course.id}`)}
-                            className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#4a6a9b] hover:bg-[#e8f0fe] transition"
-                            title="View Course"
-                          >
-                            <Eye size={14} />
-                          </button>
-                          <button 
-                            onClick={() => navigate(`/admin/courses/${course.id}/edit`)}
-                            className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#4a7c5e] hover:bg-[#eef5f0] transition"
-                            title="Edit Course"
-                          >
-                            <Edit size={14} />
-                          </button>
-                          <button 
-                            onClick={() => handleDeleteClick(course)}
-                            className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#d4a34b] hover:bg-[#fef5e8] transition"
-                            title="Delete Course"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      {/* Add / Edit modal */}
+      {showFormModal && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#e8e2d9]">
+              <h3 className="text-lg font-semibold text-[#2c2824]">
+                {formMode === 'add' ? 'Add Course' : 'Edit Course'}
+              </h3>
+              <button
+                onClick={() => setShowFormModal(false)}
+                className="p-1.5 rounded-lg text-[#9b9288] hover:bg-[#f0ece6] hover:text-[#2c2824] transition"
+              >
+                <X size={18} />
+              </button>
             </div>
-
-            {/* Empty State */}
-            {filteredCourses.length === 0 && (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <BookOpen size={28} className="text-[#4a6a9b]" />
-                </div>
-                <h3 className="text-lg font-medium text-[#2c2824] mb-2">No courses found</h3>
-                <p className="text-sm text-[#9b9288] mb-6">Try adjusting your search or filter criteria.</p>
-                <button 
-                  onClick={() => {
-                    setSearchTerm('');
-                    setFilterStatus('all');
-                  }}
-                  className="px-5 py-2.5 bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white rounded-lg text-sm font-medium hover:from-[#3d5a86] hover:to-[#2c4a7a] transition shadow-sm"
-                >
-                  Clear Filters
-                </button>
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Title</label>
+                <input
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-[#e0d9d0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20"
+                  placeholder="Course title"
+                />
               </div>
-            )}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Code</label>
+                  <input
+                    value={formData.code}
+                    onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                    className="w-full px-3 py-2 border border-[#e0d9d0] rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20"
+                    placeholder="CS-AI101"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Department</label>
+                  <input
+                    value={formData.department}
+                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                    className="w-full px-3 py-2 border border-[#e0d9d0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20"
+                    placeholder="Technology"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Description</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-[#e0d9d0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20 resize-none"
+                  placeholder="Brief course description"
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Level</label>
+                  <select
+                    value={formData.level}
+                    onChange={(e) => setFormData({ ...formData, level: e.target.value as AdminCourse['level'] })}
+                    className="w-full px-3 py-2 border border-[#e0d9d0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20"
+                  >
+                    <option value="Certificate">Certificate</option>
+                    <option value="Diploma">Diploma</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Units</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={formData.units}
+                    onChange={(e) => setFormData({ ...formData, units: Number(e.target.value) || 1 })}
+                    className="w-full px-3 py-2 border border-[#e0d9d0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Status</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as AdminCourse['status'] })}
+                    className="w-full px-3 py-2 border border-[#e0d9d0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3 px-6 py-4 border-t border-[#e8e2d9] bg-[#faf8f5]">
+              <button
+                onClick={() => setShowFormModal(false)}
+                className="flex-1 px-4 py-2.5 rounded-lg border border-[#e0d9d0] text-[#6b645a] hover:bg-white transition text-sm font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveCourse}
+                className="flex-1 px-4 py-2.5 rounded-lg bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] transition text-sm font-medium"
+              >
+                {formMode === 'add' ? 'Add Course' : 'Save Changes'}
+              </button>
+            </div>
           </div>
         </div>
-      </main>
+      )}
 
-      {/* Delete Confirmation Modal */}
+      {/* View modal */}
+      {showViewModal && selectedCourse && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#e8e2d9]">
+              <h3 className="text-lg font-semibold text-[#2c2824]">Course Details</h3>
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="p-1.5 rounded-lg text-[#9b9288] hover:bg-[#f0ece6] transition"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-6 space-y-3 text-sm">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1">Title</p>
+                <p className="font-medium text-[#2c2824]">{selectedCourse.title}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1">Code</p>
+                  <p className="font-mono text-[#6b645a]">{selectedCourse.code}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1">Department</p>
+                  <p className="text-[#6b645a]">{selectedCourse.department}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1">Description</p>
+                <p className="text-[#6b645a] leading-relaxed">{selectedCourse.description}</p>
+              </div>
+              <div className="flex gap-4 text-[#6b645a]">
+                <span>{selectedCourse.level}</span>
+                <span>·</span>
+                <span>{selectedCourse.status}</span>
+                <span>·</span>
+                <span>{selectedCourse.units} units</span>
+                <span>·</span>
+                <span>{selectedCourse.students} students</span>
+              </div>
+            </div>
+            <div className="flex gap-3 px-6 py-4 border-t border-[#e8e2d9]">
+              <button
+                onClick={() => {
+                  setShowViewModal(false);
+                  openEditModal(selectedCourse);
+                }}
+                className="flex-1 px-4 py-2.5 rounded-lg border border-[#e0d9d0] text-[#6b645a] hover:bg-[#faf8f5] text-sm font-medium transition"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="flex-1 px-4 py-2.5 rounded-lg bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white text-sm font-medium transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 overflow-hidden animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-[#fef5e8] flex items-center justify-center">
@@ -462,8 +568,9 @@ const ManageCourses = () => {
                 <h3 className="text-lg font-semibold text-[#2c2824]">Delete Course</h3>
               </div>
               <p className="text-sm text-[#6b645a] mb-6">
-                Are you sure you want to delete <span className="font-medium text-[#2c2824]">"{selectedCourse?.title}"</span>? 
-                This action cannot be undone and will remove all associated data.
+                Are you sure you want to delete{' '}
+                <span className="font-medium text-[#2c2824]">&quot;{selectedCourse?.title}&quot;</span>?
+                This action cannot be undone.
               </p>
               <div className="flex gap-3">
                 <button
@@ -483,7 +590,7 @@ const ManageCourses = () => {
           </div>
         </div>
       )}
-    </div>
+    </AdminLayout>
   );
 };
 

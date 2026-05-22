@@ -39,32 +39,47 @@ export default function TrilevelLogin() {
 
   const handleLogin = () => {
     if (userType === "student") {
-      navigate("/dashboard");
+      navigate("/student/dashboard");
     } else {
       navigate("/admin/dashboard");
     }
   };
 
+  const highlights = [
+    { label: "Programmes", value: "15+" },
+    { label: "Formats", value: "Cert & Diploma" },
+    { label: "Delivery", value: "Blended" },
+  ];
+
   return (
-    <div className="min-h-screen flex bg-linear-to-br from-[#f8f6f2] to-[#f0ede8] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden">
-      {/* Animated Background Orbs */}
+    <div className="min-h-screen flex flex-row bg-linear-to-br from-[#f8f6f2] to-[#f0ede8] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden">
+      {/* Mesh + grid backdrop */}
+      <div className="absolute inset-0 pointer-events-none bg-linear-to-br from-[#f8f6f2] via-[#f5f2ec] to-[#f0ede8]" />
+      <div
+        className="absolute inset-0 opacity-[0.4] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(74,106,155,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(74,106,155,0.04) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-96 h-96 bg-[#4a6a9b]/5 rounded-full blur-3xl -top-48 -left-48 animate-pulse" style={{ animationDuration: "8s" }} />
-        <div className="absolute w-96 h-96 bg-[#2F2FE4]/5 rounded-full blur-3xl top-1/2 left-1/4 animate-pulse" style={{ animationDuration: "10s", animationDelay: "2s" }} />
-        <div className="absolute w-80 h-80 bg-[#b70c0c]/3 rounded-full blur-3xl bottom-0 right-1/4 animate-pulse" style={{ animationDuration: "12s", animationDelay: "4s" }} />
+        <div className="absolute w-[32rem] h-[32rem] bg-[#4a6a9b]/8 rounded-full blur-[100px] -top-40 -left-32" />
+        <div className="absolute w-[28rem] h-[28rem] bg-[#2F2FE4]/6 rounded-full blur-[90px] top-1/3 left-[20%]" />
+        <div className="absolute w-72 h-72 bg-[#b70c0c]/4 rounded-full blur-[80px] bottom-0 right-[30%]" />
       </div>
 
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(16)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-[#4a6a9b]/20 rounded-full"
+            className="absolute w-1.5 h-1.5 bg-[#4a6a9b]/15 rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${5 + Math.random() * 10}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 5}s`,
+              left: `${(i * 17) % 100}%`,
+              top: `${(i * 23) % 100}%`,
+              animation: `portal-float ${6 + (i % 5)}s ease-in-out infinite`,
+              animationDelay: `${i * 0.4}s`,
             }}
           />
         ))}
@@ -100,7 +115,7 @@ export default function TrilevelLogin() {
       `}</style>
 
       {/* ── Left Panel - Hero Section ── */}
-      <div className="flex-1 flex flex-col justify-center px-16 py-12 relative overflow-hidden">
+      <div className="flex-1 flex flex-col justify-center px-10 lg:px-16 py-12 relative overflow-hidden z-10">
         {/* Enhanced background pattern */}
         <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
           <div className="absolute inset-0" style={{
@@ -157,34 +172,45 @@ export default function TrilevelLogin() {
           Enrol in Certificate and Diploma programmes — AI, Business, Theology, Hospitality, Social Work, and Computer Studies — delivered on a modern academic platform.
         </p>
 
-        {/* Tags - with staggered hover animations */}
-        <div className="flex flex-wrap gap-2 mb-10 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-          {tags.map((t, i) => (
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-8 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+          {tags.map((t) => (
             <span
               key={t}
-              className="px-3 py-1 rounded-full border border-[#C8C2B8] text-[12px] text-[#555] bg-white/40 backdrop-blur-sm hover:bg-white/60 hover:border-[#4a6a9b] hover:text-[#4a6a9b] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default"
-              style={{ 
-                fontFamily: "Georgia, serif",
-                animationDelay: `${0.5 + i * 0.1}s`
-              }}
+              className="px-3 py-1.5 rounded-full border border-[#e8e2d9]/80 text-[12px] text-[#555] bg-white/50 backdrop-blur-md hover:bg-white/80 hover:border-[#4a6a9b]/40 hover:text-[#4a6a9b] transition-all duration-300"
+              style={{ fontFamily: "Georgia, serif" }}
             >
               {t}
             </span>
           ))}
         </div>
-      </div>
 
-      {/* ── Right Panel - Login Form ── */}
-      <div className="w-120 shrink-0 flex flex-col items-center justify-center px-8 py-12 relative bg-white/70 backdrop-blur-md border-l border-[#e8e2d9]/50 shadow-2xl">
-        {/* Enhanced dot pattern */}
-        <div className="absolute inset-0 opacity-[0.015] pointer-events-none">
-          <div className="absolute inset-0" style={{
-            backgroundImage: "radial-gradient(circle, #4a6a9b 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-          }} />
+        {/* Bento highlights */}
+        <div className="grid grid-cols-3 gap-3 max-w-lg animate-fade-in-up" style={{ animationDelay: "0.55s" }}>
+          {highlights.map((h) => (
+            <div
+              key={h.label}
+              className="group p-4 rounded-2xl border border-white/60 bg-white/40 backdrop-blur-md hover:bg-white/60 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <p className="text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1">{h.label}</p>
+              <p className="text-lg font-semibold text-[#2c2824] group-hover:text-[#4a6a9b] transition-colors">{h.value}</p>
+            </div>
+          ))}
         </div>
 
-        {/* Subtle gradient overlay */}
+      </div>
+
+      {/* ── Right Panel - Login Form (full-height column) ── */}
+      <div className="w-120 shrink-0 flex flex-col items-center justify-center px-8 py-12 relative z-10 min-h-screen bg-white/70 backdrop-blur-md border-l border-[#e8e2d9]/50 shadow-2xl">
+        <div className="absolute inset-0 opacity-[0.015] pointer-events-none">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: "radial-gradient(circle, #4a6a9b 1px, transparent 1px)",
+              backgroundSize: "24px 24px",
+            }}
+          />
+        </div>
         <div className="absolute inset-0 bg-linear-to-br from-white/50 via-transparent to-[#4a6a9b]/5 pointer-events-none" />
 
         <div className="relative z-10 w-full max-w-sm">
@@ -309,7 +335,7 @@ export default function TrilevelLogin() {
           {/* Login Button - enhanced with shimmer */}
           <button
             onClick={handleLogin}
-            className="w-full bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] hover:from-[#3d5a86] hover:to-[#2c4a7a] text-white text-sm font-medium py-2.5 rounded-lg transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2 mb-3 relative overflow-hidden group animate-fade-in-up"
+            className="w-full bg-linear-to-r from-[#2F2FE4] to-[#3d5a86] hover:from-[#3d5a86] hover:to-[#2c4a7a] text-white text-sm font-medium py-2.5 rounded-lg transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2 mb-3 relative overflow-hidden group animate-fade-in-up"
             style={{ animationDelay: "0.5s" }}
           >
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
@@ -335,20 +361,23 @@ export default function TrilevelLogin() {
           </div>
 
           {/* Create Account Button - enhanced */}
-          <button className="w-full border border-[#e0d9d0] bg-white hover:bg-[#faf8f5] text-[#2c2824] text-sm font-medium py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:border-[#4a6a9b] hover:-translate-y-0.5 relative overflow-hidden group animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
+          <button
+            type="button"
+            onClick={() => navigate("/register")}
+            className="w-full border border-[#e0d9d0] bg-white hover:bg-[#faf8f5] text-[#2c2824] text-sm font-medium py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:border-[#4a6a9b] hover:-translate-y-0.5 relative overflow-hidden group animate-fade-in-up"
+            style={{ animationDelay: "0.8s" }}
+          >
             <UserPlus size={16} className="relative z-10 group-hover:scale-110 transition-transform duration-300" />
             <span className="relative z-10">Create an account</span>
             <div className="absolute inset-0 bg-linear-to-r from-[#4a6a9b]/0 via-[#4a6a9b]/5 to-[#4a6a9b]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
           </button>
 
-          {/* Features List - enhanced with hover effects */}
           <div className="mt-8 pt-6 border-t border-[#e8e2d9] animate-fade-in-up" style={{ animationDelay: "0.9s" }}>
             <div className="space-y-2">
               {features.map((feature, i) => (
-                <div 
+                <div
                   key={i}
                   className="flex items-center gap-2 text-[11px] text-[#6b645a] hover:text-[#2c2824] transition-all duration-300 cursor-default group"
-                  style={{ animationDelay: `${1 + i * 0.1}s` }}
                 >
                   <ChevronRight size={12} className="text-[#4a6a9b] group-hover:translate-x-1 transition-transform duration-300" />
                   <span className="group-hover:translate-x-0.5 transition-transform duration-300">{feature}</span>

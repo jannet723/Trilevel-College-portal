@@ -28,9 +28,9 @@ const Sidebar: React.FC<SidebarProps> = ({ role, isCollapsed, onToggleCollapse, 
 
   const adminItems: SidebarItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊', path: '/admin/dashboard' },
-    { id: 'students', label: 'Students', icon: '👥', path: '/admin/manage-students', badge: 1240 },
+    { id: 'students', label: 'Students', icon: '👥', path: '/admin/manage-students' },
     { id: 'courses', label: 'Courses', icon: '📚', path: '/admin/manage-courses' },
-    { id: 'approvals', label: 'Approvals', icon: '✓', path: '/admin/approvals', badge: 12 },
+    { id: 'approvals', label: 'Approvals', icon: '✓', path: '/admin/approvals' },
     { id: 'uploads', label: 'Upload Materials', icon: '⬆️', path: '/admin/upload-materials' },
   ];
 
@@ -43,11 +43,9 @@ const Sidebar: React.FC<SidebarProps> = ({ role, isCollapsed, onToggleCollapse, 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="s-logo">
-        <div className="s-logo-mark">
-          <img src="/logo.png" alt="Trilevel Logo" className="w-10 h-10 object-contain" />
-        </div>
+        <img src="/logo.png" alt="Trilevel Logo" className="w-15 h-15 object-contain shrink-0" />
         <div className="s-logo-text">
-          <strong>Trilevel</strong>
+          <strong>Trilevel College</strong>
           <span>{role === 'student' ? 'Student Portal' : 'Admin Portal'}</span>
         </div>
       </div>

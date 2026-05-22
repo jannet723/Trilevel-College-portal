@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, Menu } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import StudentLayout from '../../layouts/StudentLayout';
+import { useEnrollment } from '../../context/EnrollmentContext';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Course {
@@ -85,11 +86,20 @@ const announcementIcon = (type: Announcement['iconType'], color: string) => {
 // ── Main component ─────────────────────────────────────────────────────────
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isSidebarCollapsed] = useState(false);
+  const { enrolledCourses, unenroll } = useEnrollment();
 
-  // ── State ──────────────────────────────────────────────────────────────
-  const [courses, setCourses] = useState<Course[]>([]);
+  const courses: Course[] = enrolledCourses.map((c) => ({
+    id: c.id,
+    title: c.department,
+    subtitle: c.title,
+    desc: c.description,
+    badge: c.type,
+    badgeColor:
+      c.type === 'Diploma'
+        ? 'bg-[#eef5f0] text-[#4a7c5e]'
+        : 'bg-[#e8f0fe] text-[#4a6a9b]',
+    progress: c.progress,
+  }));
   const [studyHours] = useState(0);
   const [assignmentsDone] = useState(0);
   const [avgScore] = useState<number | null>(null);
@@ -98,7 +108,7 @@ const Dashboard: React.FC = () => {
 
   // ── Demo actions ───────────────────────────────────────────────────────
 
-  const removeCourse = (id: number) => setCourses(prev => prev.filter(c => c.id !== id));
+  const removeCourse = (id: number) => unenroll(id);
 
   const addAnnouncement = () => {
     const pool = ANNOUNCEMENT_POOL.filter(a => !announcements.find(ea => ea.text === a.text));
@@ -142,68 +152,9 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  // ── Render ─────────────────────────────────────────────────────────────
   return (
-    <div className="flex bg-[#f8f6f2] h-screen overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]" style={{ fontFamily: "Georgia, serif" }}>
-
-      {/* SIDEBAR */}
-      <aside className="flex flex-col bg-white/40 shadow-sm backdrop-blur-xl border-[#e8e2d9] border-r w-64 text-[#2c2824] shrink-0">
-        <div className="p-6 border-[#e8e2d9] border-b">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Trilevel Logo" className="w-15 h-15 object-contain" />
-            <div>
-              <div className="bg-clip-text bg-linear-to-r from-[#2c2824] to-[#5a5248] font-semibold text-transparent text-xl tracking-tight">Trilevel College</div>
-              <div className="text-[#9b9288] text-[10px] uppercase tracking-[0.2em]">Student Portal</div>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4">
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Main' : '≡'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Menu size={18} />, label: "Dashboard", path: "/student/dashboard" },
-              { icon: <BookOpen size={18} />, label: "My Courses", path: "/student/my-courses" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button onClick={() => navigate(item.path)} className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 ${location.pathname === item.path ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'}`}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{item.icon}</svg>
-                  <span>{item.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-8 mb-3 px-3 text-[#b0a89e] text-[10px] uppercase tracking-[0.2em]">Account</div>
-          <ul className="space-y-1.5">
-            <li>
-              <button onClick={() => navigate("/student/profile")} className="flex items-center gap-3 hover:bg-[#eae5dd] px-4 py-2.5 rounded-xl w-full text-[#6b645a] hover:text-[#2c2824] transition-all duration-200">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-                </svg>
-                <span>Profile</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="space-y-2 p-5 border-[#e8e2d9] border-t">
-          <button className="flex items-center gap-2 text-[#9b9288] hover:text-[#2c2824] text-xs transition">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m15 18-6-6 6-6" /></svg>
-            Collapse sidebar
-          </button>
-          <button className="flex items-center gap-2 text-[#9b9288] hover:text-[#2c2824] text-xs transition">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
-            Sign out
-          </button>
-        </div>
-      </aside>
-
-      {/* MAIN CONTENT */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="space-y-8 p-8">
+    <StudentLayout title="Dashboard" subtitle="Your learning overview" showBack={false}>
+        <div className="space-y-8">
 
           {/* Hero */}
           <div className="relative bg-linear-to-br from-[#2c2824] to-[#1f1d1a] shadow-md p-8 rounded-2xl overflow-hidden">
@@ -216,7 +167,7 @@ const Dashboard: React.FC = () => {
               <p className="mt-4 max-w-md text-gray-400 text-sm leading-6">Explore certificates, diplomas, and skill paths crafted for your success.</p>
               <div className="flex gap-3 mt-6">
                 <button onClick={() => navigate('/student/courses')} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-5 py-2 rounded-xl font-medium text-white text-sm transition">Browse Courses →</button>
-                <button className="bg-white/5 hover:bg-white/10 px-5 py-2 border border-white/15 rounded-xl font-medium text-white/80 text-sm transition">Complete Profile</button>
+                <button onClick={() => navigate('/student/profile')} className="bg-white/5 hover:bg-white/10 px-5 py-2 border border-white/15 rounded-xl font-medium text-white/80 text-sm transition">Complete Profile</button>
               </div>
             </div>
             <div className="right-4 bottom-0 absolute opacity-5">
@@ -267,7 +218,7 @@ const Dashboard: React.FC = () => {
                       <div className={`rounded-lg px-2.5 py-1 text-[10px] font-semibold ${course.badgeColor} tracking-wide uppercase`}>{course.badge}</div>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c0b8ae"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
                     </div>
-                    <h3 className="mb-1 font-semibold text-[#2c2824] text-lg">{course.title}</h3>
+                    <h3 className="mb-1 font-semibold text-[#2c2824] text-lg">{course.subtitle}</h3>
                     <p className="text-[#9b9288] text-xs leading-relaxed">{course.desc}</p>
                     <div className="mt-4">
                       <div className="flex justify-between mb-1.5 text-[#b0a89e] text-[11px]"><span>Progress</span><span>{course.progress}%</span></div>
@@ -367,8 +318,7 @@ const Dashboard: React.FC = () => {
           </div>
 
         </div>
-      </main>
-    </div>
+    </StudentLayout>
   );
 };
 

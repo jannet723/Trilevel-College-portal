@@ -572,9 +572,26 @@
 }
 
 .s-logo-text {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-h);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    background: linear-gradient(to right, #2c2824, #5a5248);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  span {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9b9288;
+  }
 }
 
 .nav-items {

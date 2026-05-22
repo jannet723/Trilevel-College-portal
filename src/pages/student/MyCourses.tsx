@@ -1,15 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  BookOpen,
-  Search,
-  User,
-  Menu,
-  ChevronRight,
-  Award,
-  Clock,
-  Star,
-} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { BookOpen, ChevronRight, Award, Clock, Star } from 'lucide-react';
+import StudentLayout from '../../layouts/StudentLayout';
+import { useEnrollment } from '../../context/EnrollmentContext';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Course {
@@ -79,14 +72,22 @@ const EmptyState: React.FC<{
 // ── Main component ─────────────────────────────────────────────────────────
 const MyCourses = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const { enrolledCourses, unenroll } = useEnrollment();
   const [activeTab, setActiveTab] = useState('all');
-  const [courses, setCourses] = useState<Course[]>([]);
 
-  // ── Demo actions ─────────────────────────────────────────────────────────
+  const courses: Course[] = enrolledCourses.map((c) => ({
+    id: c.id,
+    title: c.title,
+    department: c.department,
+    description: c.description,
+    progress: c.progress,
+    type: c.type,
+    units: c.units,
+    currentUnit: c.currentUnit,
+    status: c.status,
+  }));
 
-  const removeCourse = (id: number) => setCourses(prev => prev.filter(c => c.id !== id));
+  const removeCourse = (id: number) => unenroll(id);
 
   // ── Derived ──────────────────────────────────────────────────────────────
   const filteredCourses = courses.filter(course => {
@@ -99,105 +100,8 @@ const MyCourses = () => {
     return courses.filter(c => c.status === status).length;
   };
 
-  const handleSignOut = () => navigate('/');
-
-  // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]" style={{ fontFamily: "Georgia, serif" }}>
-
-      {/* Sidebar */}
-      <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-white/40 backdrop-blur-xl text-[#2c2824] flex flex-col shrink-0 border-r border-[#e8e2d9] shadow-sm transition-all duration-300`}>
-        <div className="p-6 border-b border-[#e8e2d9]">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Trilevel Logo" className="w-15 h-15 object-contain" />
-            {!isSidebarCollapsed && (
-              <div>
-                <div className="font-semibold text-xl tracking-tight bg-linear-to-r from-[#2c2824] to-[#5a5248] bg-clip-text text-transparent">Trilevel College</div>
-                <div className="text-[10px] tracking-[0.2em] text-[#9b9288] uppercase">Student Portal</div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4">
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Main' : '≡'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Menu size={18} />, label: "Dashboard", path: "/student/dashboard" },
-              { icon: <BookOpen size={18} />, label: "My Courses", path: "/student/my-courses" },
-              { icon: <Search size={18} />, label: "Courses", path: "/student/courses" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    location.pathname === item.path
-                      ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium'
-                      : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
-                  }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 mt-8 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Account' : '⚙️'}
-          </div>
-          <ul className="space-y-1.5">
-            <li>
-              <button
-                onClick={() => navigate("/student/profile")}
-                className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                  location.pathname === "/student/profile"
-                    ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium'
-                    : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
-                }`}
-              >
-                <User size={18} />
-                {!isSidebarCollapsed && <span>Profile</span>}
-              </button>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="p-5 border-t border-[#e8e2d9] space-y-2">
-          <button
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="text-[#9b9288] text-xs hover:text-[#2c2824] transition flex items-center gap-2 w-full"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d={isSidebarCollapsed ? "m9 18 6-6-6-6" : "m15 18-6-6 6-6"} />
-            </svg>
-            {!isSidebarCollapsed && "Collapse sidebar"}
-          </button>
-          <button
-            onClick={handleSignOut}
-            className="text-[#9b9288] text-xs hover:text-[#2c2824] transition flex items-center gap-2 w-full"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            {!isSidebarCollapsed && "Sign out"}
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-8">
-
-          {/* Header */}
-          <div className="mb-6">
-            <p className="text-xs text-[#9b9288] tracking-wide">Manage your enrollment</p>
-            <h2 className="text-xl font-semibold text-[#2c2824] tracking-tight mt-1">My Courses</h2>
-          </div>
+    <StudentLayout title="My Courses" subtitle="Programmes you are enrolled in" backTo="/student/dashboard">
 
           {/* Stats Overview */}
           <div className="grid grid-cols-3 gap-4 mb-8">
@@ -377,9 +281,7 @@ const MyCourses = () => {
             />
           )}
 
-        </div>
-      </main>
-    </div>
+    </StudentLayout>
   );
 };
 

@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  BookOpen,
   Upload,
   FileText,
   Video,
@@ -11,17 +9,23 @@ import {
   Trash2,
   Download,
   Eye,
-  Menu,
-  Users,
-  Bell,
-  User,
   Settings,
 } from 'lucide-react';
+import AdminEmptyState from '../../components/AdminEmptyState';
+import AdminLayout from '../../layouts/AdminLayout';
+
+interface RecentUpload {
+  id: number;
+  file: string;
+  course: string;
+  size: string;
+  date: string;
+  type: string;
+  uploadedBy: string;
+  status: string;
+}
 
 const UploadMaterials = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [course, setCourse] = useState('');
   const [unit, setUnit] = useState('');
   const [type, setType] = useState('');
@@ -30,52 +34,7 @@ const UploadMaterials = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
 
-  const recentUploads = [
-    { 
-      id: 1,
-      file: 'Unit7_DeepLearning.pdf', 
-      course: 'Intro to AI', 
-      size: '2.4 MB', 
-      date: 'Today',
-      type: 'PDF',
-      uploadedBy: 'Dr. Sarah Mbeki',
-      status: 'Published',
-    },
-    { 
-      id: 2,
-      file: 'Lecture8_Marketing.mp4', 
-      course: 'Business Admin', 
-      size: '84 MB', 
-      date: 'Yesterday',
-      type: 'Video',
-      uploadedBy: 'Prof. James Otieno',
-      status: 'Processing',
-    },
-    { 
-      id: 3,
-      file: 'Unit4_Networks.pptx', 
-      course: 'Computer Studies', 
-      size: '6.1 MB', 
-      date: 'May 16',
-      type: 'Presentation',
-      uploadedBy: 'Dr. Alice Wanjiku',
-      status: 'Published',
-    },
-    { 
-      id: 4,
-      file: 'Theology_Unit3_Notes.pdf', 
-      course: 'Theology', 
-      size: '1.2 MB', 
-      date: 'May 15',
-      type: 'PDF',
-      uploadedBy: 'Rev. Peter Maina',
-      status: 'Published',
-    },
-  ];
-
-  const handleSignOut = () => {
-    navigate('/');
-  };
+  const [recentUploads] = useState<RecentUpload[]>([]);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -138,117 +97,11 @@ const UploadMaterials = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]" style={{ fontFamily: "Georgia, serif" }}>
-      {/* Sidebar - same refined style */}
-      <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-white/40 backdrop-blur-xl text-[#2c2824] flex flex-col shrink-0 border-r border-[#e8e2d9] shadow-sm transition-all duration-300`}>
-        {/* Logo area */}
-        <div className={`p-6 border-b border-[#e8e2d9] ${isSidebarCollapsed ? 'px-4' : ''}`}>
-          <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
-            <div className="w-10 h-10 bg-linear-to-br from-[#4a6a9b] to-[#2c4a7a] rounded-xl flex items-center justify-center shadow-sm shrink-0">
-              <img src="/logo.png" alt="Trilevel Logo" className="w-10 h-10 object-contain" />
-            </div>
-            {!isSidebarCollapsed && (
-              <div>
-                <div className="font-semibold text-xl tracking-tight bg-linear-to-r from-[#2c2824] to-[#5a5248] bg-clip-text text-transparent">Inleed</div>
-                <div className="text-[10px] tracking-[0.2em] text-[#9b9288] uppercase">Admin Portal</div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Main' : '≡'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Menu size={18} />, label: "Dashboard", path: "/admin/dashboard" },
-              { icon: <Users size={18} />, label: "Students", path: "/admin/manage-students" },
-              { icon: <BookOpen size={18} />, label: "Courses", path: "/admin/manage-courses" },
-              { icon: <Upload size={18} />, label: "Approvals", path: "/admin/approvals" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    location.pathname === item.path
-                      ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
-                      : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
-                  }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className={`text-[10px] tracking-[0.2em] text-[#b0a89e] uppercase mb-3 mt-8 ${isSidebarCollapsed ? 'text-center px-1' : 'px-3'}`}>
-            {!isSidebarCollapsed ? 'Account' : '⚙️'}
-          </div>
-          <ul className="space-y-1.5">
-            {[
-              { icon: <Bell size={18} />, label: "Notifications", path: "/admin/notifications" },
-              { icon: <User size={18} />, label: "Profile", path: "/admin/profile" },
-            ].map((item, idx) => (
-              <li key={idx}>
-                <button
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} px-4 py-2.5 rounded-xl transition-all duration-200 ${
-                    location.pathname === item.path
-                      ? 'bg-[#4a6a9b]/10 text-[#2c4a7a] font-medium' 
-                      : 'text-[#6b645a] hover:bg-[#eae5dd] hover:text-[#2c2824]'
-                  }`}
-                >
-                  {item.icon}
-                  {!isSidebarCollapsed && <span>{item.label}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Footer */}
-        <div className="p-5 border-t border-[#e8e2d9] space-y-2">
-          <button 
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="text-[#9b9288] text-xs hover:text-[#2c2824] transition flex items-center gap-2 w-full"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d={isSidebarCollapsed ? "m9 18 6-6-6-6" : "m15 18-6-6 6-6"} />
-            </svg>
-            {!isSidebarCollapsed && "Collapse sidebar"}
-          </button>
-          <button 
-            onClick={handleSignOut}
-            className="text-[#9b9288] text-xs hover:text-[#2c2824] transition flex items-center gap-2 w-full"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            {!isSidebarCollapsed && "Sign out"}
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-       
-
-        {/* Upload Content */}
-        <div className="p-8">
-          {/* Header Section */}
-          <div className="mb-6">
-            <p className="text-xs text-[#9b9288] tracking-wide">Add course materials</p>
-            <h2 className="text-xl font-semibold text-[#2c2824] tracking-tight mt-1">
-              Upload Resources
-            </h2>
-          </div>
-
-          {/* Two Column Layout */}
+    <AdminLayout
+      title="Upload Materials"
+      subtitle="Add course resources, documents, and media for students"
+      backTo="/admin/dashboard"
+    >
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Left Column - Upload Area & Recent Uploads */}
             <div className="lg:col-span-2 space-y-6">
@@ -323,51 +176,61 @@ const UploadMaterials = () => {
                   </div>
                   <button className="text-xs text-[#4a6a9b] hover:underline">View all</button>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-[#faf8f5] border-b border-[#e8e2d9]">
-                      <tr>
-                        <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">File</th>
-                        <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Course</th>
-                        <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Size</th>
-                        <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Status</th>
-                        <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentUploads.map((upload) => (
-                        <tr key={upload.id} className="border-b border-[#e8e2d9] hover:bg-[#faf8f5] transition-colors">
-                          <td className="px-5 py-3">
-                            <div className="flex items-center gap-2">
-                              {getFileIcon(upload.type)}
-                              <span className="text-sm font-medium text-[#2c2824]">{upload.file}</span>
-                            </div>
-                          </td>
-                          <td className="px-5 py-3 text-sm text-[#6b645a]">{upload.course}</td>
-                          <td className="px-5 py-3 text-sm text-[#6b645a]">{upload.size}</td>
-                          <td className="px-5 py-3">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${getStatusColor(upload.status)}`}>
-                              {upload.status}
-                            </span>
-                          </td>
-                          <td className="px-5 py-3">
-                            <div className="flex items-center gap-2">
-                              <button className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#4a6a9b] hover:bg-[#e8f0fe] transition" title="Preview">
-                                <Eye size={14} />
-                              </button>
-                              <button className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#4a7c5e] hover:bg-[#eef5f0] transition" title="Download">
-                                <Download size={14} />
-                              </button>
-                              <button className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#d4a34b] hover:bg-[#fef5e8] transition" title="Delete">
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          </td>
+                {recentUploads.length === 0 ? (
+                  <div className="p-6">
+                    <AdminEmptyState
+                      icon={<Upload size={28} />}
+                      title="No materials uploaded yet"
+                      description="Upload lecture notes, videos, and assignments using the form. Published files will appear in this list."
+                    />
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-[#faf8f5] border-b border-[#e8e2d9]">
+                        <tr>
+                          <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">File</th>
+                          <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Course</th>
+                          <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Size</th>
+                          <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Status</th>
+                          <th className="text-left px-5 py-3 text-[10px] uppercase tracking-[0.15em] text-[#b0a89e] font-medium">Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {recentUploads.map((upload) => (
+                          <tr key={upload.id} className="border-b border-[#e8e2d9] hover:bg-[#faf8f5] transition-colors">
+                            <td className="px-5 py-3">
+                              <div className="flex items-center gap-2">
+                                {getFileIcon(upload.type)}
+                                <span className="text-sm font-medium text-[#2c2824]">{upload.file}</span>
+                              </div>
+                            </td>
+                            <td className="px-5 py-3 text-sm text-[#6b645a]">{upload.course}</td>
+                            <td className="px-5 py-3 text-sm text-[#6b645a]">{upload.size}</td>
+                            <td className="px-5 py-3">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${getStatusColor(upload.status)}`}>
+                                {upload.status}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3">
+                              <div className="flex items-center gap-2">
+                                <button className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#4a6a9b] hover:bg-[#e8f0fe] transition" title="Preview">
+                                  <Eye size={14} />
+                                </button>
+                                <button className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#4a7c5e] hover:bg-[#eef5f0] transition" title="Download">
+                                  <Download size={14} />
+                                </button>
+                                <button className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#d4a34b] hover:bg-[#fef5e8] transition" title="Delete">
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -497,9 +360,7 @@ const UploadMaterials = () => {
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+    </AdminLayout>
   );
 };
 export default UploadMaterials;
