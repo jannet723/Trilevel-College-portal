@@ -38,9 +38,21 @@ const aboutPillars = [
 ];
 
 const galleryImages = [
-  { src: "/images/campus.svg", alt: "Trilevel campus learning environment", caption: "Modern learning spaces" },
-  { src: "/images/students.svg", alt: "Students at Trilevel College", caption: "A diverse student community" },
-  { src: "/images/graduation.svg", alt: "Graduation and achievement", caption: "Pathways to success" },
+  {
+    src: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    alt: "Trilevel campus learning environment",
+    caption: "Modern learning spaces",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+    alt: "Students at Trilevel College",
+    caption: "A diverse student community",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+    alt: "Graduation and achievement",
+    caption: "Pathways to success",
+  },
 ];
 
 const sectionGap = "mb-20 lg:mb-28";
@@ -153,6 +165,7 @@ export default function TrilevelLogin() {
                   <h1
                     className="home-hero-title text-3xl sm:text-4xl lg:text-5xl xl:text-[3.15rem] font-bold leading-[1.12] max-w-2xl"
                     style={{ fontFamily: "'Palatino Linotype', Palatino, Georgia, serif" }}
+                    
                   >
                     Your academic future starts here.
                   </h1>
@@ -180,7 +193,7 @@ export default function TrilevelLogin() {
                 <div className="relative w-full min-w-0 lg:pl-2">
                   <div className="absolute -inset-4 sm:-inset-6 bg-linear-to-br from-[#4a6a9b]/10 to-[#3d5a86]/5 rounded-3xl blur-2xl pointer-events-none" />
                   <img
-                    src="/images/graduation.svg"
+                    src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Graduation at Trilevel College"
                     className="relative w-full rounded-2xl border border-[#e8e2d9]/80 shadow-[0_24px_56px_-24px_rgba(61,90,134,0.22)] object-cover aspect-16/10 bg-[#f8f6f2]"
                     loading="eager"
