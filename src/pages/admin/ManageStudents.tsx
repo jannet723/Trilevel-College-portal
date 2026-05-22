@@ -89,7 +89,7 @@ const ManageStudents = () => {
       backTo="/admin/dashboard"
     >
           <div className="mb-6 flex flex-wrap justify-between items-center gap-4">
-            <div className="relative flex-1 min-w-[200px] max-w-md">
+            <div className="relative flex-1 min-w-50 max-w-md">
               <input
                 type="text"
                 placeholder="Search students..."

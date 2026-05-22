@@ -292,7 +292,7 @@ const UploadMaterials = () => {
                               </span>
                             </div>
                           </td>
-                          <td className="px-5 py-3 text-sm text-[#6b645a] max-w-[180px]">
+                          <td className="px-5 py-3 text-sm text-[#6b645a] max-w-45">
                             <span className="line-clamp-2">{course?.title ?? 'Unknown'}</span>
                           </td>
                           <td className="px-5 py-3 text-sm text-[#6b645a]">{upload.unit}</td>

@@ -96,7 +96,7 @@ export default function TrilevelLogin() {
 
       <div
         className={`flex-1 min-h-0 min-w-0 relative bg-linear-to-br from-[#f8f6f2] to-[#f0ede8] transition-[filter,transform] duration-500 ease-out ${
-          modalOpen ? "blur-[8px] brightness-[0.94] pointer-events-none select-none" : ""
+          modalOpen ? "blur-sm brightness-[0.94] pointer-events-none select-none" : ""
         }`}
       >
         <div
@@ -134,7 +134,7 @@ export default function TrilevelLogin() {
                         Trilevel College
                       </p>
                       <p
-                        className="text-sm sm:text-base font-semibold tracking-[0.1em] text-[#b70c0c]/90 uppercase"
+                        className="text-sm sm:text-base font-semibold tracking-widest text-[#b70c0c]/90 uppercase"
                         style={{ fontFamily: "Georgia, serif" }}
                       >
                         of Professional Studies
@@ -182,7 +182,7 @@ export default function TrilevelLogin() {
                   <img
                     src="/images/graduation.svg"
                     alt="Graduation at Trilevel College"
-                    className="relative w-full rounded-2xl border border-[#e8e2d9]/80 shadow-[0_24px_56px_-24px_rgba(61,90,134,0.22)] object-cover aspect-[16/10] bg-[#f8f6f2]"
+                    className="relative w-full rounded-2xl border border-[#e8e2d9]/80 shadow-[0_24px_56px_-24px_rgba(61,90,134,0.22)] object-cover aspect-16/10 bg-[#f8f6f2]"
                     loading="eager"
                   />
                 </div>
@@ -254,7 +254,7 @@ export default function TrilevelLogin() {
                         alt={img.alt}
                         loading="lazy"
                         decoding="async"
-                        className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.015]"
+                        className="w-full aspect-4/3 object-cover transition-transform duration-500 group-hover:scale-[1.015]"
                       />
                       <figcaption className="px-4 py-4 text-sm font-medium text-[#6b645a] border-t border-[#e8e2d9]/55 bg-white/60">
                         {img.caption}

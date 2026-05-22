@@ -191,7 +191,7 @@ const CourseView = () => {
                 <div className="w-11 h-11 rounded-xl border border-[#e8e2d9] flex items-center justify-center shrink-0">
                   <Icon size={20} className="text-[#6b645a]" />
                 </div>
-                <div className="flex-1 min-w-[200px]">
+                <div className="flex-1 min-w-50">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <h3 className="font-semibold text-sm text-[#2c2824]">{course.title}</h3>
                     <span className={`px-2 py-0.5 rounded-md text-[10px] border ${getLevelBadgeStyle(course.level)}`}>
