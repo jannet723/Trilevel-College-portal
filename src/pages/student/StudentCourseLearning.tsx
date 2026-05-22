@@ -54,7 +54,7 @@ const StudentCourseLearning = () => {
   return (
     <StudentLayout
       title={course.title}
-      subtitle="Lessons, notes, and course resources"
+      subtitle="Course materials uploaded by your instructor"
       backTo="/student/my-courses"
     >
       <div className="rounded-2xl border border-[#e8e2d9] bg-white/80 overflow-hidden mb-6">

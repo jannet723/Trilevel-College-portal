@@ -1,6 +1,7 @@
-import { BookOpen, FileText, Layers, Clock, AlertCircle, Plus } from 'lucide-react';
+import { BookOpen, FileText, Layers, Clock, AlertCircle, Plus, Paperclip } from 'lucide-react';
 import type { CourseResource } from '../../types/courseResource';
 import { groupResourcesByUnit, countByType } from '../../utils/courseResources';
+import ResourceFileAttachment from './ResourceFileAttachment';
 
 interface CourseLearningMaterialsProps {
   resources: CourseResource[];
@@ -44,8 +45,8 @@ const CourseLearningMaterials = ({
         </h3>
         <p className="text-sm text-[#6b645a] max-w-md mx-auto leading-relaxed mb-6">
           {mode === 'student'
-            ? 'Your instructor has not published lessons or notes for this course yet. Check back later — new content will appear here when it is added.'
-            : 'Add lessons and notes so enrolled students can access structured learning content on their course page.'}
+            ? 'No materials have been uploaded for this course yet. Your instructor adds files from Upload Materials — they will show here when published.'
+            : 'Upload materials from the Upload Materials page so enrolled students can access them on their course page.'}
         </p>
         {mode === 'admin' && onAddClick && (
           <button
@@ -76,6 +77,12 @@ const CourseLearningMaterials = ({
           <Layers size={12} />
           {grouped.length} {grouped.length === 1 ? 'unit' : 'units'}
         </span>
+        {counts.files > 0 && (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#eef5f0] text-[#4a7c5e] border border-[#ddebe2]">
+            <Paperclip size={12} />
+            {counts.files} {counts.files === 1 ? 'file' : 'files'}
+          </span>
+        )}
       </div>
 
       {grouped.map(({ unit, items }) => (
@@ -108,6 +115,11 @@ const CourseLearningMaterials = ({
                           <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${meta.badge}`}>
                             {meta.label}
                           </span>
+                          {resource.file && (
+                            <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#eef5f0] text-[#4a7c5e] border-[#ddebe2]">
+                              File attached
+                            </span>
+                          )}
                         </div>
                         <h4 className="font-semibold text-[#2c2824] text-base leading-snug">{resource.title}</h4>
                         <p className="text-[10px] text-[#9b9288] mt-1 flex items-center gap-1">
@@ -139,9 +151,12 @@ const CourseLearningMaterials = ({
                       </div>
                     )}
                   </div>
-                  <div className="rounded-xl border border-[#e8e2d9]/60 bg-[#faf8f5]/80 px-4 py-3.5">
-                    <p className="text-sm text-[#555] leading-relaxed whitespace-pre-wrap">{resource.content}</p>
-                  </div>
+                  {resource.content.trim() ? (
+                    <div className="rounded-xl border border-[#e8e2d9]/60 bg-[#faf8f5]/80 px-4 py-3.5">
+                      <p className="text-sm text-[#555] leading-relaxed whitespace-pre-wrap">{resource.content}</p>
+                    </div>
+                  ) : null}
+                  {resource.file && <ResourceFileAttachment file={resource.file} />}
                 </article>
               );
             })}

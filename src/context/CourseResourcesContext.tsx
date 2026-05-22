@@ -65,6 +65,7 @@ export const CourseResourcesProvider = ({ children }: { children: ReactNode }) =
       content: input.content.trim(),
       order: input.order ?? maxOrder + 1,
       updatedAt: new Date().toISOString(),
+      ...(input.file ? { file: input.file } : {}),
     };
     setResources((prev) => [...prev, newResource]);
     return newResource;
@@ -81,6 +82,8 @@ export const CourseResourcesProvider = ({ children }: { children: ReactNode }) =
               ...(updates.unit !== undefined && { unit: updates.unit.trim() || 'General' }),
               ...(updates.content !== undefined && { content: updates.content.trim() }),
               ...(updates.order !== undefined && { order: updates.order }),
+              ...(updates.file !== undefined &&
+                (updates.file === null ? { file: undefined } : { file: updates.file })),
               updatedAt: new Date().toISOString(),
             }
           : r

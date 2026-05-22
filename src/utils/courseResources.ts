@@ -22,5 +22,6 @@ export function countByType(resources: CourseResource[]) {
   return {
     lessons: resources.filter((r) => r.type === 'lesson').length,
     notes: resources.filter((r) => r.type === 'note').length,
+    files: resources.filter((r) => r.file).length,
   };
 }

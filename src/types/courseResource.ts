@@ -1,5 +1,12 @@
 export type CourseResourceType = 'lesson' | 'note';
 
+export interface CourseResourceFile {
+  fileName: string;
+  mimeType: string;
+  size: number;
+  dataUrl: string;
+}
+
 export interface CourseResource {
   id: string;
   courseId: number;
@@ -9,6 +16,7 @@ export interface CourseResource {
   content: string;
   order: number;
   updatedAt: string;
+  file?: CourseResourceFile;
 }
 
 export interface CourseResourceInput {
@@ -18,4 +26,5 @@ export interface CourseResourceInput {
   unit: string;
   content: string;
   order?: number;
+  file?: CourseResourceFile | null;
 }
