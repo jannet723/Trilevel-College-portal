@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
 
   // ── Demo actions ───────────────────────────────────────────────────────
 
-  const removeCourse = (id: number) => unenroll(id);
+ const removeCourse = (id: string) => unenroll(id);
 
   const addAnnouncement = () => {
     const pool = ANNOUNCEMENT_POOL.filter(a => !announcements.find(ea => ea.text === a.text));

@@ -1,31 +1,20 @@
-// Firebase initialization and configuration
-// To use Firebase, run: npm install firebase
-// Then add your Firebase credentials to .env file
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
-// Placeholder for Firebase app
-export const app = null;
-export const auth = null;
-export const db = null;
-export const storage = null;
+const firebaseConfig = {
+  apiKey: "AIzaSyAn63MHtJDcv0duy3Wru3C-VK_cWt5jtFg",
+  authDomain: "trilevel-college-portal.firebaseapp.com",
+  projectId: "trilevel-college-portal",
+  storageBucket: "trilevel-college-portal.firebasestorage.app",
+  messagingSenderId: "965519333339",
+  appId: "1:965519333339:web:609c72ae461f1c1af2f9fe",
+  measurementId: "G-2T812K0TYX"
+};
 
-// Uncomment and configure when Firebase is installed:
-// import { initializeApp } from 'firebase/app';
-// import { getAuth } from 'firebase/auth';
-// import { getFirestore } from 'firebase/firestore';
-// import { getStorage } from 'firebase/storage';
-//
-// const firebaseConfig = {
-//   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-//   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-//   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-//   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-//   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-//   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-// };
-//
-// export const app = initializeApp(firebaseConfig);
-// export const auth = getAuth(app);
-// export const db = getFirestore(app);
-// export const storage = getStorage(app);
-
+const app = initializeApp(firebaseConfig);
+export const auth    = getAuth(app);
+export const db      = getFirestore(app);
+export const storage = getStorage(app);
 export default app;
