@@ -158,7 +158,7 @@ const ManageCourses = () => {
             <button
               type="button"
               onClick={openAddModal}
-              className="px-5 py-2.5 bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white rounded-xl text-sm font-medium hover:from-[#3d5a86] hover:to-[#2c4a7a] transition shadow-sm flex items-center gap-2"
+              className="px-5 py-2.5 bg-[#4a6a9b] text-white rounded-xl text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm flex items-center gap-2"
             >
               <Plus size={16} />
               Add Course
@@ -171,21 +171,21 @@ const ManageCourses = () => {
                 label: 'Total Courses',
                 value: courses.length,
                 icon: <BookOpen size={18} className="text-[#4a6a9b]" />,
-                color: 'from-[#e8f0fe] to-[#d4e2f7]',
+                color: 'bg-[#e8f0fe]',
                 hasData: courses.length > 0,
               },
               {
                 label: 'Active',
                 value: courses.filter((c) => c.status === 'Active').length,
                 icon: <Check size={18} className="text-[#4a7c5e]" />,
-                color: 'from-[#eef5f0] to-[#ddebe2]',
+                color: 'bg-[#eef5f0]',
                 hasData: courses.some((c) => c.status === 'Active'),
               },
               {
                 label: 'Pending Review',
                 value: courses.filter((c) => c.status === 'Pending').length,
                 icon: <Clock size={18} className="text-[#d4a34b]" />,
-                color: 'from-[#fef5e8] to-[#faeedc]',
+                color: 'bg-[#fef5e8]',
                 hasData: courses.some((c) => c.status === 'Pending'),
               },
             ].map((stat, idx) => (
@@ -202,7 +202,7 @@ const ManageCourses = () => {
                       {stat.value}
                     </p>
                   </div>
-                  <div className={`w-10 h-10 rounded-lg bg-linear-to-br ${stat.color} flex items-center justify-center ${!stat.hasData ? 'opacity-40' : ''}`}>
+                  <div className={`w-10 h-10 rounded-lg ${stat.color} flex items-center justify-center ${!stat.hasData ? 'opacity-40' : ''}`}>
                     {stat.icon}
                   </div>
                 </div>
@@ -281,15 +281,15 @@ const ManageCourses = () => {
                     </button>
                   </div>
 
-                  <div className="p-5 border-b border-[#e8e2d9] bg-linear-to-r from-[#faf8f5] to-white">
+                  <div className="p-5 border-b border-[#e8e2d9] bg-[#faf8f5]">
                     <div className="flex items-start justify-between mb-3 pr-24">
                       <div>
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
                           <span
                             className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
                               course.level === 'Diploma'
-                                ? 'bg-linear-to-r from-[#eef5f0] to-[#e0ebe5] text-[#4a7c5e]'
-                                : 'bg-linear-to-r from-[#e8f0fe] to-[#d4e2f7] text-[#4a6a9b]'
+                                ? 'bg-[#eef5f0] text-[#4a7c5e]'
+                                : 'bg-[#e8f0fe] text-[#4a6a9b]'
                             }`}
                           >
                             {course.level}
@@ -323,7 +323,7 @@ const ManageCourses = () => {
                       </div>
                       <div className="h-2 bg-[#e8e2d9] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-linear-to-r from-[#4a6a9b] to-[#6b8cb5] rounded-full transition-all duration-500"
+                          className="h-full bg-[#4a6a9b] rounded-full transition-all duration-500"
                           style={{ width: `${course.progress}%` }}
                         />
                       </div>
@@ -348,7 +348,7 @@ const ManageCourses = () => {
                       <button
                         type="button"
                         onClick={() => navigate(`/admin/upload-materials?course=${course.id}`)}
-                        className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm transition-all duration-200"
+                        className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-[#4a6a9b] text-white hover:bg-[#3d5a86] shadow-sm transition-all duration-200"
                       >
                         Upload Materials
                       </button>
@@ -489,7 +489,7 @@ const ManageCourses = () => {
               </button>
               <button
                 onClick={handleSaveCourse}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] transition text-sm font-medium"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-[#4a6a9b] text-white hover:bg-[#3d5a86] transition text-sm font-medium"
               >
                 {formMode === 'add' ? 'Add Course' : 'Save Changes'}
               </button>
@@ -552,7 +552,7 @@ const ManageCourses = () => {
               </button>
               <button
                 onClick={() => setShowViewModal(false)}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white text-sm font-medium transition"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-[#4a6a9b] text-white text-sm font-medium transition"
               >
                 Close
               </button>
@@ -585,7 +585,7 @@ const ManageCourses = () => {
                 </button>
                 <button
                   onClick={handleConfirmDelete}
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-linear-to-r from-[#d4a34b] to-[#b8893a] text-white hover:from-[#b8893a] hover:to-[#9a7530] transition text-sm font-medium"
+                  className="flex-1 px-4 py-2.5 rounded-lg bg-[#d4a34b] text-white hover:bg-[#b8893a] transition text-sm font-medium"
                 >
                   Delete Course
                 </button>

@@ -32,7 +32,7 @@ interface Announcement {
 
 // ── Empty-state placeholder ────────────────────────────────────────────────
 const EmptyCard: React.FC<{ icon: React.ReactNode; title: string; desc: string; action?: { label: string; onClick: () => void } }> = ({ icon, title, desc, action }) => (
-  <div className="flex flex-col justify-center items-center bg-white/50 backdrop-blur-sm p-8 border border-dashed border-[#d4cfc8] rounded-xl text-center">
+  <div className="flex flex-col justify-center items-center portal-panel portal-stat-card--empty p-8 text-center">
     <div className="flex justify-center items-center bg-[#f0ece6] mb-4 rounded-xl w-14 h-14 text-[#b0a89e]">{icon}</div>
     <p className="mb-1 font-medium text-[#6b645a] text-sm">{title}</p>
     <p className="mb-4 text-[#b0a89e] text-xs leading-relaxed">{desc}</p>
@@ -65,9 +65,9 @@ const BookIcon = () => (
 // ];
 
 const ANNOUNCEMENT_POOL: Omit<Announcement, 'id'>[] = [
-  { text: "Welcome to Trilevel Portal! Start by browsing certificates.", time: "Just now", color: "from-[#e8f0fe] to-[#d4e2f7]", iconColor: "#4a6a9b", iconType: 'bell' },
-  { text: "Complete your profile to get personalised recommendations.", time: "2 hours ago", color: "from-[#eef5f0] to-[#ddebe2]", iconColor: "#4a7c5e", iconType: 'star' },
-  { text: "New intake: AI for Digital Work & Business diplomas open.", time: "Yesterday", color: "from-[#f3eef9] to-[#e8e0f2]", iconColor: "#7a5b9e", iconType: 'book' },
+  { text: "Welcome to Trilevel Portal! Start by browsing certificates.", time: "Just now", color: "bg-[#e8f0fe]", iconColor: "#4a6a9b", iconType: 'bell' },
+  { text: "Complete your profile to get personalised recommendations.", time: "2 hours ago", color: "bg-[#eef5f0]", iconColor: "#4a7c5e", iconType: 'star' },
+  { text: "New intake: AI for Digital Work & Business diplomas open.", time: "Yesterday", color: "bg-[#f3eef9]", iconColor: "#7a5b9e", iconType: 'book' },
 ];
 
 const announcementIcon = (type: Announcement['iconType'], color: string) => {
@@ -126,28 +126,28 @@ const Dashboard: React.FC = () => {
       icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></>,
       title: "Enrolled Courses", value: courses.length > 0 ? String(courses.length) : "0",
       note: courses.length > 0 ? `${courses.length} active` : "Get started",
-      color: "from-[#e8f0fe] to-[#d4e2f7]",
+      color: "bg-[#e8f0fe]",
       hasData: courses.length > 0,
     },
     {
       icon: <><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></>,
       title: "Study Time", value: studyHours > 0 ? `${studyHours}h` : "0h",
       note: studyHours > 0 ? "Keep it up!" : "Start learning",
-      color: "from-[#eef5f0] to-[#ddebe2]",
+      color: "bg-[#eef5f0]",
       hasData: studyHours > 0,
     },
     {
       icon: <><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></>,
       title: "Assignments Done", value: String(assignmentsDone),
       note: assignmentsDone > 0 ? "Well done!" : "No tasks yet",
-      color: "from-[#fef5e8] to-[#faeedc]",
+      color: "bg-[#fef5e8]",
       hasData: assignmentsDone > 0,
     },
     {
       icon: <><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" /><circle cx="12" cy="12" r="3" /></>,
       title: "Average Score", value: avgScore !== null ? `${avgScore}%` : "--",
       note: avgScore !== null ? (avgScore >= 70 ? "Great work!" : "Keep going") : "Begin journey",
-      color: "from-[#f3eef9] to-[#e8e0f2]",
+      color: "bg-[#f3eef9]",
       hasData: avgScore !== null,
     },
   ];
@@ -157,9 +157,8 @@ const Dashboard: React.FC = () => {
         <div className="space-y-8">
 
           {/* Hero */}
-          <div className="relative bg-linear-to-br from-[#2c2824] to-[#1f1d1a] shadow-md p-8 rounded-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle,#ffffff_1px,transparent_1px)] opacity-[0.03] bg-size-[24px_24px]"></div>
-            <div className="z-10 relative">
+          <div className="portal-hero p-8 sm:p-10">
+            <div className="relative z-10">
               <div className="inline-flex items-center bg-white/5 mb-5 px-3 py-1.5 border border-white/10 rounded-full text-[11px] text-gray-300 tracking-wide">✨ New student</div>
               <h2 className="max-w-xl font-light text-white text-4xl leading-tight">
                 Start your learning <br /><span className="font-medium text-[#8aabcf] italic">journey today</span>
@@ -180,9 +179,9 @@ const Dashboard: React.FC = () => {
           {/* Stats Grid */}
           <div className="gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat, idx) => (
-              <div key={idx} className={`bg-white/70 shadow-sm hover:shadow-md backdrop-blur-sm p-5 border rounded-xl transition-all hover:-translate-y-0.5 duration-200 ${stat.hasData ? 'border-[#e8e2d9]' : 'border-dashed border-[#d4cfc8]'}`}>
+              <div key={idx} className={`portal-stat-card ${stat.hasData ? '' : 'portal-stat-card--empty'}`}>
                 <div className="flex justify-between items-center mb-4">
-                  <div className={`w-10 h-10 rounded-lg bg-linear-to-br ${stat.color} flex items-center justify-center ${!stat.hasData ? 'opacity-50' : ''}`}>
+                  <div className={`w-10 h-10 rounded-lg ${stat.color} flex items-center justify-center ${!stat.hasData ? 'opacity-50' : ''}`}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={stat.hasData ? "#4a6a9b" : "#b0a89e"} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{stat.icon}</svg>
                   </div>
                   <span className="font-medium text-[#b0a89e] text-[10px] tracking-wide">{stat.note}</span>
@@ -223,7 +222,7 @@ const Dashboard: React.FC = () => {
                     <div className="mt-4">
                       <div className="flex justify-between mb-1.5 text-[#b0a89e] text-[11px]"><span>Progress</span><span>{course.progress}%</span></div>
                       <div className="bg-[#e8e2d9] rounded-full h-1.5 overflow-hidden">
-                        <div className="bg-linear-to-r from-[#4a6a9b] to-[#6b8cb5] rounded-full h-full transition-all duration-500" style={{ width: `${course.progress}%` }}></div>
+                        <div className="bg-[#4a6a9b] rounded-full h-full transition-all duration-500" style={{ width: `${course.progress}%` }}></div>
                       </div>
                     </div>
                     <button
@@ -289,7 +288,7 @@ const Dashboard: React.FC = () => {
                   {announcements.map(ann => (
                     <div key={ann.id} className="bg-white/70 hover:shadow-sm backdrop-blur-sm p-4 border border-[#e8e2d9] rounded-xl transition">
                       <div className="flex items-start gap-3">
-                        <div className={`w-9 h-9 rounded-lg bg-linear-to-br ${ann.color} flex items-center justify-center shrink-0`}>
+                        <div className={`w-9 h-9 rounded-lg ${ann.color} flex items-center justify-center shrink-0`}>
                           {announcementIcon(ann.iconType, ann.iconColor)}
                         </div>
                         <div className="flex-1">
@@ -305,9 +304,9 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* CTA Banner */}
-          <div className="flex flex-wrap justify-between items-center gap-3 bg-linear-to-r from-[#faf8f5] to-[#f5f2ed] p-4 border border-[#e8e2d9] rounded-xl">
+          <div className="flex flex-wrap justify-between items-center gap-3 bg-[#faf8f5] p-4 border border-[#e8e2d9] rounded-xl">
             <div className="flex items-center gap-3">
-              <div className="flex justify-center items-center bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] rounded-lg w-10 h-10">
+              <div className="flex justify-center items-center bg-[#e8f0fe] rounded-lg w-10 h-10">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a6a9b">
                   <path d="M12 8v4l3 3M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
                 </svg>

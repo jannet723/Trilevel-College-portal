@@ -52,7 +52,7 @@ const CourseLearningMaterials = ({
           <button
             type="button"
             onClick={onAddClick}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white text-sm font-medium hover:shadow-md transition"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#4a6a9b] text-white text-sm font-medium hover:shadow-md transition"
           >
             <Plus size={16} />
             Add first material
@@ -87,7 +87,7 @@ const CourseLearningMaterials = ({
 
       {grouped.map(({ unit, items }) => (
         <section key={unit} className="rounded-2xl border border-[#e8e2d9]/80 bg-white/55 overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-[#e8e2d9]/70 bg-linear-to-r from-[#faf8f5] to-white flex items-center justify-between gap-3">
+          <div className="px-5 py-3.5 border-b border-[#e8e2d9]/70 bg-[#faf8f5] flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Layers size={16} className="text-[#4a6a9b]" />
               <h3 className="font-semibold text-[#2c2824] text-sm">{unit}</h3>

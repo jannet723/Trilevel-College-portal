@@ -86,7 +86,7 @@ const HomePortalPeek = ({ onSignIn }: HomePortalPeekProps) => {
           </div>
           <div key={active} className="p-6 sm:p-8 home-portal-panel-enter">
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-[#e8f0fe] to-[#c5d8f5] flex items-center justify-center text-[#4a6a9b]">
+              <div className="w-12 h-12 rounded-xl bg-[#e8f0fe] flex items-center justify-center text-[#4a6a9b]">
                 <Icon size={22} />
               </div>
               <div>

@@ -15,6 +15,7 @@ import ManageStudents from '../pages/admin/ManageStudents';
 import ManageCourses from '../pages/admin/ManageCourses';
 import Approvals from '../pages/admin/Approvals';
 import UploadMaterials from '../pages/admin/UploadMaterials';
+import AdminProfile from '../pages/admin/AdminProfile';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -41,6 +42,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/admin/manage-courses" element={<ManageCourses />} />
         <Route path="/admin/approvals" element={<Approvals />} />
         <Route path="/admin/upload-materials" element={<UploadMaterials />} />
+        <Route path="/admin/profile" element={<AdminProfile />} />
       </Routes>
     </Router>
   );

@@ -202,7 +202,7 @@ const UploadMaterials = () => {
               className="sr-only"
             />
             <div className="text-center pointer-events-none">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-[#e8f0fe] flex items-center justify-center">
                 <Upload size={24} className="text-[#4a6a9b]" />
               </div>
               <h3 className="text-lg font-medium text-[#2c2824] mb-2">Drag & drop files here</h3>
@@ -230,7 +230,7 @@ const UploadMaterials = () => {
                 {selectedFiles.map((file, index) => (
                   <div key={`${file.name}-${index}`} className="flex items-center justify-between p-3 bg-[#faf8f5] rounded-lg">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-[#e8f0fe] flex items-center justify-center shrink-0">
                         <FileText size={14} className="text-[#4a6a9b]" />
                       </div>
                       <div className="min-w-0">
@@ -344,7 +344,7 @@ const UploadMaterials = () => {
         <div className="space-y-6">
           <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-[#e8e2d9] p-5">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#e8f0fe] flex items-center justify-center">
                 <Upload size={14} className="text-[#4a6a9b]" />
               </div>
               <h3 className="font-semibold text-[#2c2824]">Upload Settings</h3>
@@ -425,7 +425,7 @@ const UploadMaterials = () => {
                 className={`w-full py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
                   uploading || selectedFiles.length === 0 || !courseId || !materialType
                     ? 'bg-[#f0ece6] text-[#9b9288] cursor-not-allowed'
-                    : 'bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm'
+                    : 'bg-[#4a6a9b] text-white hover:bg-[#3d5a86] shadow-sm'
                 }`}
               >
                 {uploading ? (
@@ -443,7 +443,7 @@ const UploadMaterials = () => {
             </div>
           </div>
 
-          <div className="bg-linear-to-br from-[#faf8f5] to-white rounded-xl border border-[#e8e2d9] p-5">
+          <div className="bg-[#faf8f5] rounded-xl border border-[#e8e2d9] p-5">
             <h3 className="font-semibold text-[#2c2824] mb-3 flex items-center gap-2">
               <AlertCircle size={14} className="text-[#d4a34b]" />
               Upload Tips

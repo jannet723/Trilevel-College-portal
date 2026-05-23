@@ -176,7 +176,7 @@
   position: relative;
   height: 180px;
   overflow: hidden;
-  background: linear-gradient(135deg, #f0ede6, #e8e3db);
+  background: #2d5282;
 }
 
 .cthumb-inner {
@@ -451,7 +451,7 @@
 
 /* Banner Component */
 .banner {
-  background: linear-gradient(135deg, #1e3554 0%, #2d5282 100%);
+  background: #2d5282;
   color: white;
   padding: 32px;
   border-radius: 12px;
@@ -556,7 +556,7 @@
 .s-logo-mark {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #1e3554, #2d5282);
+  background: #2d5282;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -580,7 +580,7 @@
     font-size: 20px;
     font-weight: 600;
     letter-spacing: -0.025em;
-    background: linear-gradient(to right, #2c2824, #5a5248);
+    background: #2d5282;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -778,7 +778,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1e3554, #2d5282);
+  background: #2d5282;
   color: white;
   display: flex;
   align-items: center;
@@ -841,7 +841,7 @@
 .logo-mark {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #1e5db8 0%, #2d7bc4 100%);
+  background: #2d5282;
   color: white;
   display: flex;
   align-items: center;
@@ -930,7 +930,7 @@
   width: 44px;
   height: 44px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #1e5db8 0%, #2d7bc4 100%);
+  background: #2d5282;
   color: white;
   display: flex;
   align-items: center;
@@ -1295,7 +1295,7 @@
 /* Enhanced Banner */
 .banner {
   position: relative;
-  background: linear-gradient(135deg, #1e3554 0%, #2d5282 100%);
+  background: #2d5282;
   color: white;
   padding: 40px;
   border-radius: 16px;
@@ -1394,7 +1394,7 @@
   width: 56px;
   height: 56px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-color));
+  background: #2d5282;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1549,7 +1549,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), #c084fc);
+  background: #2d5282;
   border-radius: 4px;
   transition: width 0.4s ease;
 }
@@ -1607,7 +1607,7 @@
 .panel-header {
   padding: 24px 28px;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(135deg, rgba(170, 59, 255, 0.03), rgba(170, 59, 255, 0.01));
+  background: #2d5282;
 }
 
 .panel-title {
@@ -1681,7 +1681,7 @@
 }
 
 .notice:hover {
-  background: linear-gradient(135deg, var(--accent-bg), rgba(170, 59, 255, 0.15));
+  background: #2d5282;
 }
 
 .notice svg {

@@ -73,7 +73,7 @@ const CourseView = () => {
         onClick={(e) => handleEnroll(e, courseId)}
         className={`flex items-center justify-center gap-1.5 font-medium transition-all duration-300 ${
           compact ? 'px-2.5 py-1 text-xs rounded-md' : 'w-full py-2.5 text-sm rounded-lg mt-3'
-        } bg-linear-to-r from-[#2F2FE4] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm hover:shadow-md`}
+        } bg-[#4a6a9b] text-white hover:bg-[#3d5a86] shadow-sm hover:shadow-md`}
       >
         <Plus size={compact ? 12 : 14} />
         Enrol Now
@@ -151,10 +151,10 @@ const CourseView = () => {
                 key={course.id}
                 className="group bg-white/90 backdrop-blur-sm rounded-2xl border border-[#e8e2d9] hover:shadow-lg hover:border-[#4a6a9b]/20 transition-all duration-300 overflow-hidden"
               >
-                <div className="h-1 bg-linear-to-r from-[#4a6a9b]/0 via-[#4a6a9b]/30 to-[#2F2FE4]/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                <div className="h-1 bg-[#4a6a9b]/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-11 h-11 rounded-xl bg-linear-to-br from-[#f8f6f2] to-white border border-[#e8e2d9] flex items-center justify-center group-hover:border-[#4a6a9b]/30 transition-colors">
+                    <div className="w-11 h-11 rounded-xl bg-[#f8f6f2] border border-[#e8e2d9] flex items-center justify-center group-hover:border-[#4a6a9b]/30 transition-colors">
                       <Icon size={20} className="text-[#6b645a] group-hover:text-[#4a6a9b] transition-colors" />
                     </div>
                     <span className={`px-2 py-0.5 rounded-md text-[10px] font-medium border ${getLevelBadgeStyle(course.level)}`}>

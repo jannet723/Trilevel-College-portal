@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LogIn,
@@ -10,9 +10,9 @@ import {
   PanelLeft,
   LayoutDashboard,
   GraduationCap,
-  ChevronRight,
 } from 'lucide-react';
 import { CATALOG_COURSES } from '../../data/courses';
+import SidebarNavIcon from '../layout/SidebarNavIcon';
 
 interface HomeSidebarProps {
   isCollapsed: boolean;
@@ -42,7 +42,7 @@ const HomeSidebar = ({
 
   const scrollItem = (
     label: string,
-    icon: ReactNode,
+    icon: LucideIcon,
     onClick: () => void,
     title?: string,
     active = false
@@ -53,20 +53,15 @@ const HomeSidebar = ({
       title={isCollapsed ? title ?? label : undefined}
       className={`home-sidebar-nav-item group w-full ${active ? 'home-sidebar-nav-item--active' : ''}`}
     >
-      <span className={`home-sidebar-nav-icon ${active ? 'home-sidebar-nav-icon--active' : ''}`}>{icon}</span>
-      {!isCollapsed && (
-        <>
-          <span className="flex-1 text-left text-sm">{label}</span>
-          <ChevronRight size={14} className="text-[#c0b8ae] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-        </>
-      )}
+      <SidebarNavIcon icon={icon} active={active} />
+      {!isCollapsed && <span className="flex-1 text-left text-sm">{label}</span>}
     </button>
   );
 
   const linkItem = (
     to: string,
     label: string,
-    icon: ReactNode,
+    icon: LucideIcon,
     active: boolean,
     title?: string
   ) => (
@@ -75,22 +70,17 @@ const HomeSidebar = ({
       title={isCollapsed ? title ?? label : undefined}
       className={`home-sidebar-nav-item group w-full ${active ? 'home-sidebar-nav-item--active' : ''}`}
     >
-      <span className={`home-sidebar-nav-icon ${active ? 'home-sidebar-nav-icon--active' : ''}`}>{icon}</span>
-      {!isCollapsed && (
-        <>
-          <span className="flex-1 text-sm">{label}</span>
-          {active && <span className="w-1.5 h-1.5 rounded-full bg-[#4a6a9b] shrink-0" />}
-        </>
-      )}
+      <SidebarNavIcon icon={icon} active={active} />
+      {!isCollapsed && <span className="flex-1 text-sm">{label}</span>}
     </Link>
   );
 
   return (
     <aside
-      className={`home-sidebar ${isCollapsed ? 'home-sidebar--collapsed' : ''} shrink-0 h-screen flex flex-col z-30 relative`}
+      className={`home-sidebar ${isCollapsed ? 'home-sidebar--collapsed' : ''} shrink-0 h-screen z-30`}
       aria-label="Site navigation"
     >
-      <div className="home-sidebar-inner flex flex-col h-full">
+      <div className="home-sidebar-inner h-full">
         {/* Brand */}
         <div className={`home-sidebar-brand ${isCollapsed ? 'home-sidebar-brand--collapsed' : ''}`}>
           <Link to="/" className="flex items-center gap-3 min-w-0 group" title="Trilevel College home">
@@ -131,51 +121,35 @@ const HomeSidebar = ({
             <p className="home-sidebar-section-label px-2">Navigate</p>
           )}
 
-          {linkItem('/', 'Home', <Home size={17} />, isHome, 'Home')}
+          {linkItem('/', 'Home', Home, isHome, 'Home')}
 
           {isHome || isCourses
             ? scrollItem(
                 'Programmes',
-                <BookOpen size={17} />,
-                isCourses ? onScrollToProgrammes : onScrollToProgrammes,
+                BookOpen,
+                onScrollToProgrammes,
                 isCourses ? 'Jump to programme list' : 'Jump to programmes',
                 isCourses
               )
-            : linkItem('/courses', 'Programmes', <BookOpen size={17} />, false, 'Programme catalogue')}
+            : linkItem('/courses', 'Programmes', BookOpen, false, 'Programme catalogue')}
 
           {isHome &&
-            scrollItem(
-              'Inside the portal',
-              <LayoutDashboard size={17} />,
-              onScrollToPortal,
-              'Portal preview'
-            )}
+            scrollItem('Inside the portal', LayoutDashboard, onScrollToPortal, 'Portal preview')}
 
-          {isHome &&
-            scrollItem('Why Trilevel', <Sparkles size={17} />, onScrollToAbout, 'About the college')}
+          {isHome && scrollItem('Why Trilevel', Sparkles, onScrollToAbout, 'About the college')}
 
-          {!isHome && (
-            <Link
-              to="/#about-trilevel"
-              className="home-sidebar-nav-item group w-full"
-              title={isCollapsed ? 'About' : undefined}
-            >
-              <span className="home-sidebar-nav-icon">
-                <Sparkles size={17} />
-              </span>
-              {!isCollapsed && <span className="flex-1 text-sm">About</span>}
-            </Link>
-          )}
+          {!isHome &&
+            linkItem('/#about-trilevel', 'About', Sparkles, false, 'About the college')}
 
           {!isCollapsed && (
             <>
               <p className="home-sidebar-section-label px-2 mt-4">Catalogue</p>
-              <Link to="/courses" className="home-sidebar-nav-item group w-full">
-                <span className="home-sidebar-nav-icon">
-                  <GraduationCap size={17} />
-                </span>
+              <Link
+                to="/courses"
+                className={`home-sidebar-nav-item group w-full ${isCourses ? 'home-sidebar-nav-item--active' : ''}`}
+              >
+                <SidebarNavIcon icon={GraduationCap} active={isCourses} />
                 <span className="flex-1 text-sm">Full catalogue</span>
-                <ArrowUpRightIcon />
               </Link>
             </>
           )}
@@ -183,18 +157,16 @@ const HomeSidebar = ({
           {isCollapsed && (
             <Link
               to="/courses"
-              className="home-sidebar-nav-item group w-full"
+              className={`home-sidebar-nav-item group w-full ${isCourses ? 'home-sidebar-nav-item--active' : ''}`}
               title="Full catalogue"
             >
-              <span className="home-sidebar-nav-icon">
-                <GraduationCap size={17} />
-              </span>
+              <SidebarNavIcon icon={GraduationCap} active={isCourses} />
             </Link>
           )}
         </nav>
 
-        {/* Portal access */}
-        <div className={`home-sidebar-portal mx-2 mb-2 ${isCollapsed ? 'p-2' : 'p-3'}`}>
+        <div className="home-sidebar-footer">
+        <div className={`home-sidebar-portal ${isCollapsed ? 'p-2' : 'p-3'}`}>
           {!isCollapsed && (
             <p className="text-[10px] font-semibold text-[#6b645a] uppercase tracking-wider mb-2.5 px-0.5">
               Student access
@@ -208,7 +180,7 @@ const HomeSidebar = ({
               isCollapsed ? 'justify-center p-3' : 'gap-2 px-3 py-2.5'
             } rounded-xl text-white text-sm font-semibold`}
           >
-            <LogIn size={isCollapsed ? 20 : 16} className="shrink-0" />
+            <LogIn size={isCollapsed ? 18 : 15} strokeWidth={1.5} className="shrink-0 opacity-95" />
             {!isCollapsed && <span>Sign in</span>}
           </button>
           <button
@@ -219,7 +191,7 @@ const HomeSidebar = ({
               isCollapsed ? 'justify-center p-3' : 'gap-2 px-3 py-2.5'
             } rounded-xl text-sm font-medium`}
           >
-            <UserPlus size={isCollapsed ? 20 : 16} className="shrink-0 text-[#4a6a9b]" />
+            <UserPlus size={isCollapsed ? 18 : 15} strokeWidth={1.5} className="shrink-0 text-[#6b645a]" />
             {!isCollapsed && <span>Create account</span>}
           </button>
         </div>
@@ -227,32 +199,16 @@ const HomeSidebar = ({
         <button
           type="button"
           onClick={onToggleCollapse}
-          className="home-sidebar-collapse mx-2 mb-3"
+          className="home-sidebar-collapse"
           aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          {isCollapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={16} />}
+          {isCollapsed ? <PanelLeft size={17} strokeWidth={1.4} /> : <PanelLeftClose size={16} strokeWidth={1.4} />}
           {!isCollapsed && <span>Collapse</span>}
         </button>
+        </div>
       </div>
     </aside>
   );
 };
-
-function ArrowUpRightIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      className="text-[#9b9288] shrink-0"
-      aria-hidden
-    >
-      <path d="M7 17 17 7M7 7h10v10" />
-    </svg>
-  );
-}
 
 export default HomeSidebar;

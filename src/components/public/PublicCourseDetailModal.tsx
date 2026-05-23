@@ -26,11 +26,11 @@ const PublicCourseDetailModal = ({ course, onClose, onSignIn }: PublicCourseDeta
         aria-modal="true"
         aria-labelledby="course-detail-title"
       >
-        <div className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-[#4a6a9b] via-[#2F2FE4] to-[#b70c0c]/60" />
-        <div className="p-6 border-b border-[#e8e2d9] bg-linear-to-br from-[#faf8f5] to-white">
+        <div className="absolute inset-x-0 top-0 h-1 bg-[#4a6a9b]" />
+        <div className="p-6 border-b border-[#e8e2d9] bg-[#faf8f5]">
           <div className="flex items-start justify-between gap-4">
             <div className="flex gap-4">
-              <div className="w-14 h-14 rounded-xl bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] flex items-center justify-center text-[#4a6a9b] shrink-0">
+              <div className="w-14 h-14 rounded-xl bg-[#e8f0fe] flex items-center justify-center text-[#4a6a9b] shrink-0">
                 <Icon size={26} strokeWidth={1.75} />
               </div>
               <div>
@@ -96,7 +96,7 @@ const PublicCourseDetailModal = ({ course, onClose, onSignIn }: PublicCourseDeta
             <button
               type="button"
               onClick={onSignIn}
-              className="flex-1 py-2.5 rounded-xl bg-linear-to-r from-[#2F2FE4] to-[#3d5a86] text-white text-sm font-medium hover:from-[#3d5a86] hover:to-[#2c4a7a] transition shadow-sm"
+              className="flex-1 py-2.5 rounded-xl bg-[#4a6a9b] text-white text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm"
             >
               Sign in to enrol
             </button>

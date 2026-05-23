@@ -9,8 +9,8 @@ interface PublicCourseCardProps {
 }
 
 const levelStyles: Record<CatalogCourse['level'], string> = {
-  Certificate: 'from-[#e8f0fe] to-[#d4e2f7] text-[#4a6a9b]',
-  Diploma: 'from-[#eef5f0] to-[#ddebe2] text-[#4a7c5e]',
+  Certificate: 'bg-[#e8f0fe] text-[#4a6a9b]',
+  Diploma: 'bg-[#eef5f0] text-[#4a7c5e]',
 };
 
 const PublicCourseCard = ({ course, variant = 'full', onView }: PublicCourseCardProps) => {
@@ -23,11 +23,11 @@ const PublicCourseCard = ({ course, variant = 'full', onView }: PublicCourseCard
         isCompact ? 'p-3.5' : 'p-5'
       }`}
     >
-      <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-[#4a6a9b]/6 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      <div className="absolute top-0 right-0 w-24 h-24 bg-[#4a6a9b]/5 rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
       <div className={`flex ${isCompact ? 'gap-3 items-start' : 'gap-4 items-start mb-4'}`}>
         <div
-          className={`shrink-0 rounded-xl bg-linear-to-br from-[#f8f6f2] to-[#eae5dd] border border-[#e8e2d9] flex items-center justify-center text-[#4a6a9b] group-hover:scale-105 transition-transform ${
+          className={`shrink-0 rounded-xl bg-[#f8f6f2] border border-[#e8e2d9] flex items-center justify-center text-[#4a6a9b] group-hover:scale-105 transition-transform ${
             isCompact ? 'w-10 h-10' : 'w-12 h-12'
           }`}
         >
@@ -36,7 +36,7 @@ const PublicCourseCard = ({ course, variant = 'full', onView }: PublicCourseCard
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5 mb-1">
             <span
-              className={`text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-linear-to-r ${levelStyles[course.level]}`}
+              className={`text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${levelStyles[course.level]}`}
             >
               {course.level}
             </span>

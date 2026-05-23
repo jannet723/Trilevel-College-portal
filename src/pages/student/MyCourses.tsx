@@ -109,19 +109,19 @@ const MyCourses = () => {
               {
                 label: 'Total Courses', value: courses.length,
                 icon: <BookOpen size={18} className="text-[#4a6a9b]" />,
-                color: 'from-[#e8f0fe] to-[#d4e2f7]',
+                color: 'bg-[#e8f0fe]',
                 hasData: courses.length > 0,
               },
               {
                 label: 'In Progress', value: courses.filter(c => c.status === 'in-progress').length,
                 icon: <Clock size={18} className="text-[#4a7c5e]" />,
-                color: 'from-[#eef5f0] to-[#ddebe2]',
+                color: 'bg-[#eef5f0]',
                 hasData: courses.filter(c => c.status === 'in-progress').length > 0,
               },
               {
                 label: 'Completed', value: courses.filter(c => c.status === 'completed').length,
                 icon: <Award size={18} className="text-[#7a5b9e]" />,
-                color: 'from-[#f3eef9] to-[#e8e0f2]',
+                color: 'bg-[#f3eef9]',
                 hasData: courses.filter(c => c.status === 'completed').length > 0,
               },
             ].map((stat, idx) => (
@@ -133,7 +133,7 @@ const MyCourses = () => {
                       {stat.value}
                     </p>
                   </div>
-                  <div className={`w-10 h-10 rounded-lg bg-linear-to-br ${stat.color} flex items-center justify-center ${!stat.hasData ? 'opacity-40' : ''}`}>
+                  <div className={`w-10 h-10 rounded-lg ${stat.color} flex items-center justify-center ${!stat.hasData ? 'opacity-40' : ''}`}>
                     {stat.icon}
                   </div>
                 </div>
@@ -184,14 +184,14 @@ const MyCourses = () => {
                   >✕</button>
 
                   {/* Course Header */}
-                  <div className="p-5 border-b border-[#e8e2d9] bg-linear-to-r from-[#faf8f5] to-white">
+                  <div className="p-5 border-b border-[#e8e2d9] bg-[#faf8f5]">
                     <div className="flex items-start justify-between mb-3">
                       <div className="pr-6">
                         <div className="flex items-center gap-2 mb-2">
                           <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
                             course.type === 'Diploma'
-                              ? 'bg-linear-to-r from-[#eef5f0] to-[#e0ebe5] text-[#4a7c5e]'
-                              : 'bg-linear-to-r from-[#e8f0fe] to-[#d4e2f7] text-[#4a6a9b]'
+                              ? 'bg-[#eef5f0] text-[#4a7c5e]'
+                              : 'bg-[#e8f0fe] text-[#4a6a9b]'
                           }`}>
                             {course.type}
                           </span>
@@ -215,7 +215,7 @@ const MyCourses = () => {
                       </div>
                       <div className="h-2 bg-[#e8e2d9] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-linear-to-r from-[#4a6a9b] to-[#6b8cb5] rounded-full transition-all duration-500"
+                          className="h-full bg-[#4a6a9b] rounded-full transition-all duration-500"
                           style={{ width: `${course.progress}%` }}
                         />
                       </div>
@@ -240,8 +240,8 @@ const MyCourses = () => {
                       onClick={() => navigate(`/student/learn/${course.id}`)}
                       className={`w-full py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                         course.status === 'completed'
-                          ? 'bg-linear-to-r from-[#eef5f0] to-[#e0ebe5] text-[#4a7c5e] hover:from-[#e0ebe5] hover:to-[#d4e5da]'
-                          : 'bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white hover:from-[#3d5a86] hover:to-[#2c4a7a] shadow-sm'
+                          ? 'bg-[#eef5f0] text-[#4a7c5e] hover:bg-[#e0ebe5]'
+                          : 'bg-[#4a6a9b] text-white hover:bg-[#3d5a86] shadow-sm'
                       }`}
                     >
                       {course.status === 'completed' ? 'Review Course' : 'Continue Learning'}

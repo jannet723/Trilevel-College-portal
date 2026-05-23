@@ -28,12 +28,6 @@ const bentoTiles = [
   { value: "24/7", label: "Portal access", accent: "blue" },
 ];
 
-const galleryStack = [
-  { src: "/images/campus.svg", alt: "Campus", caption: "Campus" },
-  { src: "/images/students.svg", alt: "Students", caption: "Community" },
-  { src: "/images/graduation.svg", alt: "Graduation", caption: "Graduate" },
-];
-
 export default function TrilevelLogin() {
   const [selectedCourse, setSelectedCourse] = useState<CatalogCourse | null>(null);
   const [showRegister, setShowRegister] = useState(false);
@@ -121,21 +115,21 @@ export default function TrilevelLogin() {
             <section className="home-hero mb-14 lg:mb-20 min-h-[min(72vh,640px)] flex flex-col justify-center">
               <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-center">
                 <div className="space-y-7 home-fade-up">
-                  <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-5 sm:gap-6">
                     <img
                       src="/logo.png"
-                      alt=""
-                      width={56}
-                      height={56}
-                      className="w-14 h-14 object-contain"
+                      alt="Trilevel College logo"
+                      width={112}
+                      height={112}
+                      className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-contain shrink-0"
                       loading="eager"
                     />
-                    <div>
-                      <p className="home-brand-serif text-sm font-bold tracking-[0.14em] text-[#b70c0c] uppercase">
+                    <div className="min-w-0">
+                      <p className="home-brand-serif text-xl sm:text-2xl lg:text-[1.65rem] font-bold tracking-[0.1em] text-[#b70c0c] uppercase leading-tight">
                         Trilevel College
                       </p>
-                      <p className="text-[10px] tracking-[0.2em] text-[#9b9288] uppercase">
-                        Professional Studies
+                      <p className="text-xs sm:text-sm tracking-[0.18em] text-[#6b645a] uppercase mt-1.5">
+                        of Professional Studies
                       </p>
                     </div>
                   </div>
@@ -163,36 +157,22 @@ export default function TrilevelLogin() {
                   </div>
                 </div>
 
-                <div className="relative home-fade-up home-fade-up-delay lg:hidden max-w-sm mx-auto w-full">
-                  <div className="rounded-2xl overflow-hidden border border-[#e8e2d9]/80 aspect-video shadow-lg">
-                    <img
-                      src="/images/campus.svg"
-                      alt="Trilevel campus"
-                      className="w-full h-full object-cover"
-                    />
+                <div className="home-fade-up home-fade-up-delay w-full flex justify-center lg:justify-end">
+                  <div className="home-hero-embed-stage select-none">
+                    <div className="home-hero-embed-float">
+                      <div className="home-hero-embed-ground" aria-hidden />
+                      <img
+                        src="/images/hero-brain.png"
+                        alt=""
+                        width={736}
+                        height={736}
+                        className="home-hero-embed"
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </div>
                   </div>
                 </div>
-
-                <div className="relative home-fade-up home-fade-up-delay hidden lg:block">
-                  <div className="home-gallery-stack">
-                    {galleryStack.map((img, i) => (
-                      <div
-                        key={img.src}
-                        className="home-gallery-card"
-                        style={{ ["--stack-index" as string]: i }}
-                      >
-                        <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
-                        <span className="home-gallery-caption">{img.caption}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="absolute -z-10 inset-0 bg-linear-to-tr from-[#4a6a9b]/15 via-transparent to-[#2F2FE4]/10 rounded-3xl blur-2xl scale-110" />
-                </div>
-              </div>
-
-              <div className="home-scroll-hint mt-12 lg:mt-16" aria-hidden>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[#b0a89e]">Scroll to discover</span>
-                <div className="home-scroll-line" />
               </div>
             </section>
 
@@ -229,16 +209,14 @@ export default function TrilevelLogin() {
                     <p className="text-xs text-[#6b645a] mt-1">Enrol · learn · grow</p>
                   </div>
                 </div>
-                <div className="home-bento-card home-bento-card--tall overflow-hidden p-0 min-h-70 sm:min-h-0">
-                  <img
-                    src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800&auto=format&fit=crop"
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-[#2c2824]/70 via-[#2c2824]/20 to-transparent" />
-                  <p className="absolute bottom-5 left-5 right-5 text-white text-sm font-medium">
-                    A community that shows up for you
+                <div className="home-bento-card home-bento-card--accent p-6 sm:p-8 flex flex-col justify-center min-h-[200px] relative overflow-hidden">
+                  <div className="absolute top-4 right-4 w-16 h-16 border border-[#e8e2d9] rounded-full opacity-40" />
+                  <div className="absolute bottom-6 left-6 w-24 h-24 border border-[#4a6a9b]/20 rounded-2xl opacity-50" />
+                  <p className="home-display text-2xl text-[#2c2824] leading-snug relative z-10">
+                    Your journey starts with one enrolment.
+                  </p>
+                  <p className="text-sm text-[#6b645a] mt-3 relative z-10">
+                    Join a community built for learners who want practical skills and a clear path forward.
                   </p>
                 </div>
               </div>

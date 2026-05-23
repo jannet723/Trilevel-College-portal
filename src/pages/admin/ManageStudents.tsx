@@ -102,7 +102,7 @@ const ManageStudents = () => {
             <button
               type="button"
               onClick={() => navigate('/admin/students/new')}
-              className="px-5 py-2.5 bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white rounded-xl text-sm font-medium hover:from-[#3d5a86] hover:to-[#2c4a7a] transition shadow-sm flex items-center gap-2"
+              className="px-5 py-2.5 bg-[#4a6a9b] text-white rounded-xl text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm flex items-center gap-2"
             >
               <Plus size={16} />
               Add Student
@@ -117,7 +117,7 @@ const ManageStudents = () => {
                   <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Total Students</p>
                   <p className="text-2xl font-semibold text-[#2c2824] mt-1">{students.length}</p>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-[#e8f0fe] flex items-center justify-center">
                   <Users size={18} className="text-[#4a6a9b]" />
                 </div>
               </div>
@@ -128,7 +128,7 @@ const ManageStudents = () => {
                   <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Active Students</p>
                   <p className="text-2xl font-semibold text-[#2c2824] mt-1">{students.filter(s => s.status === 'Active').length}</p>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#eef5f0] to-[#ddebe2] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-[#eef5f0] flex items-center justify-center">
                   <Check size={18} className="text-[#4a7c5e]" />
                 </div>
               </div>
@@ -139,7 +139,7 @@ const ManageStudents = () => {
                   <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Pending Approvals</p>
                   <p className="text-2xl font-semibold text-[#2c2824] mt-1">{students.filter(s => s.status === 'Pending').length}</p>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#fef5e8] to-[#faeedc] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-[#fef5e8] flex items-center justify-center">
                   <Clock size={18} className="text-[#d4a34b]" />
                 </div>
               </div>
@@ -150,7 +150,7 @@ const ManageStudents = () => {
                   <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Avg Performance</p>
                   <p className="text-2xl font-semibold text-[#c0b8ae] mt-1">--</p>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#f3eef9] to-[#e8e0f2] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-[#f3eef9] flex items-center justify-center">
                   <Award size={18} className="text-[#7a5b9e]" />
                 </div>
               </div>
@@ -250,7 +250,7 @@ const ManageStudents = () => {
                     <tr key={idx} className="border-b border-[#e8e2d9] hover:bg-[#faf8f5] transition-colors group">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-lg bg-linear-to-br from-[#4a6a9b] to-[#2c4a7a] flex items-center justify-center text-white text-xs font-medium shadow-sm">
+                          <div className="w-9 h-9 rounded-lg bg-[#4a6a9b] flex items-center justify-center text-white text-xs font-medium shadow-sm">
                             {student.avatar}
                           </div>
                           <div>
@@ -281,7 +281,7 @@ const ManageStudents = () => {
                             </span>
                             <div className="w-16 h-1.5 bg-[#e8e2d9] rounded-full overflow-hidden">
                               <div 
-                                className="h-full bg-linear-to-r from-[#4a6a9b] to-[#6b8cb5] rounded-full"
+                                className="h-full bg-[#4a6a9b] rounded-full"
                                 style={{ width: `${student.performance}%` }}
                               />
                             </div>
@@ -347,7 +347,7 @@ const ManageStudents = () => {
                 </button>
                 <button
                   onClick={handleConfirmDelete}
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-linear-to-r from-[#d4a34b] to-[#b8893a] text-white hover:from-[#b8893a] hover:to-[#9a7530] transition text-sm font-medium"
+                  className="flex-1 px-4 py-2.5 rounded-lg bg-[#d4a34b] text-white hover:bg-[#b8893a] transition text-sm font-medium"
                 >
                   Delete Student
                 </button>

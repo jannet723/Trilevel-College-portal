@@ -42,7 +42,7 @@ const StudentCourseLearning = () => {
           <button
             type="button"
             onClick={() => navigate('/student/courses')}
-            className="px-5 py-2.5 rounded-xl bg-linear-to-r from-[#2F2FE4] to-[#3d5a86] text-white text-sm font-medium"
+            className="px-5 py-2.5 rounded-xl bg-[#4a6a9b] text-white text-sm font-medium"
           >
             Browse courses
           </button>
@@ -58,7 +58,7 @@ const StudentCourseLearning = () => {
       backTo="/student/my-courses"
     >
       <div className="rounded-2xl border border-[#e8e2d9] bg-white/80 overflow-hidden mb-6">
-        <div className="h-1 bg-linear-to-r from-[#4a6a9b] via-[#6b8cb5] to-[#2F2FE4]/60" />
+        <div className="h-1 bg-[#4a6a9b]" />
         <div className="p-5 sm:p-6 flex flex-wrap items-start gap-4">
           <div className="w-12 h-12 rounded-xl border border-[#e8e2d9] bg-[#faf8f5] flex items-center justify-center shrink-0">
             <Icon size={22} className="text-[#4a6a9b]" />

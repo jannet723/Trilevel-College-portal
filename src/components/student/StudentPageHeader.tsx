@@ -48,8 +48,8 @@ const StudentPageHeader = ({
           </>
         )}
       </nav>
-      <h1 className="text-2xl font-semibold text-[#2c2824] tracking-tight !text-[#2c2824]">{title}</h1>
-      {subtitle && <p className="text-sm text-[#6b645a] mt-1 max-w-2xl">{subtitle}</p>}
+      <h1 className="home-display text-2xl sm:text-3xl text-[#2c2824] tracking-tight">{title}</h1>
+      {subtitle && <p className="text-sm text-[#6b645a] mt-1.5 max-w-2xl leading-relaxed">{subtitle}</p>}
     </header>
   );
 };

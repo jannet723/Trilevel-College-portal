@@ -27,7 +27,7 @@ const AdminDashboard = () => {
       value: '0',
       note: 'No students yet',
       icon: <Users size={20} />,
-      color: 'from-[#e8f0fe] to-[#d4e2f7]',
+      color: 'bg-[#e8f0fe]',
       iconColor: '#4a6a9b',
       hasData: false,
     },
@@ -36,7 +36,7 @@ const AdminDashboard = () => {
       value: '0',
       note: 'Nothing pending',
       icon: <Clock size={20} />,
-      color: 'from-[#fef5e8] to-[#faeedc]',
+      color: 'bg-[#fef5e8]',
       iconColor: '#d4a34b',
       hasData: false,
     },
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
       value: String(CATALOG_COURSES.length),
       note: `${activeProgrammes} active`,
       icon: <BookMarked size={20} />,
-      color: 'from-[#eef5f0] to-[#ddebe2]',
+      color: 'bg-[#eef5f0]',
       iconColor: '#4a7c5e',
       hasData: true,
     },
@@ -54,7 +54,7 @@ const AdminDashboard = () => {
       value: '0',
       note: 'Awaiting enrolments',
       icon: <BarChart3 size={20} />,
-      color: 'from-[#f3eef9] to-[#e8e0f2]',
+      color: 'bg-[#f3eef9]',
       iconColor: '#7a5b9e',
       hasData: false,
     },
@@ -68,9 +68,7 @@ const AdminDashboard = () => {
     >
       <div className="space-y-8">
         {/* Hero */}
-        <div className="relative bg-linear-to-br from-[#1a1d24] via-[#2c2824] to-[#1f1d1a] rounded-2xl p-8 overflow-hidden shadow-lg">
-          <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle,#ffffff_1px,transparent_1px)] bg-size-[20px_20px]" />
-          <div className="absolute -right-8 -top-8 w-48 h-48 bg-[#4a6a9b]/15 rounded-full blur-3xl" />
+        <div className="portal-hero p-8 sm:p-10">
           <div className="relative z-10 flex flex-wrap justify-between items-center gap-6">
             <div className="max-w-xl">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs mb-4">
@@ -88,7 +86,7 @@ const AdminDashboard = () => {
               <button
                 type="button"
                 onClick={() => navigate('/admin/approvals')}
-                className="px-5 py-2.5 bg-linear-to-r from-[#4a6a9b] to-[#3d5a86] text-white rounded-xl text-sm font-medium hover:from-[#3d5a86] hover:to-[#2c4a7a] transition shadow-sm flex items-center gap-2"
+                className="px-5 py-2.5 bg-[#4a6a9b] text-white rounded-xl text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm flex items-center gap-2"
               >
                 <UserCheck size={16} />
                 Review Approvals
@@ -110,13 +108,11 @@ const AdminDashboard = () => {
           {stats.map((stat, idx) => (
             <div
               key={idx}
-              className={`bg-white/80 backdrop-blur-sm rounded-2xl border p-5 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 ${
-                stat.hasData ? 'border-[#e8e2d9]' : 'border-dashed border-[#d4cfc8]'
-              }`}
+              className={`portal-stat-card ${stat.hasData ? '' : 'portal-stat-card--empty'}`}
             >
               <div className="flex items-center justify-between mb-4">
                 <div
-                  className={`w-11 h-11 rounded-xl bg-linear-to-br ${stat.color} flex items-center justify-center ${
+                  className={`w-11 h-11 rounded-xl ${stat.color} flex items-center justify-center ${
                     !stat.hasData ? 'opacity-50' : ''
                   }`}
                 >
@@ -165,7 +161,7 @@ const AdminDashboard = () => {
                   <h3 className="font-semibold text-[#2c2824]">Enrolment by Department</h3>
                   <p className="text-xs text-[#9b9288] mt-0.5">Distribution across faculties</p>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-linear-to-br from-[#f3eef9] to-[#e8e0f2] flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-[#f3eef9] flex items-center justify-center">
                   <BarChart3 size={16} className="text-[#7a5b9e]" />
                 </div>
               </div>
@@ -203,10 +199,10 @@ const AdminDashboard = () => {
         {/* Quick actions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { icon: <Users size={18} />, label: 'Manage Students', action: '/admin/manage-students', color: 'from-[#e8f0fe] to-[#d4e2f7]', textColor: '#4a6a9b' },
-            { icon: <BookOpen size={18} />, label: 'Manage Courses', action: '/admin/manage-courses', color: 'from-[#eef5f0] to-[#ddebe2]', textColor: '#4a7c5e' },
-            { icon: <Download size={18} />, label: 'Export Reports', action: '/admin/dashboard', color: 'from-[#fef5e8] to-[#faeedc]', textColor: '#d4a34b' },
-            { icon: <Settings size={18} />, label: 'System Settings', action: '/admin/dashboard', color: 'from-[#f3eef9] to-[#e8e0f2]', textColor: '#7a5b9e' },
+            { icon: <Users size={18} />, label: 'Manage Students', action: '/admin/manage-students', color: 'bg-[#e8f0fe]', textColor: '#4a6a9b' },
+            { icon: <BookOpen size={18} />, label: 'Manage Courses', action: '/admin/manage-courses', color: 'bg-[#eef5f0]', textColor: '#4a7c5e' },
+            { icon: <Download size={18} />, label: 'Export Reports', action: '/admin/dashboard', color: 'bg-[#fef5e8]', textColor: '#d4a34b' },
+            { icon: <Settings size={18} />, label: 'System Settings', action: '/admin/dashboard', color: 'bg-[#f3eef9]', textColor: '#7a5b9e' },
           ].map((action, idx) => (
             <button
               key={idx}
@@ -215,7 +211,7 @@ const AdminDashboard = () => {
               className="bg-white/80 backdrop-blur-sm rounded-2xl border border-[#e8e2d9] p-4 flex items-center gap-3 hover:shadow-md hover:border-[#4a6a9b]/20 transition-all duration-200 hover:-translate-y-0.5 group text-left"
             >
               <div
-                className={`w-11 h-11 rounded-xl bg-linear-to-br ${action.color} flex items-center justify-center group-hover:scale-105 transition-transform`}
+                className={`w-11 h-11 rounded-xl ${action.color} flex items-center justify-center group-hover:scale-105 transition-transform`}
               >
                 <div style={{ color: action.textColor }}>{action.icon}</div>
               </div>
@@ -229,7 +225,7 @@ const AdminDashboard = () => {
         {/* Programme summary strip */}
         <div className="flex flex-wrap items-center justify-between gap-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-[#e8e2d9] p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-[#e8f0fe] to-[#d4e2f7] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] flex items-center justify-center">
               <Activity size={18} className="text-[#4a6a9b]" />
             </div>
             <div>

@@ -25,20 +25,20 @@ const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: S
   }, [lastAction, clearLastAction]);
 
   return (
-    <div
-      className="flex h-screen bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif]"
-      style={{ fontFamily: 'Georgia, serif' }}
-    >
+    <div className="h-screen flex bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif] portal-light">
       <StudentSidebar
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((c) => !c)}
         onSignOut={() => navigate('/')}
       />
 
-      <main className="flex-1 overflow-y-auto relative">
+      <div className="flex-1 min-h-0 min-w-0 flex flex-col relative">
+        <div className="home-hero-mesh pointer-events-none absolute inset-0" aria-hidden />
+        <div className="home-grain pointer-events-none absolute inset-0" aria-hidden />
+
         {lastAction && (
           <div
-            className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg backdrop-blur-md animate-fade-in-up ${
+            className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg backdrop-blur-md ${
               lastAction.type === 'enroll'
                 ? 'bg-[#eef5f0]/95 border-[#ddebe2] text-[#4a7c5e]'
                 : 'bg-white/95 border-[#e8e2d9] text-[#6b645a]'
@@ -54,11 +54,13 @@ const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: S
           </div>
         )}
 
-        <div className="relative w-full min-w-0 px-6 sm:px-8 lg:px-10 py-6 sm:py-8">
-          <StudentPageHeader title={title} subtitle={subtitle} showBack={showBack} backTo={backTo} />
-          <div className="w-full">{children}</div>
-        </div>
-      </main>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-none relative z-10">
+          <div className="home-page-shell px-5 sm:px-8 lg:px-10 xl:px-12 py-6 sm:py-8">
+            <StudentPageHeader title={title} subtitle={subtitle} showBack={showBack} backTo={backTo} />
+            <div className="w-full">{children}</div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { BookOpen, GraduationCap, Search, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { BookOpen, Search, Sparkles, SlidersHorizontal } from 'lucide-react';
 import { CATALOG_COURSES, type CatalogCourse, type CourseLevel } from '../../data/courses';
 import PublicCourseCard from '../../components/public/PublicCourseCard';
 import PublicCourseDetailModal from '../../components/public/PublicCourseDetailModal';
@@ -96,30 +96,32 @@ const Courses = () => {
         <div className="home-grain pointer-events-none" aria-hidden />
 
         <main className="scrollbar-none relative z-10 h-full overflow-y-auto overflow-x-hidden">
-          <div className="home-page-shell px-5 sm:px-8 lg:px-12 xl:px-16 py-8 sm:py-10 lg:py-12">
+          <div className="courses-page px-5 sm:px-8 lg:px-10 xl:px-14 2xl:px-16 py-8 sm:py-10 lg:py-12">
             {/* Hero */}
-            <section className="mb-10 lg:mb-12 home-fade-up">
-              <span className="home-section-label">
-                <BookOpen size={14} aria-hidden />
-                Programme catalogue
-              </span>
-              <h1 className="home-display text-3xl sm:text-4xl lg:text-[2.75rem] text-[#2c2824] leading-tight max-w-2xl mb-3">
-                Find your <span className="text-[#3d5a86]">programme</span>
-              </h1>
-              <p className="text-base text-[#6b645a] max-w-lg leading-relaxed mb-6">
-                {CATALOG_COURSES.length} pathways across {deptCount} departments — preview details, then sign in from the menu to enrol.
-              </p>
+            <section className="courses-page-hero mb-10 lg:mb-12 home-fade-up">
+              <div className="courses-page-hero__intro">
+                <span className="home-section-label">
+                  <BookOpen size={14} aria-hidden />
+                  Programme catalogue
+                </span>
+                <h1 className="home-display text-3xl sm:text-4xl lg:text-[2.75rem] text-[#2c2824] leading-tight mb-3">
+                  Find your <span className="text-[#3d5a86]">programme</span>
+                </h1>
+                <p className="text-base text-[#6b645a] leading-relaxed max-w-2xl">
+                  {CATALOG_COURSES.length} pathways across {deptCount} departments — preview details, then sign in from the menu to enrol.
+                </p>
+              </div>
 
-              <div className="flex flex-wrap gap-2">
-                <div className="home-stat-pill home-stat-pill--blue">
+              <div className="courses-page-hero__stats flex flex-wrap gap-2 sm:gap-3">
+                <div className="home-stat-pill home-stat-pill--blue min-w-[5.5rem]">
                   <span className="text-lg font-bold text-[#2c2824] tabular-nums">{CATALOG_COURSES.length}</span>
                   <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Total</span>
                 </div>
-                <div className="home-stat-pill home-stat-pill--green">
+                <div className="home-stat-pill home-stat-pill--green min-w-[5.5rem]">
                   <span className="text-lg font-bold text-[#2c2824] tabular-nums">{certCount}</span>
                   <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Certificate</span>
                 </div>
-                <div className="home-stat-pill home-stat-pill--wine">
+                <div className="home-stat-pill home-stat-pill--wine min-w-[5.5rem]">
                   <span className="text-lg font-bold text-[#2c2824] tabular-nums">{dipCount}</span>
                   <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Diploma</span>
                 </div>
@@ -127,14 +129,19 @@ const Courses = () => {
             </section>
 
             {/* Filters */}
-            <section className="mb-8 home-fade-up home-fade-up-delay">
-              <div className="rounded-2xl border border-[#e8e2d9]/80 bg-white/55 backdrop-blur-md p-5 sm:p-6 shadow-[0_12px_40px_-20px_rgba(74,106,155,0.12)]">
-                <div className="flex items-center gap-2 mb-4">
-                  <SlidersHorizontal size={16} className="text-[#4a6a9b]" />
-                  <span className="text-sm font-semibold text-[#2c2824]">Refine results</span>
+            <section className="courses-page-filters mb-8 home-fade-up home-fade-up-delay">
+              <div className="rounded-2xl border border-[#e8e2d9]/80 bg-white/55 backdrop-blur-md p-5 sm:p-6 lg:p-7 shadow-[0_12px_40px_-20px_rgba(74,106,155,0.12)] w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal size={16} className="text-[#4a6a9b]" />
+                    <span className="text-sm font-semibold text-[#2c2824]">Refine results</span>
+                  </div>
+                  <span className="text-xs text-[#9b9288]">
+                    {filtered.length} of {CATALOG_COURSES.length} shown
+                  </span>
                 </div>
 
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2 mb-5">
                   {(
                     [
                       { id: 'all' as const, label: 'All levels', count: CATALOG_COURSES.length },
@@ -154,8 +161,8 @@ const Courses = () => {
                   ))}
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
-                  <div className="relative flex-1 max-w-md">
+                <div className="courses-page-filters__row">
+                  <div className="relative courses-page-search">
                     <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
                     <input
                       type="search"
@@ -165,7 +172,7 @@ const Courses = () => {
                       className="w-full pl-10 pr-4 py-2.5 bg-white/90 border border-[#e8e2d9] rounded-xl text-sm text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20 focus:border-[#4a6a9b]/30"
                     />
                   </div>
-                  <div className="flex flex-wrap gap-2 flex-1">
+                  <div className="courses-page-dept-filters flex flex-wrap gap-2">
                     {departments.map((dept) => (
                       <button
                         key={dept}
@@ -183,15 +190,9 @@ const Courses = () => {
               </div>
             </section>
 
-            <p className="text-xs text-[#9b9288] mb-5 flex items-center gap-2 home-fade-up">
-              <GraduationCap size={14} className="text-[#4a6a9b]" />
-              Showing <span className="font-semibold text-[#6b645a]">{filtered.length}</span> of{' '}
-              {CATALOG_COURSES.length} programmes
-            </p>
-
-            <section id="catalogue-grid" className="scroll-mt-8 pb-12">
+            <section id="catalogue-grid" className="courses-page-grid scroll-mt-8 pb-12">
               {filtered.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-6">
+                <div className="courses-page-grid__inner">
                   {filtered.map((course, i) => (
                     <div
                       key={course.id}
@@ -203,8 +204,8 @@ const Courses = () => {
                   ))}
                 </div>
               ) : (
-                <div className="py-16 text-center rounded-2xl border border-dashed border-[#d4cfc8] bg-white/50 backdrop-blur-sm">
-                  <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-[#f0ece6] flex items-center justify-center">
+                <div className="courses-page-empty py-16 rounded-2xl border border-dashed border-[#d4cfc8] bg-white/50 backdrop-blur-sm">
+                  <div className="w-14 h-14 mb-4 rounded-2xl bg-[#f0ece6] flex items-center justify-center">
                     <BookOpen size={26} className="text-[#b0a89e]" />
                   </div>
                   <p className="text-[#2c2824] font-medium mb-1">No programmes match</p>
@@ -225,8 +226,8 @@ const Courses = () => {
             </section>
 
             {filtered.length > 0 && (
-              <div className="flex items-center justify-center gap-2 py-6 text-xs text-[#9b9288]">
-                <Sparkles size={12} className="text-[#4a6a9b]" />
+              <div className="flex items-center gap-2 py-6 text-xs text-[#9b9288] border-t border-[#e8e2d9]/60 mt-2">
+                <Sparkles size={12} className="text-[#4a6a9b] shrink-0" />
                 Sign in from the sidebar to enrol in a programme
               </div>
             )}

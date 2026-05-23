@@ -31,7 +31,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
         <div
           className="cthumb-inner"
           style={{
-            background: 'linear-gradient(135deg, #1e3554, #2d5282)',
+            background: '#2d5282',
           }}
         >
           <div className="cthumb-icon">
