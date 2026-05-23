@@ -1,18 +1,56 @@
-import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, GraduationCap, LogIn, Search, Sparkles } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { BookOpen, GraduationCap, Search, Sparkles, SlidersHorizontal } from 'lucide-react';
 import { CATALOG_COURSES, type CatalogCourse, type CourseLevel } from '../../data/courses';
 import PublicCourseCard from '../../components/public/PublicCourseCard';
 import PublicCourseDetailModal from '../../components/public/PublicCourseDetailModal';
+import RegisterOverlay from '../../components/public/RegisterOverlay';
+import SignInOverlay from '../../components/public/SignInOverlay';
+import HomeSidebar from '../../components/public/HomeSidebar';
 
 type LevelFilter = 'all' | CourseLevel;
 
+const deptCount = new Set(CATALOG_COURSES.map((c) => c.department)).size;
+
 const Courses = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
   const [selectedCourse, setSelectedCourse] = useState<CatalogCourse | null>(null);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+
+  const openSignIn = useCallback(() => setShowSignIn(true), []);
+  const closeSignIn = useCallback(() => setShowSignIn(false), []);
+  const openRegister = useCallback(() => setShowRegister(true), []);
+  const closeRegister = useCallback(() => setShowRegister(false), []);
+  const openRegisterFromSignIn = useCallback(() => {
+    setShowSignIn(false);
+    setShowRegister(true);
+  }, []);
+
+  const scrollToCatalogue = useCallback(() => {
+    document.getElementById('catalogue-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
+  const scrollToAbout = useCallback(() => {
+    navigate('/#about-trilevel');
+  }, [navigate]);
+
+  const scrollToPortal = useCallback(() => {
+    navigate('/#portal-peek');
+  }, [navigate]);
+
+  useEffect(() => {
+    const register = searchParams.get('register') === '1';
+    const signin = searchParams.get('signin') === '1';
+    if (register) setShowRegister(true);
+    if (signin) setShowSignIn(true);
+    if (register || signin) setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const departments = useMemo(
     () => ['all', ...Array.from(new Set(CATALOG_COURSES.map((c) => c.department))).sort()],
@@ -35,157 +73,177 @@ const Courses = () => {
 
   const certCount = CATALOG_COURSES.filter((c) => c.level === 'Certificate').length;
   const dipCount = CATALOG_COURSES.filter((c) => c.level === 'Diploma').length;
+  const modalOpen = showRegister || showSignIn;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#f8f6f2] to-[#f0ede8] font-['Inter',system-ui,-apple-system,sans-serif] relative">
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.35]"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(74,106,155,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(74,106,155,0.04) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
+    <div className="h-screen flex bg-[#f8f6f2] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden portal-light">
+      <HomeSidebar
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+        onSignIn={openSignIn}
+        onRegister={openRegister}
+        onScrollToAbout={scrollToAbout}
+        onScrollToProgrammes={scrollToCatalogue}
+        onScrollToPortal={scrollToPortal}
       />
-      <div className="fixed -top-32 -left-32 w-96 h-96 bg-[#4a6a9b]/8 rounded-full blur-[100px] pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-72 h-72 bg-[#2F2FE4]/5 rounded-full blur-[90px] pointer-events-none" />
 
-      <header className="portal-page-header sticky top-0 z-30 border-b border-[#e8e2d9]/80 bg-white/95 backdrop-blur-xl text-[#2c2824]">
-        <div className="w-full px-6 sm:px-8 lg:px-10 py-4 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2 group">
-              <img src="/logo.png" alt="Trilevel" className="w-12 h-12 object-contain group-hover:scale-105 transition-transform" />
-              <div className="hidden sm:block">
-                <p className="text-sm font-bold tracking-wide text-[#b70c0c] uppercase" style={{ fontFamily: 'Georgia, serif' }}>
-                  Trilevel College
-                </p>
-                <p className="text-[10px] text-[#9b9288] tracking-[0.15em] uppercase">Programme Catalogue</p>
-              </div>
-            </Link>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#e8e2d9] bg-white/70 text-sm text-[#6b645a] hover:text-[#4a6a9b] hover:border-[#4a6a9b]/30 transition"
-            >
-              <ArrowLeft size={14} />
-              Home
-            </Link>
-            <button
-              type="button"
-              onClick={() => navigate('/')}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-linear-to-r from-[#2F2FE4] to-[#3d5a86] text-white text-sm font-medium hover:from-[#3d5a86] hover:to-[#2c4a7a] transition shadow-sm"
-            >
-              <LogIn size={14} />
-              Sign in
-            </button>
-          </div>
-        </div>
-      </header>
+      <div
+        className={`flex-1 min-h-0 min-w-0 relative transition-[filter] duration-500 ease-out ${
+          modalOpen ? 'blur-sm brightness-[0.94] pointer-events-none select-none' : ''
+        }`}
+      >
+        <div className="home-hero-mesh pointer-events-none" aria-hidden />
+        <div className="home-grain pointer-events-none" aria-hidden />
 
-      <main className="relative w-full px-6 sm:px-8 lg:px-10 py-8 sm:py-10">
-        <div className="mb-8 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#e8e2d9] bg-white/50 text-xs text-[#6b645a] mb-4">
-            <Sparkles size={12} className="text-[#4a6a9b]" />
-            View-only catalogue — sign in to enrol
-          </div>
-          <h1
-            className="text-3xl sm:text-4xl font-bold text-[#2F2FE4] mb-3"
-            style={{ fontFamily: "'Palatino Linotype', Palatino, Georgia, serif" }}
-          >
-            Our Programmes
-          </h1>
-          <p className="text-[#555] leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
-            Browse {CATALOG_COURSES.length} certificate and diploma programmes across hospitality, business, technology, theology, and more.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap gap-3 mb-6">
-          {[
-            { id: 'all' as const, label: 'All', count: CATALOG_COURSES.length },
-            { id: 'Certificate' as const, label: 'Certificate', count: certCount },
-            { id: 'Diploma' as const, label: 'Diploma', count: dipCount },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setLevelFilter(tab.id)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                levelFilter === tab.id
-                  ? 'bg-[#4a6a9b] text-white shadow-md'
-                  : 'bg-white/60 border border-[#e8e2d9] text-[#6b645a] hover:bg-white'
-              }`}
-            >
-              {tab.label}
-              <span className={`ml-2 text-xs ${levelFilter === tab.id ? 'text-white/80' : 'text-[#9b9288]'}`}>
-                {tab.count}
+        <main className="scrollbar-none relative z-10 h-full overflow-y-auto overflow-x-hidden">
+          <div className="home-page-shell px-5 sm:px-8 lg:px-12 xl:px-16 py-8 sm:py-10 lg:py-12">
+            {/* Hero */}
+            <section className="mb-10 lg:mb-12 home-fade-up">
+              <span className="home-section-label">
+                <BookOpen size={14} aria-hidden />
+                Programme catalogue
               </span>
-            </button>
-          ))}
-        </div>
+              <h1 className="home-display text-3xl sm:text-4xl lg:text-[2.75rem] text-[#2c2824] leading-tight max-w-2xl mb-3">
+                Find your <span className="text-[#3d5a86]">programme</span>
+              </h1>
+              <p className="text-base text-[#6b645a] max-w-lg leading-relaxed mb-6">
+                {CATALOG_COURSES.length} pathways across {deptCount} departments — preview details, then sign in from the menu to enrol.
+              </p>
 
-        <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between mb-8">
-          <div className="relative flex-1 max-w-md">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
-            <input
-              type="text"
-              placeholder="Search programmes..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white/80 border border-[#e0d9d0] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20"
-            />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {departments.map((dept) => (
-              <button
-                key={dept}
-                type="button"
-                onClick={() => setDepartmentFilter(dept)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                  departmentFilter === dept
-                    ? 'bg-white border border-[#4a6a9b]/40 text-[#4a6a9b] shadow-sm'
-                    : 'bg-white/40 border border-transparent text-[#9b9288] hover:bg-white/70'
-                }`}
-              >
-                {dept === 'all' ? 'All departments' : dept}
-              </button>
-            ))}
-          </div>
-        </div>
+              <div className="flex flex-wrap gap-2">
+                <div className="home-stat-pill home-stat-pill--blue">
+                  <span className="text-lg font-bold text-[#2c2824] tabular-nums">{CATALOG_COURSES.length}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Total</span>
+                </div>
+                <div className="home-stat-pill home-stat-pill--green">
+                  <span className="text-lg font-bold text-[#2c2824] tabular-nums">{certCount}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Certificate</span>
+                </div>
+                <div className="home-stat-pill home-stat-pill--wine">
+                  <span className="text-lg font-bold text-[#2c2824] tabular-nums">{dipCount}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Diploma</span>
+                </div>
+              </div>
+            </section>
 
-        <p className="text-xs text-[#9b9288] mb-5 flex items-center gap-2">
-          <GraduationCap size={14} />
-          Showing {filtered.length} programme{filtered.length !== 1 ? 's' : ''}
-        </p>
+            {/* Filters */}
+            <section className="mb-8 home-fade-up home-fade-up-delay">
+              <div className="rounded-2xl border border-[#e8e2d9]/80 bg-white/55 backdrop-blur-md p-5 sm:p-6 shadow-[0_12px_40px_-20px_rgba(74,106,155,0.12)]">
+                <div className="flex items-center gap-2 mb-4">
+                  <SlidersHorizontal size={16} className="text-[#4a6a9b]" />
+                  <span className="text-sm font-semibold text-[#2c2824]">Refine results</span>
+                </div>
 
-        {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
-            {filtered.map((course) => (
-              <PublicCourseCard key={course.id} course={course} onView={setSelectedCourse} />
-            ))}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {(
+                    [
+                      { id: 'all' as const, label: 'All levels', count: CATALOG_COURSES.length },
+                      { id: 'Certificate' as const, label: 'Certificate', count: certCount },
+                      { id: 'Diploma' as const, label: 'Diploma', count: dipCount },
+                    ] as const
+                  ).map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setLevelFilter(tab.id)}
+                      className={`home-filter-chip ${levelFilter === tab.id ? 'home-filter-chip--active' : ''}`}
+                    >
+                      {tab.label}
+                      <span className="opacity-80 ml-1">({tab.count})</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
+                  <div className="relative flex-1 max-w-md">
+                    <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
+                    <input
+                      type="search"
+                      placeholder="Search by title, code, or department..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 bg-white/90 border border-[#e8e2d9] rounded-xl text-sm text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20 focus:border-[#4a6a9b]/30"
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-2 flex-1">
+                    {departments.map((dept) => (
+                      <button
+                        key={dept}
+                        type="button"
+                        onClick={() => setDepartmentFilter(dept)}
+                        className={`home-filter-chip home-filter-chip--dept ${
+                          departmentFilter === dept ? 'home-filter-chip--active' : ''
+                        }`}
+                      >
+                        {dept === 'all' ? 'All departments' : dept}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <p className="text-xs text-[#9b9288] mb-5 flex items-center gap-2 home-fade-up">
+              <GraduationCap size={14} className="text-[#4a6a9b]" />
+              Showing <span className="font-semibold text-[#6b645a]">{filtered.length}</span> of{' '}
+              {CATALOG_COURSES.length} programmes
+            </p>
+
+            <section id="catalogue-grid" className="scroll-mt-8 pb-12">
+              {filtered.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-6">
+                  {filtered.map((course, i) => (
+                    <div
+                      key={course.id}
+                      className="home-course-reveal"
+                      style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
+                    >
+                      <PublicCourseCard course={course} onView={setSelectedCourse} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-16 text-center rounded-2xl border border-dashed border-[#d4cfc8] bg-white/50 backdrop-blur-sm">
+                  <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-[#f0ece6] flex items-center justify-center">
+                    <BookOpen size={26} className="text-[#b0a89e]" />
+                  </div>
+                  <p className="text-[#2c2824] font-medium mb-1">No programmes match</p>
+                  <p className="text-sm text-[#9b9288] mb-4">Try a different search or filter</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearch('');
+                      setLevelFilter('all');
+                      setDepartmentFilter('all');
+                    }}
+                    className="home-cta-ghost"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+              )}
+            </section>
+
+            {filtered.length > 0 && (
+              <div className="flex items-center justify-center gap-2 py-6 text-xs text-[#9b9288]">
+                <Sparkles size={12} className="text-[#4a6a9b]" />
+                Sign in from the sidebar to enrol in a programme
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="py-16 text-center rounded-2xl border border-dashed border-[#d4cfc8] bg-white/40">
-            <BookOpen size={40} className="mx-auto text-[#b0a89e] mb-3" />
-            <p className="text-[#6b645a] font-medium">No programmes match your filters</p>
-            <button
-              type="button"
-              onClick={() => {
-                setSearch('');
-                setLevelFilter('all');
-                setDepartmentFilter('all');
-              }}
-              className="mt-3 text-sm text-[#4a6a9b] hover:underline"
-            >
-              Clear filters
-            </button>
-          </div>
-        )}
-      </main>
+        </main>
+      </div>
+
+      {showSignIn && <SignInOverlay onClose={closeSignIn} onOpenRegister={openRegisterFromSignIn} />}
+      {showRegister && <RegisterOverlay onClose={closeRegister} />}
 
       <PublicCourseDetailModal
         course={selectedCourse}
         onClose={() => setSelectedCourse(null)}
-        onSignIn={() => navigate('/')}
+        onSignIn={() => {
+          setSelectedCourse(null);
+          openSignIn();
+        }}
       />
     </div>
   );
