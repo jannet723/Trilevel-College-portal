@@ -7,7 +7,11 @@ import {
   X,
   GraduationCap,
   Shield,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../../firebase/auth';
 
 interface RegisterOverlayProps {
   onClose: () => void;
@@ -23,6 +27,10 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
   });
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -41,8 +49,9 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match.');
       return;
@@ -51,13 +60,30 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
       setError('Password must be at least 6 characters.');
       return;
     }
-    console.log('Registration attempt:', formData);
-    onClose();
+
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      const cred = await authService.register(formData.email, formData.password, formData.name, formData.userType);
+      const profile = await authService.getUserProfile(cred.user.uid);
+      if (profile?.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/student/dashboard');
+      }
+      onClose();
+    } catch (err: any) {
+      console.error('Registration failed', err);
+      setError(err?.message ?? 'Registration failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 pointer-events-auto"
+      className="fixed inset-0 z-60 flex items-center justify-center p-4 pointer-events-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="register-overlay-title"
@@ -70,7 +96,7 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
       />
 
       <div
-        className="register-overlay-card relative w-full max-w-[22rem] animate-fade-in-up overflow-hidden"
+        className="register-overlay-card relative w-full max-w-88 animate-fade-in-up overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -82,11 +108,11 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
           <X size={16} />
         </button>
 
-        <div className="sign-in-card rounded-[1.5rem] px-5 pt-5 pb-4 shadow-[0_24px_60px_-16px_rgba(44,40,36,0.2)]">
+        <div className="sign-in-card rounded-3xl px-5 pt-5 pb-4 shadow-[0_24px_60px_-16px_rgba(44,40,36,0.2)]">
           <div className="text-center mb-4 pr-6">
             <img src="/logo.png" alt="" className="w-12 h-12 mx-auto object-contain mb-2" aria-hidden />
             <p
-              className="text-[11px] font-bold tracking-[0.1em] text-[#b70c0c] uppercase leading-tight"
+              className="text-[11px] font-bold tracking-widest text-[#b70c0c] uppercase leading-tight"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               Trilevel College
@@ -103,7 +129,7 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
 
           <div className="relative mb-3.5 p-0.5 rounded-lg bg-[#f0ece6]/90 border border-[#e8e2d9]/70">
             <div
-              className="absolute top-0.5 bottom-0.5 w-[calc(50%-3px)] rounded-md bg-white shadow-sm ring-1 ring-[#e8e2d9]/50 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+              className="absolute top-0.5 bottom-0.5 w-[calc(50%-3px)] rounded-md bg-white shadow-sm ring-1 ring-[#e8e2d9]/50 transition-all duration-500 ease-in-out"
               style={{ left: formData.userType === 'student' ? '3px' : 'calc(50%)' }}
             />
             <div className="relative grid grid-cols-2">
@@ -183,7 +209,7 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
               >
                 <Lock size={13} className={`shrink-0 ${focused === 'password' ? 'text-[#4a6a9b]' : 'text-[#c0b8ae]'}`} />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   name="password"
                   required
                   placeholder="Password"
@@ -193,6 +219,14 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
                   onBlur={() => setFocused(null)}
                   className="flex-1 min-w-0 bg-transparent text-xs text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  className="text-[#c0b8ae] hover:text-[#4a6a9b]"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
               <div
                 className={`sign-in-field flex items-center gap-2 rounded-lg px-2.5 py-2 ${
@@ -201,7 +235,7 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
               >
                 <Lock size={13} className={`shrink-0 ${focused === 'confirmPassword' ? 'text-[#4a6a9b]' : 'text-[#c0b8ae]'}`} />
                 <input
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   name="confirmPassword"
                   required
                   placeholder="Confirm"
@@ -211,15 +245,24 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
                   onBlur={() => setFocused(null)}
                   className="flex-1 min-w-0 bg-transparent text-xs text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((visible) => !visible)}
+                  className="text-[#c0b8ae] hover:text-[#4a6a9b]"
+                  aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                >
+                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
 
             <button
               type="submit"
-              className="sign-in-submit w-full py-2.5 rounded-lg text-xs font-semibold text-white flex items-center justify-center gap-1.5 mt-0.5"
+              disabled={isSubmitting}
+              className={`sign-in-submit w-full py-2.5 rounded-lg text-xs font-semibold text-white flex items-center justify-center gap-1.5 mt-0.5 ${isSubmitting ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               <UserPlus size={14} />
-              Create account
+              {isSubmitting ? 'Creating account...' : 'Create account'}
             </button>
           </form>
 

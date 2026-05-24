@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminPageHeader from '../components/admin/AdminPageHeader';
 
@@ -19,6 +20,7 @@ const AdminLayout = ({
   backTo = '/admin/dashboard',
 }: AdminLayoutProps) => {
   const navigate = useNavigate();
+  const { logout, userProfile } = useAuth();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
@@ -26,7 +28,8 @@ const AdminLayout = ({
       <AdminSidebar
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((c) => !c)}
-        onSignOut={() => navigate('/')}
+        onSignOut={async () => { await logout(); navigate('/'); }}
+        userProfile={userProfile}
       />
 
       <div className="flex-1 min-h-0 min-w-0 flex flex-col relative">

@@ -206,13 +206,12 @@ const Dashboard: React.FC = () => {
                 icon={<BookIcon />}
                 title="No courses yet"
                 desc="Enrol in a course to start tracking your progress here."
-                action={{ label: "Browse courses →", onClick: () => navigate('/student/courses') }}
-              />
+                action={{ label: "Browse courses →", onClick: () => navigate('/student/courses') }}/>
             ) : (
               <div className="gap-5 grid md:grid-cols-3">
                 {courses.map(course => (
                   <div key={course.id} className="relative bg-white/70 hover:shadow-md backdrop-blur-sm p-5 border border-[#e8e2d9] rounded-xl transition-all hover:-translate-y-0.5 duration-200">
-                    <button onClick={() => removeCourse(course.id)} className="top-3 right-3 absolute flex justify-center items-center bg-[#f5f0eb] hover:bg-[#ede6de] rounded-full w-6 h-6 text-[#b0a89e] hover:text-[#6b645a] text-xs transition" title="Remove">✕</button>
+                    <button onClick={() => removeCourse(String(course.id))} className="top-3 right-3 absolute flex justify-center items-center bg-[#f5f0eb] hover:bg-[#ede6de] rounded-full w-6 h-6 text-[#b0a89e] hover:text-[#6b645a] text-xs transition" title="Remove">✕</button>
                     <div className="flex justify-between items-start mb-3">
                       <div className={`rounded-lg px-2.5 py-1 text-[10px] font-semibold ${course.badgeColor} tracking-wide uppercase`}>{course.badge}</div>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c0b8ae"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>

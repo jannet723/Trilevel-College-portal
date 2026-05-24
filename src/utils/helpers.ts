@@ -16,6 +16,20 @@ export const validatePassword = (password: string): boolean => {
   return password.length >= 8;
 };
 
+export const getAuthErrorMessage = (err: any): string => {
+  const code = err?.code?.toString?.() ?? '';
+  if (code.includes('wrong-password') || code.includes('user-not-found') || code.includes('invalid-email')) {
+    return 'Invalid email or password.';
+  }
+  if (code.includes('too-many-requests')) {
+    return 'Too many attempts. Please try again later.';
+  }
+  if (code.includes('network-request-failed')) {
+    return 'Network issue. Please check your connection and try again.';
+  }
+  return err?.message || 'Invalid email or password.';
+};
+
 export const truncateText = (text: string, length: number): string => {
   if (text.length <= length) return text;
   return text.substring(0, length) + '...';

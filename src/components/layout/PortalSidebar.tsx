@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { PanelLeft, PanelLeftClose, LogOut } from 'lucide-react';
+import { PanelLeft, PanelLeftClose, LogOut, User } from 'lucide-react';
 import SidebarNavIcon from './SidebarNavIcon';
 
 export interface PortalNavItem {
@@ -14,6 +14,7 @@ interface PortalSidebarProps {
   dashboardPath: string;
   mainNav: PortalNavItem[];
   accountNav?: PortalNavItem[];
+  userProfile?: { fullName?: string } | null;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   onSignOut: () => void;
@@ -24,6 +25,7 @@ const PortalSidebar = ({
   dashboardPath,
   mainNav,
   accountNav = [],
+  userProfile,
   isCollapsed,
   onToggleCollapse,
   onSignOut,
@@ -88,6 +90,21 @@ const PortalSidebar = ({
         </nav>
 
         <div className="home-sidebar-footer">
+          {userProfile?.fullName ? (
+            <div className={`home-sidebar-profile ${isCollapsed ? 'mb-4' : 'mb-3'} rounded-3xl border border-[#e8e2d9] bg-white/95 p-3 ${isCollapsed ? 'flex items-center justify-center' : ''}`}>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#eef3f7] text-[#4a6a9b]">
+                  <User size={18} />
+                </div>
+                {!isCollapsed && (
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-[#2c2824]">{userProfile.fullName}</p>
+                    <p className="text-[11px] text-[#8a7d72]">Signed in</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
           <button
             type="button"
             onClick={onSignOut}

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import {
   User,
   Mail,
@@ -12,19 +13,39 @@ import {
 } from 'lucide-react';
 import StudentLayout from '../../layouts/StudentLayout';
 import ProfileLayout from '../../components/profile/ProfileLayout';
+import { authService } from '../../firebase/auth';
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const { userProfile, user } = useAuth();
+
+  const [savedProfile, setSavedProfile] = useState<any>(userProfile ?? null);
+
+  useEffect(() => { setSavedProfile(userProfile ?? null); }, [userProfile]);
 
   const userInfo = {
-    name: 'Jane Wanjiku',
-    email: 'jane.wanjiku@student.trilevel.ac.ke',
-    studentId: 'TLC/2024/0078',
-    enrolled: 'January 2024',
-    phone: '+254 712 345 678',
-    nId: '32456789',
-    county: 'Nairobi',
+    name: savedProfile?.fullName ?? userProfile?.fullName ?? user?.displayName ?? 'Unnamed Student',
+    email: savedProfile?.email ?? userProfile?.email ?? user?.email ?? '',
+    studentId: savedProfile?.studentId ?? userProfile?.studentId ?? '—',
+    enrolled: savedProfile?.enrolled ?? userProfile?.enrolled ?? '—',
+    phone: savedProfile?.phone ?? userProfile?.phone ?? '—',
+    nId: savedProfile?.nId ?? userProfile?.nId ?? '—',
+    county: savedProfile?.county ?? userProfile?.county ?? '—',
   };
+
+  const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', nId: '', county: '' });
+
+  useEffect(() => {
+    const full = (savedProfile?.fullName ?? userProfile?.fullName ?? user?.displayName ?? '');
+    const parts = full.split(' ').filter(Boolean);
+    setForm({
+      firstName: parts[0] ?? '',
+      lastName: parts.slice(1).join(' ') ?? '',
+      phone: savedProfile?.phone ?? userProfile?.phone ?? '',
+      nId: savedProfile?.nId ?? userProfile?.nId ?? '',
+      county: savedProfile?.county ?? userProfile?.county ?? '',
+    });
+  }, [savedProfile, userProfile, user]);
 
   const fieldClass = (editable: boolean) =>
     `w-full h-11 pl-10 pr-3 rounded-xl border text-sm transition-all outline-none ${
@@ -38,8 +59,8 @@ const Profile = () => {
       <ProfileLayout
         name={userInfo.name}
         email={userInfo.email}
-        badge="Active Student"
-        initials="JW"
+        badge={userProfile?.role === 'admin' ? 'Staff' : 'Active Student'}
+        initials={(userInfo.name || 'U').split(' ').map((s: string) => s[0]).slice(0,2).join('').toUpperCase()}
         details={[
           {
             icon: <CreditCard size={14} />,
@@ -50,7 +71,7 @@ const Profile = () => {
           {
             icon: <Calendar size={14} />,
             label: 'Enrolled',
-            value: userInfo.enrolled,
+            value: typeof userInfo.enrolled === 'object' ? String(userInfo.enrolled) : userInfo.enrolled,
             variant: 'green',
           },
           {
@@ -79,7 +100,7 @@ const Profile = () => {
               </label>
               <div className="relative">
                 <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
-                <input className={fieldClass(true)} defaultValue="Jane" disabled={!isEditing} />
+                <input className={fieldClass(true)} value={form.firstName} onChange={(e) => setForm(f => ({ ...f, firstName: e.target.value }))} disabled={!isEditing} />
               </div>
             </div>
             <div>
@@ -88,7 +109,7 @@ const Profile = () => {
               </label>
               <div className="relative">
                 <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
-                <input className={fieldClass(true)} defaultValue="Wanjiku" disabled={!isEditing} />
+                <input className={fieldClass(true)} value={form.lastName} onChange={(e) => setForm(f => ({ ...f, lastName: e.target.value }))} disabled={!isEditing} />
               </div>
             </div>
             <div className="sm:col-span-2">
@@ -111,7 +132,7 @@ const Profile = () => {
               </label>
               <div className="relative">
                 <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
-                <input className={fieldClass(true)} defaultValue={userInfo.phone} disabled={!isEditing} />
+                <input className={fieldClass(true)} value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} disabled={!isEditing} />
               </div>
             </div>
             <div>
@@ -120,7 +141,7 @@ const Profile = () => {
               </label>
               <div className="relative">
                 <CreditCard size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
-                <input className={fieldClass(true)} defaultValue={userInfo.nId} disabled={!isEditing} />
+                <input className={fieldClass(true)} value={form.nId} onChange={(e) => setForm(f => ({ ...f, nId: e.target.value }))} disabled={!isEditing} />
               </div>
             </div>
             <div className="sm:col-span-2">
@@ -129,7 +150,7 @@ const Profile = () => {
               </label>
               <div className="relative">
                 <MapPin size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
-                <input className={fieldClass(true)} defaultValue={userInfo.county} disabled={!isEditing} />
+                <input className={fieldClass(true)} value={form.county} onChange={(e) => setForm(f => ({ ...f, county: e.target.value }))} disabled={!isEditing} />
               </div>
             </div>
           </div>
@@ -138,7 +159,23 @@ const Profile = () => {
             <button
               type="button"
               className="home-cta-primary"
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={async () => {
+                if (!isEditing) { setIsEditing(true); return; }
+                try {
+                  if (!user) throw new Error('Not authenticated');
+                  const fullName = `${form.firstName} ${form.lastName}`.trim();
+                  const updated = await authService.updateUserProfile(user.uid, {
+                    fullName,
+                    phone: form.phone,
+                    nId: form.nId,
+                    county: form.county,
+                  });
+                  setSavedProfile(updated);
+                  setIsEditing(false);
+                } catch (err) {
+                  console.error('Failed to save profile', err);
+                }
+              }}
             >
               {isEditing ? (
                 <>
