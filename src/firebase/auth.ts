@@ -1,57 +1,46 @@
-// Authentication service
-// To use Firebase authentication, run: npm install firebase
-// Then configure Firebase in src/firebase/config.ts
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  type User,
+} from "firebase/auth";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db } from "./config";
 
-// Placeholder authentication service
 export const authService = {
-  register: async (_email: string, _password: string) => {
-    console.warn('Firebase not configured. Call npm install firebase to enable authentication.');
-    return null;
+  register: async (email: string, password: string, fullName: string) => {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db, "users", cred.user.uid), {
+      fullName,
+      email,
+      role: "student",
+      createdAt: serverTimestamp(),
+    });
+    return cred;
   },
 
-  login: async (_email: string, _password: string) => {
-    console.warn('Firebase not configured. Call npm install firebase to enable authentication.');
-    return null;
+  login: async (email: string, password: string) => {
+    return await signInWithEmailAndPassword(auth, email, password);
   },
 
   logout: async () => {
-    console.warn('Firebase not configured. Call npm install firebase to enable authentication.');
-    return null;
+    return await signOut(auth);
   },
 
-  resetPassword: async (_email: string) => {
-    console.warn('Firebase not configured. Call npm install firebase to enable authentication.');
-    return null;
+  resetPassword: async (email: string) => {
+    return await sendPasswordResetEmail(auth, email);
   },
 
-  getCurrentUser: () => {
-    return null;
+  getCurrentUser: () => auth.currentUser,
+
+  getUserProfile: async (uid: string) => {
+    const snap = await getDoc(doc(db, "users", uid));
+    return snap.exists() ? snap.data() : null;
+  },
+
+  onAuthStateChanged: (callback: (user: User | null) => void) => {
+    return onAuthStateChanged(auth, callback);
   },
 };
-
-// Uncomment when Firebase is installed:
-// import {
-//   createUserWithEmailAndPassword,
-//   signInWithEmailAndPassword,
-//   signOut,
-//   sendPasswordResetEmail,
-// } from 'firebase/auth';
-// import { auth } from './config';
-//
-// export const authService = {
-//   register: async (email: string, password: string) => {
-//     return await createUserWithEmailAndPassword(auth, email, password);
-//   },
-//   login: async (email: string, password: string) => {
-//     return await signInWithEmailAndPassword(auth, email, password);
-//   },
-//   logout: async () => {
-//     return await signOut(auth);
-//   },
-//   resetPassword: async (email: string) => {
-//     return await sendPasswordResetEmail(auth, email);
-//   },
-//   getCurrentUser: () => {
-//     return auth.currentUser;
-//   },
-// };

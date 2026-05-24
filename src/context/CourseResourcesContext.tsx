@@ -1,117 +1,71 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
-import type { CourseResource, CourseResourceInput } from '../types/courseResource';
-
-const STORAGE_KEY = 'trilevel_course_resources';
-
-function loadResources(): CourseResource[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as CourseResource[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { courseService } from '../services/api';
 
 interface CourseResourcesContextType {
-  resources: CourseResource[];
-  getResourcesForCourse: (courseId: number) => CourseResource[];
-  getResourceCount: (courseId: number) => number;
-  addResource: (input: CourseResourceInput) => CourseResource;
-  updateResource: (id: string, updates: Partial<CourseResourceInput>) => void;
-  deleteResource: (id: string) => void;
+  courses: any[];
+  resources: any[];
+  loading: boolean;
+  error: string | null;
+  refresh: () => void;
+  getCourseById: (id: string) => any | null;
+  getResourcesForCourse: (courseId: string) => any[];
+  addResource: (resource: any) => Promise<void>;
+  deleteResource: (resourceId: string) => Promise<void>;
 }
 
 const CourseResourcesContext = createContext<CourseResourcesContextType | undefined>(undefined);
 
-export const CourseResourcesProvider = ({ children }: { children: ReactNode }) => {
-  const [resources, setResources] = useState<CourseResource[]>(loadResources);
+export const CourseResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [courses, setCourses]     = useState<any[]>([]);
+  const [resources, setResources] = useState<any[]>([]);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState<string | null>(null);
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(resources));
-  }, [resources]);
+  const fetchCourses = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await courseService.getAll();
+      setCourses(data);
+    } catch (err: any) {
+      setError('Failed to load courses.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const getResourcesForCourse = useCallback(
-    (courseId: number) =>
-      resources
-        .filter((r) => r.courseId === courseId)
-        .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title)),
-    [resources]
-  );
+  useEffect(() => { fetchCourses(); }, []);
 
-  const getResourceCount = useCallback(
-    (courseId: number) => resources.filter((r) => r.courseId === courseId).length,
-    [resources]
-  );
+  const getCourseById = (id: string) => courses.find((c) => c.id === id) || null;
 
-  const addResource = useCallback((input: CourseResourceInput) => {
-    const courseResources = resources.filter((r) => r.courseId === input.courseId);
-    const maxOrder = courseResources.reduce((max, r) => Math.max(max, r.order), 0);
-    const newResource: CourseResource = {
-      id: `res-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-      courseId: input.courseId,
-      type: input.type,
-      title: input.title.trim(),
-      unit: input.unit.trim() || 'General',
-      content: input.content.trim(),
-      order: input.order ?? maxOrder + 1,
-      updatedAt: new Date().toISOString(),
-      ...(input.file ? { file: input.file } : {}),
-    };
-    setResources((prev) => [...prev, newResource]);
-    return newResource;
-  }, [resources]);
+  const getResourcesForCourse = (courseId: string) =>
+    resources.filter((r) => r.courseId === courseId);
 
-  const updateResource = useCallback((id: string, updates: Partial<CourseResourceInput>) => {
-    setResources((prev) =>
-      prev.map((r) =>
-        r.id === id
-          ? {
-              ...r,
-              ...(updates.type !== undefined && { type: updates.type }),
-              ...(updates.title !== undefined && { title: updates.title.trim() }),
-              ...(updates.unit !== undefined && { unit: updates.unit.trim() || 'General' }),
-              ...(updates.content !== undefined && { content: updates.content.trim() }),
-              ...(updates.order !== undefined && { order: updates.order }),
-              ...(updates.file !== undefined &&
-                (updates.file === null ? { file: undefined } : { file: updates.file })),
-              updatedAt: new Date().toISOString(),
-            }
-          : r
-      )
-    );
-  }, []);
+  const addResource = async (resource: any) => {
+    setResources((prev) => [...prev, { ...resource, id: Date.now().toString() }]);
+  };
 
-  const deleteResource = useCallback((id: string) => {
-    setResources((prev) => prev.filter((r) => r.id !== id));
-  }, []);
+  const deleteResource = async (resourceId: string) => {
+    setResources((prev) => prev.filter((r) => r.id !== resourceId));
+  };
 
-  const value = useMemo(
-    () => ({
-      resources,
+  return (
+    <CourseResourcesContext.Provider value={{
+      courses, resources, loading, error,
+      refresh: fetchCourses,
+      getCourseById,
       getResourcesForCourse,
-      getResourceCount,
       addResource,
-      updateResource,
       deleteResource,
-    }),
-    [resources, getResourcesForCourse, getResourceCount, addResource, updateResource, deleteResource]
+    }}>
+      {children}
+    </CourseResourcesContext.Provider>
   );
-
-  return <CourseResourcesContext.Provider value={value}>{children}</CourseResourcesContext.Provider>;
 };
 
-export const useCourseResources = () => {
-  const ctx = useContext(CourseResourcesContext);
-  if (!ctx) throw new Error('useCourseResources must be used within CourseResourcesProvider');
-  return ctx;
-};
+export function useCourseResources() {
+  const context = useContext(CourseResourcesContext);
+  if (!context) throw new Error('useCourseResources must be used within CourseResourcesProvider');
+  return context;
+}

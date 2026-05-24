@@ -1,38 +1,63 @@
-// API services
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import {
+  collection, doc, getDocs, getDoc, addDoc,
+  updateDoc, deleteDoc, query, where, orderBy,
+  serverTimestamp
+} from "firebase/firestore";
+import { db } from "../firebase/config";
 
-export const apiService = {
-  async get(endpoint: string) {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`);
-    if (!response.ok) throw new Error('API error');
-    return response.json();
+export const courseService = {
+  getAll: async () => {
+    const snap = await getDocs(query(collection(db, "courses"), orderBy("createdAt", "desc")));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
-
-  async post(endpoint: string, data: any) {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) throw new Error('API error');
-    return response.json();
+  getById: async (id: string) => {
+    const snap = await getDoc(doc(db, "courses", id));
+    return snap.exists() ? { id: snap.id, ...snap.data() } : null;
   },
-
-  async put(endpoint: string, data: any) {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) throw new Error('API error');
-    return response.json();
+  create: async (data: any) => {
+    return await addDoc(collection(db, "courses"), { ...data, createdAt: serverTimestamp() });
   },
+  update: async (id: string, data: any) => {
+    return await updateDoc(doc(db, "courses", id), data);
+  },
+  delete: async (id: string) => {
+    return await deleteDoc(doc(db, "courses", id));
+  },
+};
 
-  async delete(endpoint: string) {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'DELETE',
+export const enrollmentService = {
+  getByStudent: async (studentId: string) => {
+    const snap = await getDocs(
+      query(collection(db, "enrollments"), where("studentId", "==", studentId))
+    );
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  },
+  getAll: async () => {
+    const snap = await getDocs(
+      query(collection(db, "enrollments"), orderBy("createdAt", "desc"))
+    );
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  },
+  enroll: async (studentId: string, courseId: string, courseTitle: string) => {
+    return await addDoc(collection(db, "enrollments"), {
+      studentId, courseId, courseTitle, status: "pending", createdAt: serverTimestamp(),
     });
-    if (!response.ok) throw new Error('API error');
-    return response.json();
+  },
+  updateStatus: async (enrollmentId: string, status: string) => {
+    return await updateDoc(doc(db, "enrollments", enrollmentId), { status });
+  },
+};
+
+export const userService = {
+  getAll: async () => {
+    const snap = await getDocs(collection(db, "users"));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  },
+  getById: async (uid: string) => {
+    const snap = await getDoc(doc(db, "users", uid));
+    return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+  },
+  update: async (uid: string, data: any) => {
+    return await updateDoc(doc(db, "users", uid), data);
   },
 };
