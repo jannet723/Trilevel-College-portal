@@ -75,7 +75,7 @@ const HomePortalPeek = ({ onSignIn }: HomePortalPeekProps) => {
         </div>
 
         <div
-          className="home-portal-window relative rounded-2xl border border-[#e8e2d9]/80 bg-white/70 backdrop-blur-md overflow-hidden min-h-[220px]"
+          className="home-portal-window relative rounded-2xl border border-[#e8e2d9]/80 bg-white/70 backdrop-blur-md overflow-hidden min-h-55"
           role="tabpanel"
         >
           <div className="h-9 flex items-center gap-1.5 px-4 border-b border-[#e8e2d9]/60 bg-[#faf8f5]/90">
