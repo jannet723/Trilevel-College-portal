@@ -12,9 +12,11 @@ interface AuthContextType {
   userProfile: any;
   isAdmin: boolean;
   isLoading: boolean;
+  userType?: string | null;
+  loading: boolean;
   login: (email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
-  register: (email: string, password: string, fullName: string) => Promise<any>;
+  register: (email: string, password: string, fullName: string, role?: string) => Promise<any>;
   resetPassword: (email: string) => Promise<void>;
 }
 
@@ -46,9 +48,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       userProfile,
       isAdmin: userProfile?.role === 'admin',
       isLoading,
+      userType: userProfile?.role ?? null,
+      loading: isLoading,
       login:         (email, password) => authService.login(email, password),
       logout:        async () => { await authService.logout(); setUser(null); setUserProfile(null); },
-      register:      (email, password, fullName) => authService.register(email, password, fullName),
+      register:      (email, password, fullName, role) => authService.register(email, password, fullName, role),
       resetPassword: (email) => authService.resetPassword(email),
     }}>
       {!isLoading && children}

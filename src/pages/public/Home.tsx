@@ -8,6 +8,8 @@ import {
   GraduationCap,
   Layers,
 } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { CATALOG_COURSES, type CatalogCourse, type CourseLevel } from "../../data/courses";
 import PublicCourseCard from "../../components/public/PublicCourseCard";
 import PublicCourseDetailModal from "../../components/public/PublicCourseDetailModal";
@@ -46,6 +48,18 @@ export default function TrilevelLogin() {
     setShowSignIn(false);
     setShowRegister(true);
   }, []);
+
+  const navigate = useNavigate();
+  const { isAuthenticated, userProfile } = useAuth();
+
+  const openPortal = useCallback(() => {
+    if (isAuthenticated) {
+      if (userProfile?.role === 'admin') navigate('/admin/dashboard');
+      else navigate('/student/dashboard');
+    } else {
+      setShowSignIn(true);
+    }
+  }, [isAuthenticated, userProfile, navigate]);
 
   const scrollToProgrammes = useCallback(() => {
     document.getElementById("programmes")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -125,7 +139,7 @@ export default function TrilevelLogin() {
                       loading="eager"
                     />
                     <div className="min-w-0">
-                      <p className="home-brand-serif text-xl sm:text-2xl lg:text-[1.65rem] font-bold tracking-[0.1em] text-[#b70c0c] uppercase leading-tight">
+                      <p className="home-brand-serif text-xl sm:text-2xl lg:text-[1.65rem] font-bold tracking-widest text-[#b70c0c] uppercase leading-tight">
                         Trilevel College
                       </p>
                       <p className="text-xs sm:text-sm tracking-[0.18em] text-[#6b645a] uppercase mt-1.5">
@@ -176,7 +190,7 @@ export default function TrilevelLogin() {
               </div>
             </section>
 
-            <HomePortalPeek onSignIn={openSignIn} />
+            <HomePortalPeek onSignIn={openPortal} />
 
             {/* Bento about */}
             <section id="about-trilevel" className="mb-16 lg:mb-24 scroll-mt-8">
@@ -209,7 +223,7 @@ export default function TrilevelLogin() {
                     <p className="text-xs text-[#6b645a] mt-1">Enrol · learn · grow</p>
                   </div>
                 </div>
-                <div className="home-bento-card home-bento-card--accent p-6 sm:p-8 flex flex-col justify-center min-h-[200px] relative overflow-hidden">
+                <div className="home-bento-card home-bento-card--accent p-6 sm:p-8 flex flex-col justify-center min-h-50 relative overflow-hidden">
                   <div className="absolute top-4 right-4 w-16 h-16 border border-[#e8e2d9] rounded-full opacity-40" />
                   <div className="absolute bottom-6 left-6 w-24 h-24 border border-[#4a6a9b]/20 rounded-2xl opacity-50" />
                   <p className="home-display text-2xl text-[#2c2824] leading-snug relative z-10">

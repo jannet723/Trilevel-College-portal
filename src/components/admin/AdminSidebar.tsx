@@ -5,9 +5,10 @@ interface AdminSidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   onSignOut: () => void;
+  userProfile?: { fullName?: string } | null;
 }
 
-const AdminSidebar = (props: AdminSidebarProps) => (
+const AdminSidebar = ({ userProfile, ...props }: AdminSidebarProps) => (
   <PortalSidebar
     portalLabel="Admin Portal"
     dashboardPath="/admin/dashboard"
@@ -19,6 +20,7 @@ const AdminSidebar = (props: AdminSidebarProps) => (
       { icon: FileText, label: 'Approvals', path: '/admin/approvals' },
     ]}
     accountNav={[{ icon: User, label: 'Profile', path: '/admin/profile' }]}
+    userProfile={userProfile}
     {...props}
   />
 );

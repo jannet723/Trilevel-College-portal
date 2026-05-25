@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, LogIn, UserPlus, X, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '../../firebase/auth';
+import { getAuthErrorMessage } from '../../utils/helpers';
 
 const EyeIcon = ({ show }: { show: boolean }) =>
   show ? <Eye size={16} /> : <EyeOff size={16} />;
@@ -18,6 +20,8 @@ const SignInOverlay = ({ onClose, onOpenRegister }: SignInOverlayProps) => {
   const [userType, setUserType] = useState<'student' | 'admin'>('student');
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -31,21 +35,35 @@ const SignInOverlay = ({ onClose, onOpenRegister }: SignInOverlayProps) => {
     };
   }, [onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (userType === 'student') navigate('/student/dashboard');
-    else navigate('/admin/dashboard');
+    if (isSubmitting) return;
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const cred = await authService.login(email, password);
+      const profile = await authService.getUserProfile(cred.user.uid);
+      if (profile?.role === 'admin') navigate('/admin/dashboard');
+      else navigate('/student/dashboard');
+      onClose();
+    } catch (err: any) {
+      console.error('Sign in failed', err);
+      setError(getAuthErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-60 flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <button
         type="button"
         className="absolute inset-0 bg-[#2c2824]/10 backdrop-blur-[10px]"
         onClick={onClose}
         aria-label="Close sign in"
       />
-      <div className="register-overlay-card relative w-full max-w-[22rem]" onClick={(e) => e.stopPropagation()}>
+      <div className="register-overlay-card relative w-full max-w-88" onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
           onClick={onClose}
@@ -54,10 +72,10 @@ const SignInOverlay = ({ onClose, onOpenRegister }: SignInOverlayProps) => {
         >
           <X size={16} />
         </button>
-        <div className="sign-in-card rounded-[1.5rem] px-5 pt-5 pb-4 shadow-[0_24px_60px_-16px_rgba(44,40,36,0.2)]">
+        <div className="sign-in-card rounded-3xl px-5 pt-5 pb-4 shadow-[0_24px_60px_-16px_rgba(44,40,36,0.2)]">
           <div className="text-center mb-4 pr-6">
             <img src="/logo.png" alt="" className="w-12 h-12 mx-auto object-contain mb-2" />
-            <p className="text-[11px] font-bold tracking-[0.1em] text-[#b70c0c] uppercase" style={{ fontFamily: 'Georgia, serif' }}>
+            <p className="text-[11px] font-bold tracking-widest text-[#b70c0c] uppercase" style={{ fontFamily: 'Georgia, serif' }}>
               Trilevel College
             </p>
             <h2 className="text-base font-semibold text-[#2c2824] mt-2">Welcome back</h2>
@@ -123,9 +141,31 @@ const SignInOverlay = ({ onClose, onOpenRegister }: SignInOverlayProps) => {
                 Admin access may require verification.
               </p>
             )}
-            <button type="submit" className="sign-in-submit w-full py-2.5 rounded-lg text-xs font-semibold text-white flex items-center justify-center gap-1.5">
+            {error && (
+              <p className="text-[10px] text-center text-[#b70c0c] bg-[#fef5f5] border border-[#f0d0d0] rounded-lg px-2.5 py-1.5">
+                {error}
+              </p>
+            )}
+            <div className="flex justify-between items-center text-[11px] font-medium text-[#4a6a9b]">
+              <span>&nbsp;</span>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  navigate('/forgot-password');
+                }}
+                className="text-[#4a6a9b] hover:text-[#2c4a7a] transition"
+              >
+                Forgot password?
+              </button>
+            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`sign-in-submit w-full py-2.5 rounded-lg text-xs font-semibold text-white flex items-center justify-center gap-1.5 ${isSubmitting ? 'opacity-60 cursor-not-allowed' : ''}`}
+            >
               <LogIn size={14} />
-              Sign in
+              {isSubmitting ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 

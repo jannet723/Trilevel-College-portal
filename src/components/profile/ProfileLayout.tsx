@@ -54,7 +54,7 @@ const ProfileLayout = ({ name, email, badge, initials, details, children }: Prof
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.14em] text-[#b0a89e]">{row.label}</p>
-                <p className="text-sm font-medium text-[#2c2824] mt-0.5 break-words">{row.value}</p>
+                <p className="text-sm font-medium text-[#2c2824] mt-0.5 wrap-break-word">{row.value}</p>
               </div>
             </div>
           ))}

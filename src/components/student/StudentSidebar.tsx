@@ -5,9 +5,10 @@ interface StudentSidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   onSignOut: () => void;
+  userProfile?: { fullName?: string } | null;
 }
 
-const StudentSidebar = (props: StudentSidebarProps) => (
+const StudentSidebar = ({ userProfile, ...props }: StudentSidebarProps) => (
   <PortalSidebar
     portalLabel="Student Portal"
     dashboardPath="/student/dashboard"
@@ -17,6 +18,7 @@ const StudentSidebar = (props: StudentSidebarProps) => (
       { icon: Search, label: 'Browse Courses', path: '/student/courses' },
     ]}
     accountNav={[{ icon: User, label: 'Profile', path: '/student/profile' }]}
+    userProfile={userProfile}
     {...props}
   />
 );

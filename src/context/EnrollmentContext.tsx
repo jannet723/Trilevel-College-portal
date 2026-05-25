@@ -10,7 +10,7 @@ interface EnrollmentContextType {
   isEnrolled: (courseId: string) => boolean;
   enroll: (courseId: string, courseTitle: string) => Promise<void>;
   unenroll: (enrollmentId: string) => Promise<void>;
-  lastAction: string | null;
+  lastAction: { type: string; title?: string } | null;
   clearLastAction: () => void;
   loading: boolean;
   refresh: () => void;
@@ -22,7 +22,7 @@ export const EnrollmentProvider: React.FC<{ children: ReactNode }> = ({ children
   const { user } = useAuth();
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [loading, setLoading]         = useState(false);
-  const [lastAction, setLastAction]   = useState<string | null>(null);
+  const [lastAction, setLastAction]   = useState<{ type: string; title?: string } | null>(null);
 
   const fetchEnrollments = async () => {
     if (!user) { setEnrollments([]); return; }
@@ -45,12 +45,12 @@ export const EnrollmentProvider: React.FC<{ children: ReactNode }> = ({ children
   const enroll = async (courseId: string, courseTitle: string) => {
     if (!user) throw new Error('Not logged in');
     await enrollmentService.enroll(user.uid, courseId, courseTitle);
-    setLastAction(`Enrolled in ${courseTitle}`);
+    setLastAction({ type: 'enroll', title: courseTitle });
     await fetchEnrollments();
   };
 
   const unenroll = async (_enrollmentId: string) => {
-    setLastAction('Unenrolled from course');
+    setLastAction({ type: 'unenroll' });
     await fetchEnrollments();
   };
 

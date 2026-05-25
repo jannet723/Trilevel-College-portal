@@ -113,15 +113,15 @@ const Courses = () => {
               </div>
 
               <div className="courses-page-hero__stats flex flex-wrap gap-2 sm:gap-3">
-                <div className="home-stat-pill home-stat-pill--blue min-w-[5.5rem]">
+                <div className="home-stat-pill home-stat-pill--blue min-w-22">
                   <span className="text-lg font-bold text-[#2c2824] tabular-nums">{CATALOG_COURSES.length}</span>
                   <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Total</span>
                 </div>
-                <div className="home-stat-pill home-stat-pill--green min-w-[5.5rem]">
+                <div className="home-stat-pill home-stat-pill--green min-w-22">
                   <span className="text-lg font-bold text-[#2c2824] tabular-nums">{certCount}</span>
                   <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Certificate</span>
                 </div>
-                <div className="home-stat-pill home-stat-pill--wine min-w-[5.5rem]">
+                <div className="home-stat-pill home-stat-pill--wine min-w-22">
                   <span className="text-lg font-bold text-[#2c2824] tabular-nums">{dipCount}</span>
                   <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Diploma</span>
                 </div>

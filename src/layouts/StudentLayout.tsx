@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import StudentSidebar from '../components/student/StudentSidebar';
 import StudentPageHeader from '../components/student/StudentPageHeader';
 import { useEnrollment } from '../context/EnrollmentContext';
@@ -15,6 +16,7 @@ interface StudentLayoutProps {
 
 const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: StudentLayoutProps) => {
   const navigate = useNavigate();
+  const { logout, userProfile } = useAuth();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { lastAction, clearLastAction } = useEnrollment();
 
@@ -29,7 +31,8 @@ const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: S
       <StudentSidebar
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((c) => !c)}
-        onSignOut={() => navigate('/')}
+        onSignOut={async () => { await logout(); navigate('/'); }}
+        userProfile={userProfile}
       />
 
       <div className="flex-1 min-h-0 min-w-0 flex flex-col relative">

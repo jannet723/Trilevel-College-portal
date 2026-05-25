@@ -87,7 +87,7 @@ const MyCourses = () => {
     status: c.status,
   }));
 
-  const removeCourse = (id: number) => unenroll(id);
+  const removeCourse = (id: number) => unenroll(id.toString());
 
   // ── Derived ──────────────────────────────────────────────────────────────
   const filteredCourses = courses.filter(course => {
