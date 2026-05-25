@@ -7,7 +7,6 @@ import Register from '../pages/public/Register';
 import ForgotPassword from '../pages/public/ForgotPassword';
 import ResetPassword from '../pages/public/ResetPassword';
 import StudentDashboard from '../pages/student/StudentDashboard';
-import StudentCourses from '../pages/student/StudentCourses';
 import MyCourses from '../pages/student/MyCourses';
 import CourseView from '../pages/student/CourseView';
 import StudentCourseLearning from '../pages/student/StudentCourseLearning';
