@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
               </h2>
               <p className="mt-4 max-w-md text-gray-400 text-sm leading-6">Explore certificates, diplomas, and skill paths crafted for your success.</p>
               <div className="flex gap-3 mt-6">
-                <button onClick={() => navigate('/student/courses')} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-5 py-2 rounded-xl font-medium text-white text-sm transition">Browse Courses →</button>
+                <button onClick={() => navigate('/courses')} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-5 py-2 rounded-xl font-medium text-white text-sm transition">Browse Courses →</button>
                 <button onClick={() => navigate('/student/profile')} className="bg-white/5 hover:bg-white/10 px-5 py-2 border border-white/15 rounded-xl font-medium text-white/80 text-sm transition">Complete Profile</button>
               </div>
             </div>
@@ -206,7 +206,7 @@ const Dashboard: React.FC = () => {
                 icon={<BookIcon />}
                 title="No courses yet"
                 desc="Enrol in a course to start tracking your progress here."
-                action={{ label: "Browse courses →", onClick: () => navigate('/student/courses') }}/>
+                action={{ label: "Browse courses →", onClick: () => navigate('/courses') }}/>
             ) : (
               <div className="gap-5 grid md:grid-cols-3">
                 {courses.map(course => (
@@ -315,7 +315,7 @@ const Dashboard: React.FC = () => {
                 <p className="text-[#9b9288] text-xs">Enrol in your first course today</p>
               </div>
             </div>
-            <button onClick={() => navigate('/student/courses')} className="bg-[#4a6a9b] hover:bg-[#3d5a86] shadow-sm px-5 py-2 rounded-lg font-medium text-white text-xs transition">
+            <button onClick={() => navigate('/courses')} className="bg-[#4a6a9b] hover:bg-[#3d5a86] shadow-sm px-5 py-2 rounded-lg font-medium text-white text-xs transition">
               Start Learning →
             </button>
           </div>

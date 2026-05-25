@@ -290,7 +290,7 @@ const MyCourses = () => {
               }
               action={
                 activeTab !== 'completed'
-                  ? { label: 'Browse Courses →', onClick: () => navigate('/student/courses') }
+                  ? { label: 'Browse Courses →', onClick: () => navigate('/courses') }
                   : undefined
               }
             />

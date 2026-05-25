@@ -15,7 +15,7 @@ const StudentSidebar = ({ userProfile, ...props }: StudentSidebarProps) => (
     mainNav={[
       { icon: LayoutDashboard, label: 'Dashboard', path: '/student/dashboard' },
       { icon: BookOpen, label: 'My Courses', path: '/student/my-courses' },
-      { icon: Search, label: 'Browse Courses', path: '/student/courses' },
+      { icon: Search, label: 'Browse Courses', path: '/courses' },
     ]}
     accountNav={[{ icon: User, label: 'Profile', path: '/student/profile' }]}
     userProfile={userProfile}
