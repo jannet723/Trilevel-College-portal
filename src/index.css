@@ -415,8 +415,7 @@ code {
 
 .home-sidebar-profile-button:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .home-sidebar-profile-button--collapsed {
