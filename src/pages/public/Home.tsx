@@ -15,6 +15,7 @@ import PublicCourseCard from "../../components/public/PublicCourseCard";
 import PublicCourseDetailModal from "../../components/public/PublicCourseDetailModal";
 import RegisterOverlay from "../../components/public/RegisterOverlay";
 import SignInOverlay from "../../components/public/SignInOverlay";
+import ForgotPasswordOverlay from "../../components/public/ForgotPasswordOverlay";
 import HomeSidebar from "../../components/public/HomeSidebar";
 import HomePortalPeek from "../../components/public/HomePortalPeek";
 
@@ -34,6 +35,7 @@ export default function TrilevelLogin() {
   const [selectedCourse, setSelectedCourse] = useState<CatalogCourse | null>(null);
   const [showRegister, setShowRegister] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [heroWordIndex, setHeroWordIndex] = useState(0);
@@ -48,6 +50,9 @@ export default function TrilevelLogin() {
     setShowSignIn(false);
     setShowRegister(true);
   }, []);
+
+  const openForgot = useCallback(() => setShowForgot(true), []);
+  const closeForgot = useCallback(() => setShowForgot(false), []);
 
   const navigate = useNavigate();
   const { isAuthenticated, userProfile } = useAuth();
@@ -76,9 +81,11 @@ export default function TrilevelLogin() {
   useEffect(() => {
     const register = searchParams.get("register") === "1";
     const signin = searchParams.get("signin") === "1";
+    const forgot = searchParams.get("forgot") === "1";
     if (register) setShowRegister(true);
     if (signin) setShowSignIn(true);
-    if (register || signin) setSearchParams({}, { replace: true });
+    if (forgot) setShowForgot(true);
+    if (register || signin || forgot) setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams]);
 
   useEffect(() => {
@@ -101,7 +108,7 @@ export default function TrilevelLogin() {
     }).slice(0, FEATURED_COUNT);
   }, [levelFilter, deptFilter]);
 
-  const modalOpen = showRegister || showSignIn;
+  const modalOpen = showRegister || showSignIn || showForgot;
 
   return (
     <div className="h-screen flex bg-[#f8f6f2] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden portal-light">
@@ -308,8 +315,11 @@ export default function TrilevelLogin() {
         </main>
       </div>
 
-      {showSignIn && <SignInOverlay onClose={closeSignIn} onOpenRegister={openRegisterFromSignIn} />}
-      {showRegister && <RegisterOverlay onClose={closeRegister} />}
+      {showSignIn && (
+        <SignInOverlay onClose={closeSignIn} onOpenRegister={openRegisterFromSignIn} onOpenForgot={openForgot} />
+      )}
+      {showRegister && <RegisterOverlay onClose={closeRegister} onOpenSignIn={openSignIn} />}
+      {showForgot && <ForgotPasswordOverlay onClose={closeForgot} onOpenSignIn={openSignIn} />}
 
       <PublicCourseDetailModal
         course={selectedCourse}

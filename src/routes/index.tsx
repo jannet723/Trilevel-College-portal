@@ -5,6 +5,7 @@ import Courses from '../pages/public/Courses';
 import Login from '../pages/public/Login';
 import Register from '../pages/public/Register';
 import ForgotPassword from '../pages/public/ForgotPassword';
+import ResetPassword from '../pages/public/ResetPassword';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import MyCourses from '../pages/student/MyCourses';
 import CourseView from '../pages/student/CourseView';
@@ -27,6 +28,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Student Routes */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />

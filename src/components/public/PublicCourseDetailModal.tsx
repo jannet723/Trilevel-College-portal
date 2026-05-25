@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { X, BookOpen, Clock, Layers } from 'lucide-react';
 import type { CatalogCourse } from '../../data/courses';
 import { getCourseIcon } from '../../utils/courseIcons';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useEnrollment } from '../../context/EnrollmentContext';
 
 interface PublicCourseDetailModalProps {
   course: CatalogCourse | null;
@@ -12,6 +16,12 @@ const PublicCourseDetailModal = ({ course, onClose, onSignIn }: PublicCourseDeta
   if (!course) return null;
 
   const Icon = getCourseIcon(course.iconKey);
+
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { isEnrolled, enroll } = useEnrollment();
+  const enrolled = user ? isEnrolled(course.id) : false;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <div
@@ -80,7 +90,7 @@ const PublicCourseDetailModal = ({ course, onClose, onSignIn }: PublicCourseDeta
             ))}
           </div>
           <p className="text-[11px] text-[#9b9288] text-center pt-2 border-t border-[#e8e2d9]">
-            Sign in to enrol and access course materials.
+            {user ? (enrolled ? 'You are enrolled in this programme.' : 'Signed in — you can enrol and access course materials.') : 'Sign in to enrol and access course materials.'}
           </p>
         </div>
 
@@ -92,14 +102,40 @@ const PublicCourseDetailModal = ({ course, onClose, onSignIn }: PublicCourseDeta
           >
             Close
           </button>
-          {onSignIn && (
-            <button
-              type="button"
-              onClick={onSignIn}
-              className="flex-1 py-2.5 rounded-xl bg-[#4a6a9b] text-white text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm"
-            >
-              Sign in to enrol
-            </button>
+          {user ? (
+            enrolled ? (
+              <button type="button" className="flex-1 py-2.5 rounded-xl border border-[#e0d9d0] text-sm font-medium text-[#6b645a] bg-white">Enrolled</button>
+            ) : (
+              <button
+                type="button"
+                onClick={async () => {
+                  setIsSubmitting(true);
+                  try {
+                    await enroll(course.id, course.title, 'Quick enrol from programme catalogue');
+                    onClose();
+                    navigate('/student/my-courses');
+                  } catch (err) {
+                    console.error('Enrollment failed:', err);
+                  } finally {
+                    setIsSubmitting(false);
+                  }
+                }}
+                disabled={isSubmitting}
+                className="flex-1 py-2.5 rounded-xl bg-[#4a6a9b] text-white text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Enrolling…' : 'Enrol'}
+              </button>
+            )
+          ) : (
+            onSignIn && (
+              <button
+                type="button"
+                onClick={onSignIn}
+                className="flex-1 py-2.5 rounded-xl bg-[#4a6a9b] text-white text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm"
+              >
+                Sign in to enrol
+              </button>
+            )
           )}
         </div>
       </div>

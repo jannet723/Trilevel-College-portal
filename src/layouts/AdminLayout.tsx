@@ -21,7 +21,7 @@ const AdminLayout = ({
 }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const { logout, userProfile } = useAuth();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
   return (
     <div className="h-screen flex bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif] portal-light">

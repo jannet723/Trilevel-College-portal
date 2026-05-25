@@ -10,9 +10,10 @@ const EyeIcon = ({ show }: { show: boolean }) =>
 interface SignInOverlayProps {
   onClose: () => void;
   onOpenRegister: () => void;
+  onOpenForgot?: () => void;
 }
 
-const SignInOverlay = ({ onClose, onOpenRegister }: SignInOverlayProps) => {
+const SignInOverlay = ({ onClose, onOpenRegister, onOpenForgot }: SignInOverlayProps) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -152,7 +153,8 @@ const SignInOverlay = ({ onClose, onOpenRegister }: SignInOverlayProps) => {
                 type="button"
                 onClick={() => {
                   onClose();
-                  navigate('/forgot-password');
+                  if (typeof onOpenForgot === 'function') onOpenForgot();
+                  else navigate('/forgot-password');
                 }}
                 className="text-[#4a6a9b] hover:text-[#2c4a7a] transition"
               >

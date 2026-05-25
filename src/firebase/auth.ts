@@ -2,6 +2,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendEmailVerification,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  updateProfile,
   sendPasswordResetEmail,
   confirmPasswordReset,
   verifyPasswordResetCode,
@@ -18,12 +22,22 @@ export const authService = {
   register: async (email: string, password: string, fullName: string, role: string = "student") => {
     await setPersistence(auth, browserLocalPersistence);
     const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: fullName });
     await setDoc(doc(db, "users", cred.user.uid), {
       fullName,
       email,
       role,
       createdAt: serverTimestamp(),
     });
+    try {
+      const actionCodeSettings: ActionCodeSettings = {
+        url: window.location.origin + '/?emailVerified=1',
+        handleCodeInApp: true,
+      };
+      await sendEmailVerification(cred.user, actionCodeSettings);
+    } catch (err) {
+      console.warn('sendEmailVerification failed', err);
+    }
     return cred;
   },
 
@@ -38,6 +52,18 @@ export const authService = {
 
   resetPassword: async (email: string, actionCodeSettings?: ActionCodeSettings) => {
     return await sendPasswordResetEmail(auth, email, actionCodeSettings);
+  },
+
+  sendSignInLink: async (email: string, actionCodeSettings?: ActionCodeSettings) => {
+    const settings = actionCodeSettings ?? {
+      url: window.location.origin + '/',
+      handleCodeInApp: true,
+    };
+    return await sendSignInLinkToEmail(auth, email, settings);
+  },
+
+  isSignInWithEmailLink: (link: string) => {
+    return isSignInWithEmailLink(auth, link);
   },
 
   verifyPasswordResetCode: async (code: string) => {

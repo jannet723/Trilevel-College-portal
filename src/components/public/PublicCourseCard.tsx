@@ -6,6 +6,7 @@ interface PublicCourseCardProps {
   course: CatalogCourse;
   variant?: 'compact' | 'full';
   onView?: (course: CatalogCourse) => void;
+  enrolled?: boolean;
 }
 
 const levelStyles: Record<CatalogCourse['level'], string> = {
@@ -13,7 +14,7 @@ const levelStyles: Record<CatalogCourse['level'], string> = {
   Diploma: 'bg-[#eef5f0] text-[#4a7c5e]',
 };
 
-const PublicCourseCard = ({ course, variant = 'full', onView }: PublicCourseCardProps) => {
+const PublicCourseCard = ({ course, variant = 'full', onView, enrolled }: PublicCourseCardProps) => {
   const Icon = getCourseIcon(course.iconKey);
   const isCompact = variant === 'compact';
 
@@ -23,6 +24,11 @@ const PublicCourseCard = ({ course, variant = 'full', onView }: PublicCourseCard
         isCompact ? 'p-3.5' : 'p-5'
       }`}
     >
+      {enrolled && (
+        <span className="absolute top-4 right-4 rounded-full bg-[#eaf5f1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#2c6a50] shadow-sm">
+          Enrolled
+        </span>
+      )}
       <div className="absolute top-0 right-0 w-24 h-24 bg-[#4a6a9b]/5 rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
       <div className={`flex ${isCompact ? 'gap-3 items-start' : 'gap-4 items-start mb-4'}`}>
