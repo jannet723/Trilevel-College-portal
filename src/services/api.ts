@@ -38,10 +38,29 @@ export const enrollmentService = {
     );
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
-  enroll: async (studentId: string, courseId: string, courseTitle: string) => {
+  enroll: async (
+    studentId: string,
+    courseId: string,
+    courseTitle: string,
+    studentName?: string,
+    studentEmail?: string,
+    note?: string,
+    details?: Record<string, any>,
+  ) => {
     return await addDoc(collection(db, "enrollments"), {
-      studentId, courseId, courseTitle, status: "pending", createdAt: serverTimestamp(),
+      studentId,
+      courseId,
+      courseTitle,
+      studentName: studentName || null,
+      studentEmail: studentEmail || null,
+      note: note || null,
+      details: details || null,
+      status: "pending",
+      createdAt: serverTimestamp(),
     });
+  },
+  unenroll: async (enrollmentId: string) => {
+    return await deleteDoc(doc(db, "enrollments", enrollmentId));
   },
   updateStatus: async (enrollmentId: string, status: string) => {
     return await updateDoc(doc(db, "enrollments", enrollmentId), { status });

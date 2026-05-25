@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, ChevronRight, Award, Clock, Star } from 'lucide-react';
 import StudentLayout from '../../layouts/StudentLayout';
 import { useEnrollment } from '../../context/EnrollmentContext';
+import { useCourseResources } from '../../context/CourseResourcesContext';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Course {
-  id: number;
+  id: string;
   title: string;
   department: string;
   description: string;
@@ -15,6 +16,8 @@ interface Course {
   units: number;
   currentUnit: number;
   status: 'in-progress' | 'completed';
+  note?: string;
+  enrollmentDate?: string | Date | null;
 }
 
 // ── Course pool for demo ───────────────────────────────────────────────────
@@ -73,21 +76,27 @@ const EmptyState: React.FC<{
 const MyCourses = () => {
   const navigate = useNavigate();
   const { enrolledCourses, unenroll } = useEnrollment();
+  const { getCourseById } = useCourseResources();
   const [activeTab, setActiveTab] = useState('all');
 
-  const courses: Course[] = enrolledCourses.map((c) => ({
-    id: c.id,
-    title: c.title,
-    department: c.department,
-    description: c.description,
-    progress: c.progress,
-    type: c.type,
-    units: c.units,
-    currentUnit: c.currentUnit,
-    status: c.status,
-  }));
+  const courses: Course[] = enrolledCourses.map((enrollment) => {
+    const courseData = getCourseById(enrollment.courseId);
+    return {
+      id: enrollment.id,
+      title: enrollment.courseTitle || courseData?.title || 'Untitled course',
+      department: courseData?.department || enrollment.department || 'General',
+      description: courseData?.description || enrollment.note || 'Course details are pending.',
+      progress: courseData?.progress ?? 0,
+      type: courseData?.type || 'Certificate',
+      units: courseData?.units ?? 0,
+      currentUnit: courseData?.currentUnit ?? 0,
+      status: enrollment.status === 'completed' || enrollment.status === 'approved' ? 'completed' : 'in-progress',
+      note: enrollment.note || '',
+      enrollmentDate: enrollment.createdAt?.toDate ? enrollment.createdAt.toDate() : enrollment.createdAt || null,
+    } as Course & { note?: string; enrollmentDate?: string | Date | null };
+  });
 
-  const removeCourse = (id: number) => unenroll(id.toString());
+  const removeCourse = (id: string) => unenroll(id);
 
   // ── Derived ──────────────────────────────────────────────────────────────
   const filteredCourses = courses.filter(course => {
@@ -204,6 +213,12 @@ const MyCourses = () => {
                       <ChevronRight size={18} className="text-[#c0b8ae] group-hover:text-[#4a6a9b] transition-colors shrink-0" />
                     </div>
                     <p className="text-sm text-[#6b645a] leading-relaxed">{course.description}</p>
+                    {course.note && (
+                      <p className="text-sm text-[#8d7e6c] mt-3">"{course.note}"</p>
+                    )}
+                    {course.enrollmentDate && (
+                      <p className="text-xs text-[#9b9288] mt-2">Enrolled on: {typeof course.enrollmentDate === 'string' ? course.enrollmentDate : new Date(course.enrollmentDate).toLocaleDateString()}</p>
+                    )}
                   </div>
 
                   {/* Course Progress */}

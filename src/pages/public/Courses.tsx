@@ -6,6 +6,7 @@ import PublicCourseCard from '../../components/public/PublicCourseCard';
 import PublicCourseDetailModal from '../../components/public/PublicCourseDetailModal';
 import RegisterOverlay from '../../components/public/RegisterOverlay';
 import SignInOverlay from '../../components/public/SignInOverlay';
+import ForgotPasswordOverlay from '../../components/public/ForgotPasswordOverlay';
 import HomeSidebar from '../../components/public/HomeSidebar';
 
 type LevelFilter = 'all' | CourseLevel;
@@ -21,6 +22,7 @@ const Courses = () => {
   const [selectedCourse, setSelectedCourse] = useState<CatalogCourse | null>(null);
   const [showRegister, setShowRegister] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   const openSignIn = useCallback(() => setShowSignIn(true), []);
@@ -31,6 +33,9 @@ const Courses = () => {
     setShowSignIn(false);
     setShowRegister(true);
   }, []);
+
+  const openForgot = useCallback(() => setShowForgot(true), []);
+  const closeForgot = useCallback(() => setShowForgot(false), []);
 
   const scrollToCatalogue = useCallback(() => {
     document.getElementById('catalogue-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -73,7 +78,7 @@ const Courses = () => {
 
   const certCount = CATALOG_COURSES.filter((c) => c.level === 'Certificate').length;
   const dipCount = CATALOG_COURSES.filter((c) => c.level === 'Diploma').length;
-  const modalOpen = showRegister || showSignIn;
+  const modalOpen = showRegister || showSignIn || showForgot;
 
   return (
     <div className="h-screen flex bg-[#f8f6f2] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden portal-light">
@@ -235,8 +240,11 @@ const Courses = () => {
         </main>
       </div>
 
-      {showSignIn && <SignInOverlay onClose={closeSignIn} onOpenRegister={openRegisterFromSignIn} />}
-      {showRegister && <RegisterOverlay onClose={closeRegister} />}
+      {showSignIn && (
+        <SignInOverlay onClose={closeSignIn} onOpenRegister={openRegisterFromSignIn} onOpenForgot={openForgot} />
+      )}
+      {showRegister && <RegisterOverlay onClose={closeRegister} onOpenSignIn={openSignIn} />}
+      {showForgot && <ForgotPasswordOverlay onClose={closeForgot} onOpenSignIn={openSignIn} />}
 
       <PublicCourseDetailModal
         course={selectedCourse}

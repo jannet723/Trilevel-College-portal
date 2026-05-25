@@ -17,7 +17,7 @@ interface StudentLayoutProps {
 const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: StudentLayoutProps) => {
   const navigate = useNavigate();
   const { logout, userProfile } = useAuth();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const { lastAction, clearLastAction } = useEnrollment();
 
   useEffect(() => {

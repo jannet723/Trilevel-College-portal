@@ -8,7 +8,7 @@ interface EnrollmentContextType {
   enrollments: any[];
   enrolledCourses: any[];
   isEnrolled: (courseId: string) => boolean;
-  enroll: (courseId: string, courseTitle: string) => Promise<void>;
+  enroll: (courseId: string, courseTitle: string, note?: string, details?: Record<string, any>) => Promise<void>;
   unenroll: (enrollmentId: string) => Promise<void>;
   lastAction: { type: string; title?: string } | null;
   clearLastAction: () => void;
@@ -19,7 +19,7 @@ interface EnrollmentContextType {
 const EnrollmentContext = createContext<EnrollmentContextType | undefined>(undefined);
 
 export const EnrollmentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [loading, setLoading]         = useState(false);
   const [lastAction, setLastAction]   = useState<{ type: string; title?: string } | null>(null);
@@ -42,15 +42,19 @@ export const EnrollmentProvider: React.FC<{ children: ReactNode }> = ({ children
   const isEnrolled = (courseId: string) =>
     enrollments.some((e) => e.courseId === courseId);
 
-  const enroll = async (courseId: string, courseTitle: string) => {
+  const enroll = async (courseId: string, courseTitle: string, note?: string, details?: Record<string, any>) => {
     if (!user) throw new Error('Not logged in');
-    await enrollmentService.enroll(user.uid, courseId, courseTitle);
+    const studentName = userProfile?.fullName || user.displayName || '';
+    const studentEmail = user.email || '';
+    await enrollmentService.enroll(user.uid, courseId, courseTitle, studentName, studentEmail, note, details);
     setLastAction({ type: 'enroll', title: courseTitle });
     await fetchEnrollments();
   };
 
-  const unenroll = async (_enrollmentId: string) => {
+  const unenroll = async (enrollmentId: string) => {
+    if (!enrollmentId) return;
     setLastAction({ type: 'unenroll' });
+    await enrollmentService.unenroll(enrollmentId);
     await fetchEnrollments();
   };
 

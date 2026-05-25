@@ -15,9 +15,10 @@ import { authService } from '../../firebase/auth';
 
 interface RegisterOverlayProps {
   onClose: () => void;
+  onOpenSignIn?: () => void;
 }
 
-const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
+const RegisterOverlay = ({ onClose, onOpenSignIn }: RegisterOverlayProps) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -266,9 +267,20 @@ const RegisterOverlay = ({ onClose }: RegisterOverlayProps) => {
             </button>
           </form>
 
-          <p className="mt-3 text-center text-[10px] text-[#9b9288]">
+          <p className="mt-3 text-center text-sm text-[#9b9288]">
             Have an account?{' '}
-            <button type="button" onClick={onClose} className="font-medium text-[#4a6a9b] hover:text-[#2c4a7a]">
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                if (typeof onOpenSignIn === 'function') {
+                  onOpenSignIn();
+                } else {
+                  navigate('/login');
+                }
+              }}
+              className="font-semibold text-sm text-[#4a6a9b] hover:text-[#2c4a7a] ml-1 underline"
+            >
               Sign in
             </button>
           </p>

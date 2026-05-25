@@ -33,7 +33,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-[#f8f6f2] flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md rounded-[2rem] border border-[#e8e2d9] bg-white shadow-[0_24px_60px_-24px_rgba(44,40,36,0.18)] overflow-hidden">
+      <div className="w-full max-w-md rounded-4xl border border-[#e8e2d9] bg-white shadow-[0_24px_60px_-24px_rgba(44,40,36,0.18)] overflow-hidden">
         <div className="px-8 py-10 text-center bg-[#faf7f3]">
           <img src="/logo.png" alt="Trilevel College logo" className="mx-auto h-14 w-14 object-contain" />
           <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#b70c0c]">
@@ -101,7 +101,7 @@ const Login = () => {
           </form>
 
           <div className="mt-4 flex flex-col gap-3 text-sm">
-            <Link to="/forgot-password" className="text-[#4a6a9b] hover:text-[#2c4a7a] text-center">
+            <Link to="/?forgot=1" className="text-[#4a6a9b] hover:text-[#2c4a7a] text-center">
               Forgot password?
             </Link>
             <Link to="/?register=1" className="rounded-2xl border border-[#e8e2d9] bg-[#faf7f3] px-4 py-3 text-center text-sm font-semibold text-[#2c4a7a] hover:bg-[#f3f1ee]">
