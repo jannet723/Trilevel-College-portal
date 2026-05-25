@@ -55,38 +55,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       register:      (email, password, fullName, role) => authService.register(email, password, fullName, role),
       resetPassword: (email) => authService.resetPassword(email),
     }}>
-      {isLoading ? (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#f8f6f2] text-[#2c2824]">
-          <style>{`
-            @keyframes spin-smooth {
-              from { transform: rotate(0deg); }
-              to { transform: rotate(360deg); }
-            }
-            .spin-smooth {
-              animation: spin-smooth 2s linear infinite;
-            }
-          `}</style>
-          <div className="flex flex-col items-center gap-6 px-6 py-8 text-center">
-            <div className="relative h-28 w-28 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border-[3px] border-[#e8e2d9] opacity-40" />
-              <div className="absolute inset-1.5 rounded-full border-[3px] border-transparent border-t-[#4a6a9b] border-r-[#4a6a9b]/60 spin-smooth" />
-              <img
-                src="/logo.png"
-                alt="Trilevel logo"
-                className="h-16 w-16 rounded-full bg-white p-2 shadow-[0_8px_32px_-12px_rgba(74,106,155,0.25)]"
-              />
-            </div>
-            <div className="space-y-2">
-              <p className="text-2xl font-bold tracking-tight text-[#2c2824]">Trilevel College Portal</p>
-              <p className="max-w-xs text-sm leading-relaxed text-[#6b645a]">
-                Loading your dashboard, catalogue and enrolled courses.
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        children
-      )}
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 };

@@ -25,6 +25,7 @@ const Courses = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const { isEnrolled } = useEnrollment();
 
   const openSignIn = useCallback(() => setShowSignIn(true), []);
   const closeSignIn = useCallback(() => setShowSignIn(false), []);
@@ -84,7 +85,6 @@ const Courses = () => {
   const certCount = CATALOG_COURSES.filter((c) => c.level === 'Certificate').length;
   const dipCount = CATALOG_COURSES.filter((c) => c.level === 'Diploma').length;
   const modalOpen = showRegister || showSignIn || showForgot;
-  const { isEnrolled, loading: enrollmentLoading } = useEnrollment();
 
   return (
     <div className="h-screen flex bg-[#f8f6f2] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden portal-light">
@@ -120,11 +120,6 @@ const Courses = () => {
                 </h1>
                 <p className="text-base text-[#6b645a] leading-relaxed max-w-2xl">
                   {CATALOG_COURSES.length} pathways across {deptCount} departments — preview details, then sign in from the menu to enrol.
-                </p>
-                <p className="mt-3 text-sm text-[#4a6a9b] max-w-2xl">
-                  {enrollmentLoading
-                    ? 'Refreshing your enrolled programme badges…'
-                    : 'Enrolled programmes appear visibly on the cards without extra clicks.'}
                 </p>
                 <button
                   type="button"
@@ -214,16 +209,7 @@ const Courses = () => {
               </div>
             </section>
 
-            <section id="catalogue-grid" className="courses-page-grid scroll-mt-8 pb-12 relative">
-              {enrollmentLoading && (
-                <div className="absolute inset-x-0 top-0 z-10 flex min-h-120 items-center justify-center rounded-4xl bg-white/85 backdrop-blur-sm px-6 py-12">
-                  <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border-4 border-[#4a6a9b]/20 border-t-[#4a6a9b] animate-spin" />
-                    <p className="text-sm font-semibold text-[#2c2824]">Loading your programme status…</p>
-                    <p className="mt-2 text-xs text-[#6b645a] max-w-[18rem]">Enrolled courses will be highlighted on the catalogue cards once your profile and enrolments are ready.</p>
-                  </div>
-                </div>
-              )}
+            <section id="catalogue-grid" className="courses-page-grid scroll-mt-8 pb-12">
               {filtered.length > 0 ? (
                 <div className="courses-page-grid__inner">
                   {filtered.map((course, i) => (

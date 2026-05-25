@@ -1,4 +1,4 @@
-import { BookOpen, CheckCircle, Clock, ChevronRight } from 'lucide-react';
+import { BookOpen, Clock, ChevronRight } from 'lucide-react';
 import type { CatalogCourse } from '../../data/courses';
 import { getCourseIcon } from '../../utils/courseIcons';
 
@@ -25,8 +25,7 @@ const PublicCourseCard = ({ course, variant = 'full', onView, enrolled }: Public
       }`}
     >
       {enrolled && (
-        <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full bg-[#d6f6e2] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1d6d40] shadow-[0_5px_20px_-12px_rgba(32,112,74,0.45)] border border-[#b8e9ce]">
-          <CheckCircle size={12} className="text-[#1d6d40]" />
+        <span className="absolute top-4 right-4 rounded-full bg-[#eaf5f1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#2c6a50] shadow-sm">
           Enrolled
         </span>
       )}
