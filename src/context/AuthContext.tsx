@@ -23,7 +23,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const LoadingPage = () => (
-  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#f8f6f2]">
+  <div className="fixed inset-0 z-9999 flex items-center justify-center bg-[#f8f6f2]">
     <style>{`
       @keyframes spin-smooth {
         from { transform: rotate(0deg); }
