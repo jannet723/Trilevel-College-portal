@@ -1,4 +1,4 @@
-import { BookOpen, Clock, ChevronRight } from 'lucide-react';
+import { BookOpen, CheckCircle, Clock, ChevronRight } from 'lucide-react';
 import type { CatalogCourse } from '../../data/courses';
 import { getCourseIcon } from '../../utils/courseIcons';
 
@@ -6,6 +6,7 @@ interface PublicCourseCardProps {
   course: CatalogCourse;
   variant?: 'compact' | 'full';
   onView?: (course: CatalogCourse) => void;
+  enrolled?: boolean;
 }
 
 const levelStyles: Record<CatalogCourse['level'], string> = {
@@ -13,7 +14,7 @@ const levelStyles: Record<CatalogCourse['level'], string> = {
   Diploma: 'bg-[#eef5f0] text-[#4a7c5e]',
 };
 
-const PublicCourseCard = ({ course, variant = 'full', onView }: PublicCourseCardProps) => {
+const PublicCourseCard = ({ course, variant = 'full', onView, enrolled }: PublicCourseCardProps) => {
   const Icon = getCourseIcon(course.iconKey);
   const isCompact = variant === 'compact';
 
@@ -23,6 +24,12 @@ const PublicCourseCard = ({ course, variant = 'full', onView }: PublicCourseCard
         isCompact ? 'p-3.5' : 'p-5'
       }`}
     >
+      {enrolled && (
+        <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full bg-[#d6f6e2] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1d6d40] shadow-[0_5px_20px_-12px_rgba(32,112,74,0.45)] border border-[#b8e9ce]">
+          <CheckCircle size={12} className="text-[#1d6d40]" />
+          Enrolled
+        </span>
+      )}
       <div className="absolute top-0 right-0 w-24 h-24 bg-[#4a6a9b]/5 rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
       <div className={`flex ${isCompact ? 'gap-3 items-start' : 'gap-4 items-start mb-4'}`}>

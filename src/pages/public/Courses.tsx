@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { BookOpen, Search, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { ArrowRight, BookOpen, Search, Sparkles, SlidersHorizontal } from 'lucide-react';
 import { CATALOG_COURSES, type CatalogCourse, type CourseLevel } from '../../data/courses';
 import PublicCourseCard from '../../components/public/PublicCourseCard';
 import PublicCourseDetailModal from '../../components/public/PublicCourseDetailModal';
@@ -8,6 +8,7 @@ import RegisterOverlay from '../../components/public/RegisterOverlay';
 import SignInOverlay from '../../components/public/SignInOverlay';
 import ForgotPasswordOverlay from '../../components/public/ForgotPasswordOverlay';
 import HomeSidebar from '../../components/public/HomeSidebar';
+import { useEnrollment } from '../../context/EnrollmentContext';
 
 type LevelFilter = 'all' | CourseLevel;
 
@@ -49,6 +50,10 @@ const Courses = () => {
     navigate('/#portal-peek');
   }, [navigate]);
 
+  const goToMyCourses = useCallback(() => {
+    navigate('/student/my-courses');
+  }, [navigate]);
+
   useEffect(() => {
     const register = searchParams.get('register') === '1';
     const signin = searchParams.get('signin') === '1';
@@ -79,6 +84,7 @@ const Courses = () => {
   const certCount = CATALOG_COURSES.filter((c) => c.level === 'Certificate').length;
   const dipCount = CATALOG_COURSES.filter((c) => c.level === 'Diploma').length;
   const modalOpen = showRegister || showSignIn || showForgot;
+  const { isEnrolled, loading: enrollmentLoading } = useEnrollment();
 
   return (
     <div className="h-screen flex bg-[#f8f6f2] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden portal-light">
@@ -115,6 +121,19 @@ const Courses = () => {
                 <p className="text-base text-[#6b645a] leading-relaxed max-w-2xl">
                   {CATALOG_COURSES.length} pathways across {deptCount} departments — preview details, then sign in from the menu to enrol.
                 </p>
+                <p className="mt-3 text-sm text-[#4a6a9b] max-w-2xl">
+                  {enrollmentLoading
+                    ? 'Refreshing your enrolled programme badges…'
+                    : 'Enrolled programmes appear visibly on the cards without extra clicks.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={goToMyCourses}
+                  className="inline-flex items-center gap-2 mt-5 rounded-full border border-[#d4cfc8] bg-white px-4 py-2 text-sm font-semibold text-[#3d5a86] shadow-sm transition hover:bg-[#f5f3ef] hover:text-[#2c2824]"
+                >
+                  My courses
+                  <ArrowRight size={16} />
+                </button>
               </div>
 
               <div className="courses-page-hero__stats flex flex-wrap gap-2 sm:gap-3">
@@ -195,7 +214,16 @@ const Courses = () => {
               </div>
             </section>
 
-            <section id="catalogue-grid" className="courses-page-grid scroll-mt-8 pb-12">
+            <section id="catalogue-grid" className="courses-page-grid scroll-mt-8 pb-12 relative">
+              {enrollmentLoading && (
+                <div className="absolute inset-x-0 top-0 z-10 flex min-h-120 items-center justify-center rounded-4xl bg-white/85 backdrop-blur-sm px-6 py-12">
+                  <div className="text-center">
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border-4 border-[#4a6a9b]/20 border-t-[#4a6a9b] animate-spin" />
+                    <p className="text-sm font-semibold text-[#2c2824]">Loading your programme status…</p>
+                    <p className="mt-2 text-xs text-[#6b645a] max-w-[18rem]">Enrolled courses will be highlighted on the catalogue cards once your profile and enrolments are ready.</p>
+                  </div>
+                </div>
+              )}
               {filtered.length > 0 ? (
                 <div className="courses-page-grid__inner">
                   {filtered.map((course, i) => (
@@ -204,7 +232,11 @@ const Courses = () => {
                       className="home-course-reveal"
                       style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
                     >
-                      <PublicCourseCard course={course} onView={setSelectedCourse} />
+                      <PublicCourseCard
+                        course={course}
+                        onView={setSelectedCourse}
+                        enrolled={isEnrolled(String(course.id))}
+                      />
                     </div>
                   ))}
                 </div>

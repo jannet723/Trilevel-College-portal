@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LogIn,
   UserPlus,
@@ -10,7 +10,9 @@ import {
   PanelLeft,
   LayoutDashboard,
   GraduationCap,
+  User,
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import { CATALOG_COURSES } from '../../data/courses';
 import SidebarNavIcon from '../layout/SidebarNavIcon';
 
@@ -37,6 +39,8 @@ const HomeSidebar = ({
   onScrollToPortal,
 }: HomeSidebarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, userProfile } = useAuth();
   const isHome = location.pathname === '/';
   const isCourses = location.pathname === '/courses';
 
@@ -104,15 +108,8 @@ const HomeSidebar = ({
 
         {/* Quick stats — expanded only */}
         {!isCollapsed && (
-          <div className="home-sidebar-stats mx-3 mb-4 grid grid-cols-2 gap-2">
-            <div className="home-sidebar-stat">
-              <span className="text-base font-bold text-[#2c2824] tabular-nums">{programmeCount}</span>
-              <span className="text-[9px] uppercase tracking-wider text-[#9b9288]">Programmes</span>
-            </div>
-            <div className="home-sidebar-stat home-sidebar-stat--green">
-              <span className="text-base font-bold text-[#2c2824] tabular-nums">{deptCount}</span>
-              <span className="text-[9px] uppercase tracking-wider text-[#9b9288]">Departments</span>
-            </div>
+          <div className="px-3 py-2 text-[10px] text-[#9b9288] text-center">
+            <p className="leading-relaxed">Access {programmeCount} programmes across {deptCount} departments</p>
           </div>
         )}
 
@@ -167,33 +164,60 @@ const HomeSidebar = ({
 
         <div className="home-sidebar-footer">
         <div className={`home-sidebar-portal ${isCollapsed ? 'p-2' : 'p-3'}`}>
-          {!isCollapsed && (
-            <p className="text-[10px] font-semibold text-[#6b645a] uppercase tracking-wider mb-2.5 px-0.5">
-              Student access
-            </p>
+          {user ? (
+            <button
+              type="button"
+              onClick={() => navigate(userProfile?.role === 'admin' ? '/admin/profile' : '/student/profile')}
+              title={isCollapsed ? (userProfile?.fullName || userProfile?.displayName || 'Profile') : undefined}
+              className={`home-sidebar-nav-item group w-full flex items-center ${
+                isCollapsed ? 'justify-center' : 'gap-3'
+              } rounded-xl transition-colors hover:bg-[#e8f0fe]`}
+            >
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#e8f0fe] text-[#4a6a9b] shrink-0">
+                <User size={18} strokeWidth={1.5} />
+              </div>
+              {!isCollapsed && (
+                <div className="min-w-0 flex-1 text-left">
+                  <p className="text-sm font-semibold text-[#2c2824] truncate">
+                    {userProfile?.fullName || user.displayName || 'Profile'}
+                  </p>
+                  <p className="text-[10px] text-[#9b9288] uppercase tracking-wider">
+                    {userProfile?.role === 'admin' ? 'Admin' : 'Student'}
+                  </p>
+                </div>
+              )}
+            </button>
+          ) : (
+            <>
+              {!isCollapsed && (
+                <p className="text-[10px] font-semibold text-[#6b645a] uppercase tracking-wider mb-2.5 px-0.5">
+                  Student access
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={onSignIn}
+                title="Sign in"
+                className={`home-sidebar-cta-primary w-full flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-2 px-3 py-2.5'
+                } rounded-xl text-white text-sm font-semibold`}
+              >
+                <LogIn size={isCollapsed ? 18 : 15} strokeWidth={1.5} className="shrink-0 opacity-95" />
+                {!isCollapsed && <span>Sign in</span>}
+              </button>
+              <button
+                type="button"
+                onClick={onRegister}
+                title="Create account"
+                className={`home-sidebar-cta-secondary w-full flex items-center mt-2 ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-2 px-3 py-2.5'
+                } rounded-xl text-sm font-medium`}
+              >
+                <UserPlus size={isCollapsed ? 18 : 15} strokeWidth={1.5} className="shrink-0 text-[#6b645a]" />
+                {!isCollapsed && <span>Create account</span>}
+              </button>
+            </>
           )}
-          <button
-            type="button"
-            onClick={onSignIn}
-            title="Sign in"
-            className={`home-sidebar-cta-primary w-full flex items-center ${
-              isCollapsed ? 'justify-center p-3' : 'gap-2 px-3 py-2.5'
-            } rounded-xl text-white text-sm font-semibold`}
-          >
-            <LogIn size={isCollapsed ? 18 : 15} strokeWidth={1.5} className="shrink-0 opacity-95" />
-            {!isCollapsed && <span>Sign in</span>}
-          </button>
-          <button
-            type="button"
-            onClick={onRegister}
-            title="Create account"
-            className={`home-sidebar-cta-secondary w-full flex items-center mt-2 ${
-              isCollapsed ? 'justify-center p-3' : 'gap-2 px-3 py-2.5'
-            } rounded-xl text-sm font-medium`}
-          >
-            <UserPlus size={isCollapsed ? 18 : 15} strokeWidth={1.5} className="shrink-0 text-[#6b645a]" />
-            {!isCollapsed && <span>Create account</span>}
-          </button>
         </div>
 
         <button
