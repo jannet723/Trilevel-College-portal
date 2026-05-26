@@ -157,11 +157,11 @@ export default function TrilevelLogin() {
 
                   <h1 className="home-display text-4xl sm:text-5xl lg:text-[3.25rem] leading-[1.08] text-[#2c2824] max-w-xl">
                     Learn{" "}
-                    <span className="home-hero-swap inline-block min-w-[9ch] text-[#3d5a86]" key={heroWordIndex}>
+                    <span className="home-hero-swap inline-block min-w-[9ch] text-[#00009a]" key={heroWordIndex}>
                       {HERO_WORDS[heroWordIndex]}
                     </span>
                     <br />
-                    <span className="text-[#4a6a9b]">your way.</span>
+                    <span className="text-[#00009a]">your way.</span>
                   </h1>
 
                   <p className="text-base text-[#6b645a] max-w-md leading-relaxed">
