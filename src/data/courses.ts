@@ -201,5 +201,8 @@ export const CATALOG_COURSES: CatalogCourse[] = [
   },
 ];
 
-export const getCourseById = (id: number): CatalogCourse | undefined =>
-  CATALOG_COURSES.find((c) => c.id === id);
+export const getCourseById = (id: string | number): CatalogCourse | undefined => {
+  const n = typeof id === 'string' ? parseInt(id, 10) : id;
+  if (Number.isNaN(n)) return undefined;
+  return CATALOG_COURSES.find((c) => c.id === n);
+};

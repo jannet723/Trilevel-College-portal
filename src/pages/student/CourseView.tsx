@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useCourseResources } from '../../context/CourseResourcesContext';
+import { getCourseById } from '../../data/courses';
 import { useEnrollment } from '../../context/EnrollmentContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -8,7 +8,6 @@ const CourseView = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
   const { user, userProfile } = useAuth();
-  const { getCourseById } = useCourseResources();
   const { isEnrolled, enroll } = useEnrollment();
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -101,7 +100,7 @@ const CourseView = () => {
       <div className="rounded-3xl border border-[#e8e2d9] bg-white/95 p-8 shadow-sm">
         <div className="mb-6">
           <h1 className="text-3xl font-semibold text-[#2c2824] mb-3">{course.title}</h1>
-          <p className="text-sm uppercase tracking-[0.24em] text-[#9b9288] mb-2">{course.category}</p>
+          <p className="text-sm uppercase tracking-[0.24em] text-[#9b9288] mb-2">{course.department}</p>
           <p className="text-sm text-[#6b645a] mb-4">{course.duration} · {course.units} units · {course.level}</p>
           <p className="text-gray-700 leading-relaxed">{course.description}</p>
         </div>
