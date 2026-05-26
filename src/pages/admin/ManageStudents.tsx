@@ -47,8 +47,30 @@ const ManageStudents = () => {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const users = await userService.getAll();
-      const enrollments = await enrollmentService.getAll();
+      // Define a User interface with all required properties
+      interface User {
+        id: string;
+        role: string;
+        fullName?: string;
+        email?: string;
+        phone?: string;
+        programme?: string;
+        programmeCode?: string;
+        year?: string;
+        createdAt?: any;
+      }
+
+      // Cast users to User[]
+      const users = await userService.getAll() as User[];
+
+      // Define an Enrollment interface with studentId and other relevant properties
+      interface Enrollment {
+        id: string;
+        studentId: string;
+        courseTitle?: string;
+        createdAt?: any;
+      }
+      const enrollments = await enrollmentService.getAll() as Enrollment[];
 
       const studentUsers = users
         .filter((user) => user.role !== 'admin')
