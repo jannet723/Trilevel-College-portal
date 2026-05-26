@@ -6,7 +6,7 @@ import { useEnrollment } from '../../context/EnrollmentContext';
 import { getCourseById } from '../../data/courses';
 import { getLearningCta, learningCtaClass } from '../../utils/learningProgress';
 
-// ── Types ──────────────────────────────────────────────────────────────────
+// Types 
 interface Course {
   courseId: string;
   enrollmentId: string;
@@ -22,7 +22,7 @@ interface Course {
   enrollmentDate?: string | Date | null;
 }
 
-// ── Course pool for demo ───────────────────────────────────────────────────
+//  Course pool for demo 
 // const COURSE_POOL: Omit<Course, 'id'>[] = [
 //   {
 //     title: 'Introduction to Artificial Intelligence',
@@ -50,7 +50,7 @@ interface Course {
 //   },
 // ];
 
-// ── Empty state card ───────────────────────────────────────────────────────
+// Empty state card 
 const EmptyState: React.FC<{
   icon: React.ReactNode;
   title: string;
@@ -74,7 +74,7 @@ const EmptyState: React.FC<{
   </div>
 );
 
-// ── Main component ─────────────────────────────────────────────────────────
+// Main component
 const MyCourses = () => {
   const navigate = useNavigate();
   const { enrolledCourses, unenroll } = useEnrollment();
@@ -103,7 +103,7 @@ const MyCourses = () => {
 
   const removeCourse = (enrollmentId: string) => unenroll(enrollmentId);
 
-  // ── Derived ──────────────────────────────────────────────────────────────
+  //  Derived 
   const filteredCourses = courses.filter(course => {
     if (activeTab === 'all') return true;
     return course.status === activeTab;

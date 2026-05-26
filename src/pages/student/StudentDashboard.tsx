@@ -5,7 +5,7 @@ import { useEnrollment } from '../../context/EnrollmentContext';
 import { getCourseById } from '../../data/courses';
 import { getLearningCta, learningCtaClass } from '../../utils/learningProgress';
 
-// ── Types ──────
+// Types
 interface Course {
   courseId: string;
   enrollmentId: string;
@@ -33,7 +33,7 @@ interface Announcement {
   iconType: 'bell' | 'star' | 'book';
 }
 
-// ── Empty-state placeholder ────────────────────────────────────────────────
+// Empty-state placeholder 
 const EmptyCard: React.FC<{ icon: React.ReactNode; title: string; desc: string; action?: { label: string; onClick: () => void } }> = ({ icon, title, desc, action }) => (
   <div className="flex flex-col justify-center items-center portal-panel portal-stat-card--empty p-8 text-center">
     <div className="flex justify-center items-center bg-[#f0ece6] mb-4 rounded-xl w-14 h-14 text-[#b0a89e]">{icon}</div>
@@ -47,7 +47,7 @@ const EmptyCard: React.FC<{ icon: React.ReactNode; title: string; desc: string; 
   </div>
 );
 
-// ── SVG icon helpers ───────────────────────────────────────────────────────
+//  SVG icon helpers 
 const ClockIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
@@ -59,7 +59,7 @@ const BookIcon = () => (
   </svg>
 );
 
-// ── Demo data pools ────────────────────────────────────────────────────────
+//  Demo data pools 
 // const COURSE_POOL: Omit<Course, 'id'>[] = [
 //   { title: "Technology", subtitle: "Introduction to Artificial Intelligence", desc: "Fundamentals of AI, machine learning concepts", badge: "Certificate", badgeColor: "bg-[#e8f0fe] text-[#4a6a9b]", progress: 0 },
 //   { title: "Business Administration", subtitle: "Diploma Program", desc: "Strategic management, financial literacy, marketing", badge: "Diploma", badgeColor: "bg-[#eef5f0] text-[#4a7c5e]", progress: 0 },
@@ -86,7 +86,7 @@ const announcementIcon = (type: Announcement['iconType'], color: string) => {
   );
 };
 
-// ── Main component ─────────────────────────────────────────────────────────
+//  Main component 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { enrolledCourses, unenroll } = useEnrollment();
@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
   const [activities] = useState<Activity[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
-  // ── Demo actions ───────────────────────────────────────────────────────
+  // Demo actions 
 
   const removeCourse = (enrollmentId: string) => unenroll(enrollmentId);
 
@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
   //   setActivities(prev => [{ id: Date.now(), text, time: "Just now", type }, ...prev.slice(0, 9)]);
   // };
 
-  // ── Derived stats ──────────────────────────────────────────────────────
+  //  Derived stats 
   const stats = [
     {
       icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></>,
