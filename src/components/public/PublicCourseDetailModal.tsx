@@ -20,7 +20,7 @@ const PublicCourseDetailModal = ({ course, onClose, onSignIn }: PublicCourseDeta
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isEnrolled, enroll } = useEnrollment();
-  const enrolled = user ? isEnrolled(course.id) : false;
+  const enrolled = user ? isEnrolled(String(course.id)) : false;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
@@ -111,7 +111,7 @@ const PublicCourseDetailModal = ({ course, onClose, onSignIn }: PublicCourseDeta
                 onClick={async () => {
                   setIsSubmitting(true);
                   try {
-                    await enroll(course.id, course.title, 'Quick enrol from programme catalogue');
+                    await enroll(String(course.id), course.title, 'Quick enrol from programme catalogue');
                     onClose();
                     navigate('/student/my-courses');
                   } catch (err) {

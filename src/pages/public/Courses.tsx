@@ -8,6 +8,7 @@ import RegisterOverlay from '../../components/public/RegisterOverlay';
 import SignInOverlay from '../../components/public/SignInOverlay';
 import ForgotPasswordOverlay from '../../components/public/ForgotPasswordOverlay';
 import HomeSidebar from '../../components/public/HomeSidebar';
+import { useAuth } from '../../context/AuthContext';
 import { useEnrollment } from '../../context/EnrollmentContext';
 
 type LevelFilter = 'all' | CourseLevel;
@@ -25,6 +26,7 @@ const Courses = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const { user } = useAuth();
   const { isEnrolled } = useEnrollment();
 
   const openSignIn = useCallback(() => setShowSignIn(true), []);
@@ -221,7 +223,7 @@ const Courses = () => {
                       <PublicCourseCard
                         course={course}
                         onView={setSelectedCourse}
-                        enrolled={isEnrolled(String(course.id))}
+                        enrolled={!!user && isEnrolled(String(course.id))}
                       />
                     </div>
                   ))}

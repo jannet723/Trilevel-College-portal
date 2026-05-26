@@ -11,7 +11,6 @@ import {
   LayoutDashboard,
   GraduationCap,
   User,
-  LogOut,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import SidebarNavIcon from '../layout/SidebarNavIcon';
@@ -37,7 +36,7 @@ const HomeSidebar = ({
 }: HomeSidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, userProfile, logout } = useAuth();
+  const { isAuthenticated, userProfile } = useAuth();
   const isHome = location.pathname === '/';
   const isCourses = location.pathname === '/courses';
 

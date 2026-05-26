@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, ChevronRight, Award, Clock, Star } from 'lucide-react';
 import StudentLayout from '../../layouts/StudentLayout';
 import { useEnrollment } from '../../context/EnrollmentContext';
-import { useCourseResources } from '../../context/CourseResourcesContext';
+import { getCourseById } from '../../data/courses';
+import { getLearningCta, learningCtaClass } from '../../utils/learningProgress';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Course {
-  id: string;
+  courseId: string;
+  enrollmentId: string;
   title: string;
   department: string;
   description: string;
@@ -76,27 +78,30 @@ const EmptyState: React.FC<{
 const MyCourses = () => {
   const navigate = useNavigate();
   const { enrolledCourses, unenroll } = useEnrollment();
-  const { getCourseById } = useCourseResources();
   const [activeTab, setActiveTab] = useState('all');
 
   const courses: Course[] = enrolledCourses.map((enrollment) => {
     const courseData = getCourseById(enrollment.courseId);
+    const units = courseData?.units ?? 0;
+    const progress = courseData?.progress ?? 0;
+    const currentUnit = units > 0 ? Math.min(units, Math.max(1, Math.round((progress / 100) * units))) : 0;
     return {
-      id: enrollment.id,
-      title: enrollment.courseTitle || courseData?.title || 'Untitled course',
-      department: courseData?.department || enrollment.department || 'General',
+      courseId: String(enrollment.courseId),
+      enrollmentId: enrollment.id,
+      title: courseData?.title || enrollment.courseTitle || 'Untitled course',
+      department: courseData?.department || 'General',
       description: courseData?.description || enrollment.note || 'Course details are pending.',
-      progress: courseData?.progress ?? 0,
-      type: courseData?.type || 'Certificate',
-      units: courseData?.units ?? 0,
-      currentUnit: courseData?.currentUnit ?? 0,
+      progress,
+      type: (courseData?.level ?? 'Certificate') as Course['type'],
+      units,
+      currentUnit,
       status: enrollment.status === 'completed' || enrollment.status === 'approved' ? 'completed' : 'in-progress',
       note: enrollment.note || '',
       enrollmentDate: enrollment.createdAt?.toDate ? enrollment.createdAt.toDate() : enrollment.createdAt || null,
-    } as Course & { note?: string; enrollmentDate?: string | Date | null };
+    };
   });
 
-  const removeCourse = (id: string) => unenroll(id);
+  const removeCourse = (enrollmentId: string) => unenroll(enrollmentId);
 
   // ── Derived ──────────────────────────────────────────────────────────────
   const filteredCourses = courses.filter(course => {
@@ -182,12 +187,12 @@ const MyCourses = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredCourses.map((course) => (
                 <div
-                  key={course.id}
+                  key={course.enrollmentId}
                   className="relative bg-white/80 backdrop-blur-sm rounded-xl border border-[#e8e2d9] overflow-hidden hover:shadow-md transition-all duration-200 group"
                 >
                   {/* Remove button */}
                   <button
-                    onClick={() => removeCourse(course.id)}
+                    onClick={() => removeCourse(course.enrollmentId)}
                     className="absolute top-3 right-3 z-10 w-6 h-6 rounded-full bg-[#f5f0eb] hover:bg-[#ede6de] text-[#b0a89e] hover:text-[#6b645a] text-xs flex items-center justify-center transition"
                     title="Remove"
                   >✕</button>
@@ -251,16 +256,18 @@ const MyCourses = () => {
                       )}
                     </div>
 
-                    <button
-                      onClick={() => navigate(`/student/learn/${course.id}`)}
-                      className={`w-full py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        course.status === 'completed'
-                          ? 'bg-[#eef5f0] text-[#4a7c5e] hover:bg-[#e0ebe5]'
-                          : 'bg-[#4a6a9b] text-white hover:bg-[#3d5a86] shadow-sm'
-                      }`}
-                    >
-                      {course.status === 'completed' ? 'Review Course' : 'Continue Learning'}
-                    </button>
+                    {(() => {
+                      const cta = getLearningCta(course.courseId, course.status === 'completed');
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/student/learn/${course.courseId}`)}
+                          className={`w-full py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${learningCtaClass[cta.variant]}`}
+                        >
+                          {cta.label}
+                        </button>
+                      );
+                    })()}
                   </div>
                 </div>
               ))}

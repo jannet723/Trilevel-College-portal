@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Sparkles, SlidersHorizontal } from 'lucide-react';
 import { CATALOG_COURSES, type CourseLevel } from '../../data/courses';
 import PublicCourseCard from '../../components/public/PublicCourseCard';
+import { useEnrollment } from '../../context/EnrollmentContext';
 import StudentLayout from '../../layouts/StudentLayout';
 
 type LevelFilter = 'all' | CourseLevel;
 
 const StudentCourses = () => {
   const navigate = useNavigate();
+  const { isEnrolled } = useEnrollment();
   const [search, setSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
@@ -115,7 +117,11 @@ const StudentCourses = () => {
             <div className="grid gap-4 lg:grid-cols-3">
               {filtered.map((course, index) => (
                 <div key={course.id} className="animate-fade-in-up" style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}>
-                  <PublicCourseCard course={course} onView={() => navigate(`/student/course/${course.id}`)} />
+                  <PublicCourseCard
+                    course={course}
+                    onView={() => navigate(`/student/course/${course.id}`)}
+                    enrolled={isEnrolled(String(course.id))}
+                  />
                 </div>
               ))}
             </div>

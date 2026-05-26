@@ -40,7 +40,7 @@ export const EnrollmentProvider: React.FC<{ children: ReactNode }> = ({ children
   useEffect(() => { fetchEnrollments(); }, [user]);
 
   const isEnrolled = (courseId: string) =>
-    enrollments.some((e) => e.courseId === courseId);
+    enrollments.some((e) => String(e.courseId) === String(courseId));
 
   const enroll = async (courseId: string, courseTitle: string, note?: string, details?: Record<string, any>) => {
     if (!user) throw new Error('Not logged in');

@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StudentLayout from '../../layouts/StudentLayout';
 import { useEnrollment } from '../../context/EnrollmentContext';
+import { getCourseById } from '../../data/courses';
+import { getLearningCta, learningCtaClass } from '../../utils/learningProgress';
 
 // ── Types ──────
 interface Course {
-  id: number;
+  courseId: string;
+  enrollmentId: string;
   title: string;
   subtitle: string;
   desc: string;
@@ -88,18 +91,23 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { enrolledCourses, unenroll } = useEnrollment();
 
-  const courses: Course[] = enrolledCourses.map((c) => ({
-    id: c.id,
-    title: c.department,
-    subtitle: c.title,
-    desc: c.description,
-    badge: c.type,
-    badgeColor:
-      c.type === 'Diploma'
-        ? 'bg-[#eef5f0] text-[#4a7c5e]'
-        : 'bg-[#e8f0fe] text-[#4a6a9b]',
-    progress: c.progress,
-  }));
+  const courses: Course[] = enrolledCourses.map((c) => {
+    const catalog = getCourseById(c.courseId);
+    const level = catalog?.level ?? 'Certificate';
+    return {
+      courseId: String(c.courseId),
+      enrollmentId: c.id,
+      title: catalog?.department ?? 'General',
+      subtitle: c.courseTitle || catalog?.title || 'Course',
+      desc: catalog?.description || c.note || 'Continue your learning journey.',
+      badge: level,
+      badgeColor:
+        level === 'Diploma'
+          ? 'bg-[#eef5f0] text-[#4a7c5e]'
+          : 'bg-[#e8f0fe] text-[#4a6a9b]',
+      progress: catalog?.progress ?? 0,
+    };
+  });
   const [studyHours] = useState(0);
   const [assignmentsDone] = useState(0);
   const [avgScore] = useState<number | null>(null);
@@ -108,7 +116,7 @@ const Dashboard: React.FC = () => {
 
   // ── Demo actions ───────────────────────────────────────────────────────
 
- const removeCourse = (id: string) => unenroll(id);
+  const removeCourse = (enrollmentId: string) => unenroll(enrollmentId);
 
   const addAnnouncement = () => {
     const pool = ANNOUNCEMENT_POOL.filter(a => !announcements.find(ea => ea.text === a.text));
@@ -194,10 +202,10 @@ const Dashboard: React.FC = () => {
 
           
 
-          {/* Continue Learning */}
+          {/* Your learning */}
           <div>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="font-semibold text-[#2c2824] text-xl">Continue Learning</h2>
+              <h2 className="font-semibold text-[#2c2824] text-xl">Your learning</h2>
               <button className="font-medium text-[#4a6a9b] text-xs hover:underline transition">View Schedule →</button>
             </div>
 
@@ -210,8 +218,8 @@ const Dashboard: React.FC = () => {
             ) : (
               <div className="gap-5 grid md:grid-cols-3">
                 {courses.map(course => (
-                  <div key={course.id} className="relative bg-white/70 hover:shadow-md backdrop-blur-sm p-5 border border-[#e8e2d9] rounded-xl transition-all hover:-translate-y-0.5 duration-200">
-                    <button onClick={() => removeCourse(String(course.id))} className="top-3 right-3 absolute flex justify-center items-center bg-[#f5f0eb] hover:bg-[#ede6de] rounded-full w-6 h-6 text-[#b0a89e] hover:text-[#6b645a] text-xs transition" title="Remove">✕</button>
+                  <div key={course.enrollmentId} className="relative bg-white/70 hover:shadow-md backdrop-blur-sm p-5 border border-[#e8e2d9] rounded-xl transition-all hover:-translate-y-0.5 duration-200">
+                    <button onClick={() => removeCourse(course.enrollmentId)} className="top-3 right-3 absolute flex justify-center items-center bg-[#f5f0eb] hover:bg-[#ede6de] rounded-full w-6 h-6 text-[#b0a89e] hover:text-[#6b645a] text-xs transition" title="Remove">✕</button>
                     <div className="flex justify-between items-start mb-3">
                       <div className={`rounded-lg px-2.5 py-1 text-[10px] font-semibold ${course.badgeColor} tracking-wide uppercase`}>{course.badge}</div>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c0b8ae"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
@@ -224,12 +232,18 @@ const Dashboard: React.FC = () => {
                         <div className="bg-[#4a6a9b] rounded-full h-full transition-all duration-500" style={{ width: `${course.progress}%` }}></div>
                       </div>
                     </div>
-                    <button
-                      onClick={() => navigate(`/student/learn/${course.id}`)}
-                      className="bg-[#e8f0fe] hover:bg-[#dce6f5] mt-4 py-2 rounded-lg w-full font-medium text-[#4a6a9b] text-xs transition"
-                    >
-                      Continue →
-                    </button>
+                    {(() => {
+                      const cta = getLearningCta(course.courseId, false);
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/student/learn/${course.courseId}`)}
+                          className={`mt-4 py-2 rounded-lg w-full font-medium text-xs transition ${learningCtaClass[cta.variant]}`}
+                        >
+                          {cta.label} →
+                        </button>
+                      );
+                    })()}
                   </div>
                 ))}
               </div>
