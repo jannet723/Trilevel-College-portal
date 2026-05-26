@@ -434,15 +434,18 @@ code {
   height: 2.1rem;
 }
 
+
 .home-sidebar-profile-avatar {
   width: 1.95rem;
   height: 1.95rem;
   border-radius: 9999px;
   display: grid;
   place-items: center;
-  background: rgba(74, 106, 155, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(135deg, #4a6a9b 80%, #6b8fc7 100%);
+  border: 2px solid #3d5a86;
   color: #fff;
+  box-shadow: 0 2px 8px 0 rgba(74,106,155,0.18), 0 0 0 2px #fff3;
+  transition: box-shadow 0.2s, border-color 0.2s;
 }
 
 .home-sidebar-profile-label {

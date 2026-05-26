@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import StudentLayout from '../../layouts/StudentLayout';
 import { useEnrollment } from '../../context/EnrollmentContext';
 
-// ── Types ──────────────────────────────────────────────────────────────────
+// ── Types ──────
 interface Course {
   id: number;
   title: string;
@@ -315,7 +315,7 @@ const Dashboard: React.FC = () => {
                 <p className="text-[#9b9288] text-xs">Enrol in your first course today</p>
               </div>
             </div>
-            <button onClick={() => navigate('/courses')} className="bg-[#4a6a9b] hover:bg-[#3d5a86] shadow-sm px-5 py-2 rounded-lg font-medium text-white text-xs transition">
+            <button onClick={() => navigate('/student/my-courses')} className="bg-[#4a6a9b] hover:bg-[#3d5a86] shadow-sm px-5 py-2 rounded-lg font-medium text-white text-xs transition">
               Start Learning →
             </button>
           </div>
