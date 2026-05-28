@@ -28,7 +28,7 @@ const StudentPageHeader = ({
   return (
     <header className="portal-page-header mb-6">
       {/* Mobile Header with Logo and Name */}
-      <div className="md:hidden flex items-center justify-between px-0 py-2 mb-4 -mx-5 px-5 border-b border-[#e8e2d9] bg-transparent sticky top-0 z-20">
+      <div className="md:hidden flex items-center justify-between px-0 py-2 mb-4 -mx-5 border-b border-[#e8e2d9] bg-transparent sticky top-0 z-20">
         <div className="flex items-center gap-1.5">
           <img
             src="/logo.png"

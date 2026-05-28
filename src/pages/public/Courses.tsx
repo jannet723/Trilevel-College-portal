@@ -139,7 +139,7 @@ const Courses = () => {
         <div className="home-grain pointer-events-none" aria-hidden />
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center justify-between px-5 py-2 border-b border-[#e8e2d9] relative z-10 bg-transparent sticky top-0">
+        <div className="md:hidden flex items-center justify-between px-5 py-2 border-b border-[#e8e2d9] relative z-10 bg-transparent top-0">
           <div className="flex items-center gap-1.5">
             <img
               src="/logo.png"
