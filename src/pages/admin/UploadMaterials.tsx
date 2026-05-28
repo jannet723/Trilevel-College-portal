@@ -135,7 +135,7 @@ const UploadMaterials = () => {
       for (const file of selectedFiles) {
         const attachment = await fileToResourceAttachment(file);
         const baseTitle = file.name.replace(/\.[^.]+$/, '');
-        addResource({
+        await addResource({
           courseId: parsedCourseId,
           type: typeMeta.resourceType,
           title: baseTitle,
@@ -167,9 +167,9 @@ const UploadMaterials = () => {
     }
   };
 
-  const handleDeleteUpload = (resource: CourseResource) => {
+  const handleDeleteUpload = async (resource: CourseResource) => {
     if (window.confirm(`Remove "${resource.title}" from this course? Students will no longer see it.`)) {
-      deleteResource(resource.id);
+      await deleteResource(resource.id);
       if (previewResource?.id === resource.id) setPreviewResource(null);
     }
   };

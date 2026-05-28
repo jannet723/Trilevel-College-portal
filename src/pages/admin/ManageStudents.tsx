@@ -43,6 +43,8 @@ const ManageStudents = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -112,12 +114,44 @@ const ManageStudents = () => {
   const handleDeleteClick = (student: Student) => {
     setSelectedStudent(student);
     setShowDeleteModal(true);
+    setDeleteError(null);
   };
 
-  const handleConfirmDelete = () => {
-    console.log('Deleting student:', selectedStudent);
-    setShowDeleteModal(false);
-    setSelectedStudent(null);
+  const handleConfirmDelete = async () => {
+    if (!selectedStudent) return;
+    
+    setDeleting(true);
+    setDeleteError(null);
+
+    try {
+      // First, delete all enrollments for this student
+      interface Enrollment {
+        id: string;
+        studentId: string;
+        courseTitle?: string;
+        createdAt?: any;
+      }
+      const studentEnrollments = await enrollmentService.getByStudent(selectedStudent.id) as Enrollment[];
+      
+      for (const enrollment of studentEnrollments) {
+        await enrollmentService.unenroll(enrollment.id);
+      }
+
+      // Then delete the user account/profile
+      await userService.delete(selectedStudent.id);
+
+      // Remove from local state
+      setStudents((prev) => prev.filter((s) => s.id !== selectedStudent.id));
+      
+      // Close modal and reset
+      setShowDeleteModal(false);
+      setSelectedStudent(null);
+    } catch (err) {
+      console.error('Failed to delete student:', err);
+      setDeleteError('Failed to delete student. Please try again.');
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const filteredStudents = students.filter((student) => {
@@ -390,21 +424,35 @@ const ManageStudents = () => {
                 </div>
                 <h3 className="text-lg font-semibold text-[#2c2824]">Delete Student</h3>
               </div>
-              <p className="text-sm text-[#6b645a] mb-6">
+              <p className="text-sm text-[#6b645a] mb-4">
                 Are you sure you want to delete <span className="font-medium text-[#2c2824]">"{selectedStudent?.name}"</span>? This action cannot be undone and will remove all associated data including enrollments and grades.
               </p>
+              <p className="text-xs text-[#9b9288] mb-6 bg-[#f0ece6] px-3 py-2 rounded-lg">
+                The student will need to create a new account to continue.
+              </p>
+              {deleteError && (
+                <div className="mb-4 p-3 bg-[#fef5f5] border border-[#f0d0d0] rounded-lg flex items-start gap-2">
+                  <AlertCircle size={14} className="text-[#b70c0c] mt-0.5 shrink-0" />
+                  <p className="text-xs text-[#b70c0c]">{deleteError}</p>
+                </div>
+              )}
               <div className="flex gap-3">
                 <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className="flex-1 px-4 py-2.5 rounded-lg border border-[#e0d9d0] text-[#6b645a] hover:bg-[#faf8f5] transition text-sm font-medium"
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setDeleteError(null);
+                  }}
+                  disabled={deleting}
+                  className="flex-1 px-4 py-2.5 rounded-lg border border-[#e0d9d0] text-[#6b645a] hover:bg-[#faf8f5] transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmDelete}
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-[#d4a34b] text-white hover:bg-[#b8893a] transition text-sm font-medium"
+                  disabled={deleting}
+                  className="flex-1 px-4 py-2.5 rounded-lg bg-[#d4a34b] text-white hover:bg-[#b8893a] transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Delete Student
+                  {deleting ? 'Deleting...' : 'Delete Student'}
                 </button>
               </div>
             </div>

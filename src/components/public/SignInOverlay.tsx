@@ -45,8 +45,21 @@ const SignInOverlay = ({ onClose, onOpenRegister, onOpenForgot }: SignInOverlayP
     try {
       const cred = await authService.login(email, password);
       const profile = await authService.getUserProfile(cred.user.uid);
-      if (profile?.role === 'admin') navigate('/admin/dashboard');
-      else navigate('/student/dashboard');
+      
+      // Check if user selected admin but doesn't have admin role
+      if (userType === 'admin' && profile?.role !== 'admin') {
+        setError('Admin access denied. This account does not have administrator privileges.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // Route based on actual stored role
+      const isAdmin = profile?.role === 'admin';
+      if (isAdmin) {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/student/dashboard');
+      }
       onClose();
     } catch (err: any) {
       console.error('Sign in failed', err);

@@ -79,4 +79,7 @@ export const userService = {
   update: async (uid: string, data: any) => {
     return await updateDoc(doc(db, "users", uid), data);
   },
+  delete: async (uid: string) => {
+    return await deleteDoc(doc(db, "users", uid));
+  },
 };
