@@ -162,19 +162,27 @@ export default function TrilevelLogin() {
         <div className="home-grain pointer-events-none" aria-hidden />
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center justify-between px-5 py-4 border-b border-[#e8e2d9] relative z-10 bg-white sticky top-0">
-          <img
-            src="/logo.png"
-            alt="Trilevel College logo"
-            className="w-9 h-9 object-contain"
-          />
+        <div className="md:hidden flex items-center justify-between px-5 py-2 border-b border-[#e8e2d9] relative z-10 bg-transparent sticky top-0">
+          <div className="flex items-center gap-1.5">
+            <img
+              src="/logo.png"
+              alt="Trilevel College logo"
+              className="w-8 h-8 object-contain"
+            />
+            <div className="min-w-0">
+              <p className="home-brand-serif text-xs font-bold tracking-[0.12em] text-[#b70c0c] uppercase leading-tight">
+                Trilevel
+              </p>
+              <p className="text-[10px] tracking-[0.08em] text-[#6b645a] uppercase">College</p>
+            </div>
+          </div>
           <button
             type="button"
             onClick={handleMobileMenuClick}
-            className="p-2 rounded-lg border border-[#e8e2d9] bg-white text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#4a6a9b] transition-all duration-200"
+            className="p-1.5 rounded-lg border border-[#e8e2d9] bg-white text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#4a6a9b] transition-all duration-200"
             aria-label="Menu"
           >
-            <Menu size={18} />
+            <Menu size={16} />
           </button>
         </div>
 
