@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, Award, Clock, Star, FileText, Download, ExternalLink, X } from 'lucide-react';
+import { BookOpen, ChevronRight, Award, Clock, Star, FileText, Download, X } from 'lucide-react';
 import StudentLayout from '../../layouts/StudentLayout';
 import { useEnrollment } from '../../context/EnrollmentContext';
 import { useCourseResources } from '../../context/CourseResourcesContext';

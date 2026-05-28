@@ -23,6 +23,7 @@ interface HomeSidebarProps {
   onScrollToAbout: () => void;
   onScrollToProgrammes: () => void;
   onScrollToPortal: () => void;
+  onNavigate?: () => void;
 }
 
 const HomeSidebar = ({
@@ -33,6 +34,7 @@ const HomeSidebar = ({
   onScrollToAbout,
   onScrollToProgrammes,
   onScrollToPortal,
+  onNavigate,
 }: HomeSidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -68,6 +70,9 @@ const HomeSidebar = ({
     <Link
       to={to}
       title={isCollapsed ? title ?? label : undefined}
+      onClick={() => {
+        if (onNavigate) onNavigate();
+      }}
       className={`home-sidebar-nav-item group w-full ${active ? 'home-sidebar-nav-item--active' : ''}`}
     >
       <SidebarNavIcon icon={icon} active={active} />
@@ -134,6 +139,9 @@ const HomeSidebar = ({
               <p className="home-sidebar-section-label px-2 mt-4">Catalogue</p>
               <Link
                 to="/courses"
+                onClick={() => {
+                  if (onNavigate) onNavigate();
+                }}
                 className={`home-sidebar-nav-item group w-full ${isCourses ? 'home-sidebar-nav-item--active' : ''}`}
               >
                 <SidebarNavIcon icon={GraduationCap} active={isCourses} />
@@ -145,6 +153,9 @@ const HomeSidebar = ({
           {isCollapsed && (
             <Link
               to="/courses"
+              onClick={() => {
+                if (onNavigate) onNavigate();
+              }}
               className={`home-sidebar-nav-item group w-full ${isCourses ? 'home-sidebar-nav-item--active' : ''}`}
               title="Full catalogue"
             >
@@ -160,6 +171,7 @@ const HomeSidebar = ({
               <button
                 type="button"
                 onClick={() => {
+                  if (onNavigate) onNavigate();
                   if (userProfile?.role === 'admin') {
                     navigate('/admin/profile');
                   } else {

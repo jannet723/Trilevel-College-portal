@@ -7,6 +7,7 @@ import {
   BookOpen,
   GraduationCap,
   Layers,
+  Menu,
 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -37,6 +38,7 @@ export default function TrilevelLogin() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [heroWordIndex, setHeroWordIndex] = useState(0);
   const [levelFilter, setLevelFilter] = useState<"all" | CourseLevel>("all");
@@ -65,6 +67,18 @@ export default function TrilevelLogin() {
       setShowSignIn(true);
     }
   }, [isAuthenticated, userProfile, navigate]);
+
+  const handleMobileMenuClick = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+    // Expand sidebar when opening mobile menu
+    if (!isMobileSidebarOpen) {
+      setSidebarCollapsed(false);
+    }
+  };
+
+  const closeMobileSidebar = () => {
+    setIsMobileSidebarOpen(false);
+  };
 
   const scrollToProgrammes = useCallback(() => {
     document.getElementById("programmes")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -112,25 +126,59 @@ export default function TrilevelLogin() {
 
   return (
     <div className="h-screen flex bg-[#f8f6f2] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden portal-light">
-      <HomeSidebar
-        isCollapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
-        onSignIn={openSignIn}
-        onRegister={openRegister}
-        onScrollToAbout={scrollToAbout}
-        onScrollToProgrammes={scrollToProgrammes}
-        onScrollToPortal={scrollToPortal}
-      />
+      {/* Mobile Sidebar Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-20 md:hidden"
+          onClick={closeMobileSidebar}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar - Hidden on mobile, visible on md and up, overlay on mobile when open */}
+      <div
+        className={`fixed md:relative top-0 left-0 h-full z-30 md:z-auto transition-transform duration-300 ${
+          isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        <HomeSidebar
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+          onSignIn={openSignIn}
+          onRegister={openRegister}
+          onScrollToAbout={scrollToAbout}
+          onScrollToProgrammes={scrollToProgrammes}
+          onScrollToPortal={scrollToPortal}
+          onNavigate={closeMobileSidebar}
+        />
+      </div>
 
       <div
         className={`flex-1 min-h-0 min-w-0 relative transition-[filter] duration-500 ease-out ${
           modalOpen ? "blur-sm brightness-[0.94] pointer-events-none select-none" : ""
-        }`}
+        } flex flex-col`}
       >
         <div className="home-hero-mesh pointer-events-none" aria-hidden />
         <div className="home-grain pointer-events-none" aria-hidden />
 
-        <main className="scrollbar-none relative z-10 h-full overflow-y-auto overflow-x-hidden">
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center justify-between px-5 py-4 border-b border-[#e8e2d9] relative z-10 bg-white sticky top-0">
+          <img
+            src="/logo.png"
+            alt="Trilevel College logo"
+            className="w-9 h-9 object-contain"
+          />
+          <button
+            type="button"
+            onClick={handleMobileMenuClick}
+            className="p-2 rounded-lg border border-[#e8e2d9] bg-white text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#4a6a9b] transition-all duration-200"
+            aria-label="Menu"
+          >
+            <Menu size={18} />
+          </button>
+        </div>
+
+        <main className="flex-1 scrollbar-none relative z-10 h-full overflow-y-auto overflow-x-hidden">
           <div className="home-page-shell px-5 sm:px-8 lg:px-12 xl:px-16 py-8 sm:py-10 lg:py-12">
             {/* Hero */}
             <section className="home-hero mb-14 lg:mb-20 min-h-[min(72vh,640px)] flex flex-col justify-center">

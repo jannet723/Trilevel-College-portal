@@ -53,7 +53,7 @@ const PortalSidebar = ({
 
   return (
     <aside
-      className={`home-sidebar ${isCollapsed ? 'home-sidebar--collapsed' : ''} shrink-0 h-screen z-30`}
+      className={`home-sidebar ${isCollapsed ? 'home-sidebar--collapsed' : ''} shrink-0 h-screen z-30 w-72 md:w-auto`}
       aria-label={`${portalLabel} navigation`}
     >
       <div className="home-sidebar-inner h-full">
