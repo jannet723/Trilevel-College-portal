@@ -30,7 +30,7 @@ const PublicCourseCard = ({ course, variant = 'full', onView, enrolled }: Public
           Enrolled
         </span>
       )}
-      <div className="absolute top-0 right-0 w-24 h-24 bg-[#4a6a9b]/5 rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      {/* decorative top-right accent removed per UX request */}
 
       <div className={`flex ${isCompact ? 'gap-3 items-start' : 'gap-4 items-start mb-4'}`}>
         <div

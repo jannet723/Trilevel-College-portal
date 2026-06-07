@@ -15,9 +15,11 @@ import AdminLayout from '../../layouts/AdminLayout';
 import ProfileLayout from '../../components/profile/ProfileLayout';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AdminProfile = () => {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, logout } = useAuth();
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -132,18 +134,11 @@ const AdminProfile = () => {
             variant: 'purple',
           },
         ]}
+        onSignOut={async () => { try { await logout(); navigate('/'); } catch (err) { console.error('Sign out failed', err); } }}
       >
-        <div className="px-5 sm:px-6 py-5 border-b border-[#e8e2d9] flex items-center justify-between gap-4">
-          <div>
-            <span className="home-section-label">Administrator</span>
-            <h3 className="home-display text-lg text-[#2c2824]">Account details</h3>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-[#fef5e8] flex items-center justify-center shrink-0">
-            <User size={18} className="text-[#9a7530]" />
-          </div>
-        </div>
+        {/* header removed from right panel; left aside holds profile summary */}
 
-        <div className="p-5 sm:p-6">
+        <div className="p-6 sm:p-8 bg-white/60 rounded-xl mt-4">
           {saveMessage && (
             <div className={`mb-4 p-3 rounded-lg flex items-start gap-2.5 ${
               saveMessage.type === 'success'
@@ -265,33 +260,34 @@ const AdminProfile = () => {
 
           <div className="flex flex-wrap gap-3 mt-8">
             {!isEditing ? (
-              <button type="button" className="home-cta-primary" onClick={() => setIsEditing(true)}>
-                <Pencil size={14} />
-                Edit profile
+              <button type="button" className="btn-soft-primary px-3 py-1.5 rounded-md text-sm font-medium transition-transform duration-200 ease-in-out transform hover:-translate-y-0.5" onClick={() => setIsEditing(true)}>
+                <Pencil size={12} />
+                <span className="ml-1">Edit profile</span>
               </button>
             ) : (
               <>
                 <button 
                   type="button" 
-                  className="home-cta-primary" 
+                  className="btn-primary px-4 py-2 rounded-lg font-medium text-white" 
                   onClick={handleSave}
                   disabled={isSaving}
                 >
                   <Save size={14} />
-                  {isSaving ? 'Saving...' : 'Save changes'}
+                  <span className="ml-2">{isSaving ? 'Saving...' : 'Save changes'}</span>
                 </button>
                 <button 
                   type="button" 
-                  className="home-cta-ghost" 
+                  className="home-cta-ghost px-4 py-2 rounded-lg" 
                   onClick={handleCancel}
                   disabled={isSaving}
                 >
                   <X size={14} />
-                  Cancel
+                  <span className="ml-2">Cancel</span>
                 </button>
               </>
             )}
           </div>
+          {/* moved sign out to left aside */}
         </div>
       </ProfileLayout>
     </AdminLayout>

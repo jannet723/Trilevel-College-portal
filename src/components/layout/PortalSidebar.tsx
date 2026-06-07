@@ -91,29 +91,23 @@ const PortalSidebar = ({
 
         <div className="home-sidebar-footer">
           {userProfile?.fullName ? (
-            <div className={`home-sidebar-profile ${isCollapsed ? 'mb-4' : 'mb-3'} rounded-3xl border border-[#e8e2d9] bg-white/95 p-3 ${isCollapsed ? 'flex items-center justify-center' : ''}`}>
-                <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#eef3f7] text-[#2563eb]">
-                  <User size={18} />
-                </div>
-                {!isCollapsed && (
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-[#2c2824]">{userProfile.fullName}</p>
-                    <p className="text-[11px] text-[#8a7d72]">Signed in</p>
-                  </div>
-                )}
+            <button
+              type="button"
+              onClick={() => navigate(accountNav[0]?.path ?? dashboardPath)}
+              title={isCollapsed ? userProfile?.fullName || 'Profile' : undefined}
+              className={`home-sidebar-profile-button ${isCollapsed ? 'home-sidebar-profile-button--collapsed' : ''}`}
+            >
+              <div className="home-sidebar-profile-avatar">
+                <User size={18} strokeWidth={1.5} className="text-white" />
               </div>
-            </div>
+              {!isCollapsed && (
+                <div className="home-sidebar-profile-label">
+                  <p className="home-sidebar-profile-name">{userProfile.fullName}</p>
+                </div>
+              )}
+            </button>
           ) : null}
-          <button
-            type="button"
-            onClick={onSignOut}
-            title="Sign out"
-            className={`home-sidebar-nav-item group w-full mb-2 ${isCollapsed ? '' : ''}`}
-          >
-            <SidebarNavIcon icon={LogOut} />
-            {!isCollapsed && <span className="flex-1 text-sm text-left">Sign out</span>}
-          </button>
+          {/* Sign out moved to Profile page */}
           <button
             type="button"
             onClick={onToggleCollapse}

@@ -520,8 +520,25 @@ code {
 
 .home-sidebar-collapse:hover {
   color: #2c2824;
-  background: rgba(255, 255, 255, 0.75);
-  border-color: rgba(232, 226, 217, 0.85);
+  /* remove white coverage on hover; show subtle underline instead */
+  background: transparent;
+  border-color: transparent;
+}
+
+.home-sidebar-collapse::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 2px;
+  background: transparent;
+  border-radius: 2px;
+  transition: background 0.16s ease;
+}
+
+.home-sidebar-collapse:hover::after {
+  background: rgba(232, 226, 217, 0.95);
 }
 
 .home-sidebar--collapsed .home-sidebar-collapse {
