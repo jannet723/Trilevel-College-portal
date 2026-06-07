@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { CATALOG_COURSES, getCatalog, subscribeCatalog, type CatalogCourse, type CourseLevel } from "../../data/courses";
+import { getCatalog, subscribeCatalog, type CatalogCourse, type CourseLevel } from "../../data/courses";
 import PublicCourseCard from "../../components/public/PublicCourseCard";
 import PublicCourseDetailModal from "../../components/public/PublicCourseDetailModal";
 import RegisterOverlay from "../../components/public/RegisterOverlay";
