@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import {
   BookOpen,
   Users,
@@ -13,13 +14,20 @@ import {
   Activity,
   Sparkles,
 } from 'lucide-react';
-import { CATALOG_COURSES } from '../../data/courses';
+import { CATALOG_COURSES, getCatalog, subscribeCatalog } from '../../data/courses';
 import AdminEmptyState from '../../components/AdminEmptyState';
 import AdminLayout from '../../layouts/AdminLayout';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const activeProgrammes = CATALOG_COURSES.filter((c) => c.status === 'Active').length;
+  const [courses, setCourses] = useState(() => getCatalog());
+  // subscribe to updates
+  useEffect(() => {
+    const unsub = subscribeCatalog((list) => setCourses(list));
+    return unsub;
+  }, []);
+
+  const activeProgrammes = courses.filter((c) => c.status === 'Active').length;
 
   const stats = [
     {
@@ -42,7 +50,7 @@ const AdminDashboard = () => {
     },
     {
       label: 'Programmes',
-      value: String(CATALOG_COURSES.length),
+      value: String(courses.length),
       note: `${activeProgrammes} active`,
       icon: <BookMarked size={20} />,
       color: 'bg-[#eef5f0]',
@@ -86,7 +94,7 @@ const AdminDashboard = () => {
               <button
                 type="button"
                 onClick={() => navigate('/admin/approvals')}
-                className="px-5 py-2.5 bg-[#4a6a9b] text-white rounded-xl text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm flex items-center gap-2"
+                className="px-5 py-2.5 bg-[#2563eb] text-white rounded-xl text-sm font-medium hover:bg-[#1e40af] transition shadow-sm flex items-center gap-2"
               >
                 <UserCheck size={16} />
                 Review Approvals

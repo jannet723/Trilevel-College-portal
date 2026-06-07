@@ -17,7 +17,7 @@ const AdminEmptyState: React.FC<AdminEmptyStateProps> = ({ icon, title, descript
     {action && (
       <button
         onClick={action.onClick}
-        className="px-5 py-2 bg-[#4a6a9b]/10 hover:bg-[#4a6a9b]/20 text-[#4a6a9b] rounded-lg text-sm font-medium transition"
+        className="px-5 py-2 bg-[#2563eb]/10 hover:bg-[#2563eb]/20 text-[#2563eb] rounded-lg text-sm font-medium transition"
       >
         {action.label}
       </button>

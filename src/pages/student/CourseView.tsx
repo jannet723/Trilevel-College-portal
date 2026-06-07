@@ -126,7 +126,7 @@ const CourseView = () => {
                 <button
                   type="button"
                   onClick={() => setShowForm(true)}
-                  className="rounded-2xl bg-[#4a6a9b] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#3d5a86] transition"
+                  className="rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#1e40af] transition"
                 >
                   Complete Enrollment Form
                 </button>
@@ -263,7 +263,7 @@ const CourseView = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="rounded-2xl bg-[#4a6a9b] px-5 py-3 text-sm font-semibold text-white hover:bg-[#3d5a86] transition disabled:opacity-60"
+                    className="rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1e40af] transition disabled:opacity-60"
                   >
                     {submitting ? 'Submitting...' : 'Submit enrollment request'}
                   </button>

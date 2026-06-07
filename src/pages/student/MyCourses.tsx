@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, Award, Clock, Star } from 'lucide-react';
+import { BookOpen, ChevronRight, Award, Clock, Star, FileText, Download, X } from 'lucide-react';
 import StudentLayout from '../../layouts/StudentLayout';
 import { useEnrollment } from '../../context/EnrollmentContext';
+import { useCourseResources } from '../../context/CourseResourcesContext';
 import { getCourseById } from '../../data/courses';
 import { getLearningCta, learningCtaClass } from '../../utils/learningProgress';
+import ResourceFileAttachment from '../../components/course/ResourceFileAttachment';
 
 // Types 
 interface Course {
@@ -78,7 +80,10 @@ const EmptyState: React.FC<{
 const MyCourses = () => {
   const navigate = useNavigate();
   const { enrolledCourses, unenroll } = useEnrollment();
+  const { getResourcesForCourse } = useCourseResources();
   const [activeTab, setActiveTab] = useState('all');
+  const [expandedMaterials, setExpandedMaterials] = useState<string | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
 
   const courses: Course[] = enrolledCourses.map((enrollment) => {
     const courseData = getCourseById(enrollment.courseId);
@@ -185,11 +190,15 @@ const MyCourses = () => {
           {/* Courses Grid or Empty State */}
           {filteredCourses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredCourses.map((course) => (
-                <div
-                  key={course.enrollmentId}
-                  className="relative bg-white/80 backdrop-blur-sm rounded-xl border border-[#e8e2d9] overflow-hidden hover:shadow-md transition-all duration-200 group"
-                >
+              {filteredCourses.map((course) => {
+                const materials = getResourcesForCourse(course.courseId);
+                const hasFiles = materials.some((m) => m.file);
+                
+                return (
+                  <div
+                    key={course.enrollmentId}
+                    className="relative bg-white/80 backdrop-blur-sm rounded-xl border border-[#e8e2d9] overflow-hidden hover:shadow-md transition-all duration-200 group"
+                  >
                   {/* Remove button */}
                   <button
                     onClick={() => removeCourse(course.enrollmentId)}
@@ -256,6 +265,50 @@ const MyCourses = () => {
                       )}
                     </div>
 
+                    {/* Materials Section */}
+                    {hasFiles && (
+                      <div className="mb-4 pb-4 border-b border-[#e8e2d9]">
+                        <button
+                          type="button"
+                          onClick={() => setExpandedMaterials(expandedMaterials === course.courseId ? null : course.courseId)}
+                          className="w-full flex items-center justify-between text-xs font-medium text-[#4a6a9b] hover:text-[#2c4a7a] transition"
+                        >
+                          <span className="flex items-center gap-2">
+                            <FileText size={12} />
+                            {materials.filter((m) => m.file).length} Material(s)
+                          </span>
+                          <span className={`transition-transform ${expandedMaterials === course.courseId ? 'rotate-180' : ''}`}>
+                            ▼
+                          </span>
+                        </button>
+
+                        {expandedMaterials === course.courseId && (
+                          <div className="mt-3 space-y-2">
+                            {materials.filter((m) => m.file).map((material) => (
+                              <div key={material.id} className="flex items-center justify-between gap-2 p-2 rounded-lg hover:bg-[#f0ece6] transition">
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedMaterial(material)}
+                                  className="flex-1 text-left text-xs text-[#6b645a] hover:text-[#4a6a9b] transition truncate"
+                                  title={material.title}
+                                >
+                                  {material.title}
+                                </button>
+                                <a
+                                  href={material.file?.dataUrl}
+                                  download={material.file?.fileName}
+                                  className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#4a6a9b] hover:bg-blue-50 transition"
+                                  title="Download"
+                                >
+                                  <Download size={12} />
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {(() => {
                       const cta = getLearningCta(course.courseId, course.status === 'completed');
                       return (
@@ -270,7 +323,8 @@ const MyCourses = () => {
                     })()}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <EmptyState
@@ -301,6 +355,56 @@ const MyCourses = () => {
                   : undefined
               }
             />
+          )}
+
+          {/* Material Viewer Modal */}
+          {selectedMaterial && (
+            <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full my-8 overflow-hidden">
+                <div className="sticky top-0 flex items-center justify-between p-4 border-b border-[#e8e2d9] bg-white">
+                  <div className="min-w-0">
+                    <h3 className="text-lg font-semibold text-[#2c2824] truncate">{selectedMaterial.title}</h3>
+                    <p className="text-xs text-[#9b9288] mt-1">{selectedMaterial.unit}</p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedMaterial(null)}
+                    className="p-2 text-[#9b9288] hover:text-[#2c2824] hover:bg-[#f0ece6] rounded-lg transition shrink-0"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="max-h-[70vh] overflow-auto p-6">
+                  {selectedMaterial.content && (
+                    <div className="mb-4 pb-4 border-b border-[#e8e2d9]">
+                      <p className="whitespace-pre-wrap text-sm text-[#2c2824]">{selectedMaterial.content}</p>
+                    </div>
+                  )}
+                  {selectedMaterial.file && (
+                    <ResourceFileAttachment file={selectedMaterial.file} />
+                  )}
+                </div>
+
+                <div className="sticky bottom-0 p-4 border-t border-[#e8e2d9] bg-[#faf8f5] flex gap-3 justify-end">
+                  <button
+                    onClick={() => setSelectedMaterial(null)}
+                    className="px-4 py-2 rounded-lg border border-[#e0d9d0] text-[#6b645a] hover:bg-white transition text-sm font-medium"
+                  >
+                    Close
+                  </button>
+                  {selectedMaterial.file && (
+                    <a
+                      href={selectedMaterial.file.dataUrl}
+                      download={selectedMaterial.file.fileName}
+                      className="px-4 py-2 rounded-lg bg-[#4a6a9b] text-white hover:bg-[#3d5a86] transition text-sm font-medium flex items-center gap-2"
+                    >
+                      <Download size={14} />
+                      Download
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
 
     </StudentLayout>

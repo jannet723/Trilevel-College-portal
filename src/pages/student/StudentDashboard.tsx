@@ -165,16 +165,18 @@ const Dashboard: React.FC = () => {
         <div className="space-y-8">
 
           {/* Hero */}
-          <div className="portal-hero p-8 sm:p-10">
+          <div className="py-4 hero-area">
             <div className="relative z-10">
-              <div className="inline-flex items-center bg-white/5 mb-5 px-3 py-1.5 border border-white/10 rounded-full text-[11px] text-gray-300 tracking-wide">✨ New student</div>
-              <h2 className="max-w-xl font-light text-white text-4xl leading-tight">
-                Start your learning <br /><span className="font-medium text-[#8aabcf] italic">journey today</span>
-              </h2>
-              <p className="mt-4 max-w-md text-gray-400 text-sm leading-6">Explore certificates, diplomas, and skill paths crafted for your success.</p>
-              <div className="flex gap-3 mt-6">
-                <button onClick={() => navigate('/courses')} className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-5 py-2 rounded-xl font-medium text-white text-sm transition">Browse Courses →</button>
-                <button onClick={() => navigate('/student/profile')} className="bg-white/5 hover:bg-white/10 px-5 py-2 border border-white/15 rounded-xl font-medium text-white/80 text-sm transition">Complete Profile</button>
+              <div className="hero-inner">
+                <div className="inline-flex items-center bg-transparent mb-5 px-3 py-1.5 rounded-full text-[11px] text-[#6b645a] tracking-wide">✨ New student</div>
+                <h2 className="max-w-xl font-light text-[#2c2824] text-4xl leading-tight">
+                  Start your learning <br /><span className="font-medium text-[#4a6a9b] italic">journey today</span>
+                </h2>
+                <p className="mt-4 max-w-md text-[#6b645a] text-sm leading-6">Explore certificates, diplomas, and skill paths crafted for your success.</p>
+                <div className="flex gap-3 mt-6">
+                  <button onClick={() => navigate('/courses')} className="btn-soft-primary px-5 py-2 rounded-xl font-medium text-sm transition">Browse Courses →</button>
+                  <button onClick={() => navigate('/student/profile')} className="px-5 py-2 border border-[#e8e2d9] rounded-xl font-medium text-[#2c2824] text-sm transition">Complete Profile</button>
+                </div>
               </div>
             </div>
             <div className="right-4 bottom-0 absolute opacity-5">
@@ -329,7 +331,7 @@ const Dashboard: React.FC = () => {
                 <p className="text-[#9b9288] text-xs">Enrol in your first course today</p>
               </div>
             </div>
-            <button onClick={() => navigate('/student/my-courses')} className="bg-[#4a6a9b] hover:bg-[#3d5a86] shadow-sm px-5 py-2 rounded-lg font-medium text-white text-xs transition">
+            <button onClick={() => navigate('/student/my-courses')} className="bg-[#2563eb] hover:bg-[#1e40af] shadow-sm px-5 py-2 rounded-lg font-medium text-white text-xs transition">
               Start Learning →
             </button>
           </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
   User,
@@ -17,7 +18,8 @@ import { authService } from '../../firebase/auth';
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const { userProfile, user } = useAuth();
+  const { userProfile, user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const [savedProfile, setSavedProfile] = useState<any>(userProfile ?? null);
 
@@ -33,7 +35,7 @@ const Profile = () => {
     county: savedProfile?.county ?? userProfile?.county ?? '—',
   };
 
-  const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', nId: '', county: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', county: '' });
 
   useEffect(() => {
     const full = (savedProfile?.fullName ?? userProfile?.fullName ?? user?.displayName ?? '');
@@ -42,7 +44,6 @@ const Profile = () => {
       firstName: parts[0] ?? '',
       lastName: parts.slice(1).join(' ') ?? '',
       phone: savedProfile?.phone ?? userProfile?.phone ?? '',
-      nId: savedProfile?.nId ?? userProfile?.nId ?? '',
       county: savedProfile?.county ?? userProfile?.county ?? '',
     });
   }, [savedProfile, userProfile, user]);
@@ -81,19 +82,12 @@ const Profile = () => {
             variant: 'purple',
           },
         ]}
+        onSignOut={async () => { try { await logout(); navigate('/'); } catch (err) { console.error('Sign out failed', err); } }}
       >
-        <div className="px-5 sm:px-6 py-5 border-b border-[#e8e2d9] flex items-center justify-between gap-4">
-          <div>
-            <span className="home-section-label">Account</span>
-            <h3 className="home-display text-lg text-[#2c2824]">Personal information</h3>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-[#e8f0fe] flex items-center justify-center shrink-0">
-            <User size={18} className="text-[#4a6a9b]" />
-          </div>
-        </div>
+        {/* header removed from right panel; left aside holds profile summary */}
 
-        <div className="p-5 sm:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="p-6 sm:p-8 bg-white/60 rounded-xl mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label className="text-[10px] uppercase tracking-[0.14em] text-[#b0a89e] mb-2 block font-medium">
                 First name
@@ -135,15 +129,7 @@ const Profile = () => {
                 <input className={fieldClass(true)} value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} disabled={!isEditing} />
               </div>
             </div>
-            <div>
-              <label className="text-[10px] uppercase tracking-[0.14em] text-[#b0a89e] mb-2 block font-medium">
-                National ID
-              </label>
-              <div className="relative">
-                <CreditCard size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#b0a89e]" />
-                <input className={fieldClass(true)} value={form.nId} onChange={(e) => setForm(f => ({ ...f, nId: e.target.value }))} disabled={!isEditing} />
-              </div>
-            </div>
+            {/* National ID removed per design */}
             <div className="sm:col-span-2">
               <label className="text-[10px] uppercase tracking-[0.14em] text-[#b0a89e] mb-2 block font-medium">
                 County
@@ -158,18 +144,17 @@ const Profile = () => {
           <div className="flex flex-wrap gap-3 mt-8">
             <button
               type="button"
-              className="home-cta-primary"
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-transform duration-200 ease-in-out transform hover:-translate-y-0.5 ${isEditing ? 'btn-primary text-white' : 'btn-soft-primary'}`}
               onClick={async () => {
                 if (!isEditing) { setIsEditing(true); return; }
                 try {
                   if (!user) throw new Error('Not authenticated');
-                  const fullName = `${form.firstName} ${form.lastName}`.trim();
-                  const updated = await authService.updateUserProfile(user.uid, {
-                    fullName,
-                    phone: form.phone,
-                    nId: form.nId,
-                    county: form.county,
-                  });
+                    const fullName = `${form.firstName} ${form.lastName}`.trim();
+                    const updated = await authService.updateUserProfile(user.uid, {
+                      fullName,
+                      phone: form.phone,
+                      county: form.county,
+                    });
                   setSavedProfile(updated);
                   setIsEditing(false);
                 } catch (err) {
@@ -179,23 +164,24 @@ const Profile = () => {
             >
               {isEditing ? (
                 <>
-                  <Save size={14} />
-                  Save changes
+                  <Save size={12} />
+                  <span className="ml-1">Save changes</span>
                 </>
               ) : (
                 <>
-                  <Pencil size={14} />
-                  Edit profile
+                  <Pencil size={12} />
+                  <span className="ml-1">Edit profile</span>
                 </>
               )}
             </button>
             {isEditing && (
               <button type="button" className="home-cta-ghost" onClick={() => setIsEditing(false)}>
                 <X size={14} />
-                Cancel
+                <span className="ml-2">Cancel</span>
               </button>
             )}
           </div>
+          {/* moved sign out to left aside */}
         </div>
       </ProfileLayout>
     </StudentLayout>

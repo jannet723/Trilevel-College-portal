@@ -201,8 +201,72 @@ export const CATALOG_COURSES: CatalogCourse[] = [
   },
 ];
 
+const STORAGE_KEY = 'trilevel_catalog_courses_v1';
+
+let _catalog: CatalogCourse[] = [];
+
+function loadCatalog(): CatalogCourse[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      // initialize from bundled default
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(CATALOG_COURSES));
+      return CATALOG_COURSES.slice();
+    }
+    const parsed = JSON.parse(raw) as CatalogCourse[];
+    if (!Array.isArray(parsed)) return CATALOG_COURSES.slice();
+    return parsed;
+  } catch {
+    return CATALOG_COURSES.slice();
+  }
+}
+
+function persistCatalog(list: CatalogCourse[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  } catch (err) {
+    // ignore
+    console.error('Failed to persist course catalog', err);
+  }
+}
+
+// simple subscriber model so pages update when admin changes catalog
+type CatalogSubscriber = (list: CatalogCourse[]) => void;
+const subscribers: CatalogSubscriber[] = [];
+
+function notify() {
+  const snapshot = _catalog.slice();
+  subscribers.forEach((s) => {
+    try {
+      s(snapshot);
+    } catch (e) {
+      // ignore
+    }
+  });
+}
+
+// initialize
+_catalog = loadCatalog();
+
+export const getCatalog = (): CatalogCourse[] => _catalog.slice();
+
+export const subscribeCatalog = (cb: CatalogSubscriber) => {
+  subscribers.push(cb);
+  // return unsubscribe
+  return () => {
+    const idx = subscribers.indexOf(cb);
+    if (idx >= 0) subscribers.splice(idx, 1);
+  };
+};
+
+export const saveCatalog = (next: CatalogCourse[]) => {
+  _catalog = next.slice();
+  persistCatalog(_catalog);
+  notify();
+};
+
 export const getCourseById = (id: string | number): CatalogCourse | undefined => {
   const n = typeof id === 'string' ? parseInt(id, 10) : id;
   if (Number.isNaN(n)) return undefined;
-  return CATALOG_COURSES.find((c) => c.id === n);
+  return _catalog.find((c) => c.id === n);
 };

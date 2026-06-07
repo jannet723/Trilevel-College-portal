@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowRight, BookOpen, Search, Sparkles, SlidersHorizontal } from 'lucide-react';
-import { CATALOG_COURSES, type CatalogCourse, type CourseLevel } from '../../data/courses';
+import { ArrowRight, BookOpen, Search, Sparkles, SlidersHorizontal, Menu } from 'lucide-react';
+import {
+  getCatalog,
+  subscribeCatalog,
+  type CatalogCourse,
+  type CourseLevel,
+} from '../../data/courses';
 import PublicCourseCard from '../../components/public/PublicCourseCard';
 import PublicCourseDetailModal from '../../components/public/PublicCourseDetailModal';
 import RegisterOverlay from '../../components/public/RegisterOverlay';
@@ -13,19 +18,19 @@ import { useEnrollment } from '../../context/EnrollmentContext';
 
 type LevelFilter = 'all' | CourseLevel;
 
-const deptCount = new Set(CATALOG_COURSES.map((c) => c.department)).size;
-
 const Courses = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
+  const [courses, setCourses] = useState<CatalogCourse[]>(() => getCatalog());
   const [selectedCourse, setSelectedCourse] = useState<CatalogCourse | null>(null);
   const [showRegister, setShowRegister] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { user } = useAuth();
   const { isEnrolled } = useEnrollment();
 
@@ -57,6 +62,18 @@ const Courses = () => {
     navigate('/student/my-courses');
   }, [navigate]);
 
+  const handleMobileMenuClick = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+    // Expand sidebar when opening mobile menu
+    if (!isMobileSidebarOpen) {
+      setSidebarCollapsed(false);
+    }
+  };
+
+  const closeMobileSidebar = () => {
+    setIsMobileSidebarOpen(false);
+  };
+
   useEffect(() => {
     const register = searchParams.get('register') === '1';
     const signin = searchParams.get('signin') === '1';
@@ -65,13 +82,15 @@ const Courses = () => {
     if (register || signin) setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  const departments = useMemo(
-    () => ['all', ...Array.from(new Set(CATALOG_COURSES.map((c) => c.department))).sort()],
-    []
-  );
+  useEffect(() => {
+    const unsub = subscribeCatalog((list) => setCourses(list));
+    return unsub;
+  }, []);
+
+  const departments = useMemo(() => ['all', ...Array.from(new Set(courses.map((c) => c.department))).sort()], [courses]);
 
   const filtered = useMemo(() => {
-    return CATALOG_COURSES.filter((course) => {
+    return courses.filter((course) => {
       const q = search.toLowerCase();
       const matchesSearch =
         !q ||
@@ -84,31 +103,73 @@ const Courses = () => {
     });
   }, [search, levelFilter, departmentFilter]);
 
-  const certCount = CATALOG_COURSES.filter((c) => c.level === 'Certificate').length;
-  const dipCount = CATALOG_COURSES.filter((c) => c.level === 'Diploma').length;
+  const certCount = courses.filter((c) => c.level === 'Certificate').length;
+  const dipCount = courses.filter((c) => c.level === 'Diploma').length;
   const modalOpen = showRegister || showSignIn || showForgot;
 
   return (
     <div className="h-screen flex bg-[#f8f6f2] font-['Inter',system-ui,-apple-system,sans-serif] relative overflow-hidden portal-light">
-      <HomeSidebar
-        isCollapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
-        onSignIn={openSignIn}
-        onRegister={openRegister}
-        onScrollToAbout={scrollToAbout}
-        onScrollToProgrammes={scrollToCatalogue}
-        onScrollToPortal={scrollToPortal}
-      />
+      {/* Mobile Sidebar Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-20 md:hidden"
+          onClick={closeMobileSidebar}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar - Hidden on mobile, visible on md and up, overlay on mobile when open */}
+      <div
+        className={`fixed md:relative top-0 left-0 h-full z-30 md:z-auto transition-transform duration-300 ${
+          isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        <HomeSidebar
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+          onSignIn={openSignIn}
+          onRegister={openRegister}
+          onScrollToAbout={scrollToAbout}
+          onScrollToProgrammes={scrollToCatalogue}
+          onScrollToPortal={scrollToPortal}
+          onNavigate={closeMobileSidebar}
+        />
+      </div>
 
       <div
         className={`flex-1 min-h-0 min-w-0 relative transition-[filter] duration-500 ease-out ${
           modalOpen ? 'blur-sm brightness-[0.94] pointer-events-none select-none' : ''
-        }`}
+        } flex flex-col`}
       >
         <div className="home-hero-mesh pointer-events-none" aria-hidden />
         <div className="home-grain pointer-events-none" aria-hidden />
 
-        <main className="scrollbar-none relative z-10 h-full overflow-y-auto overflow-x-hidden">
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center justify-between px-5 py-2 border-b border-[#e8e2d9] relative z-10 bg-transparent top-0">
+          <div className="flex items-center gap-1.5">
+            <img
+              src="/logo.png"
+              alt="Trilevel College logo"
+              className="w-8 h-8 object-contain"
+            />
+            <div className="min-w-0">
+              <p className="home-brand-serif text-xs font-bold tracking-[0.12em] text-[#b70c0c] uppercase leading-tight">
+                Trilevel
+              </p>
+              <p className="text-[10px] tracking-[0.08em] text-[#6b645a] uppercase">College</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleMobileMenuClick}
+            className="p-1.5 rounded-lg border border-[#e8e2d9] bg-white text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#2563eb] transition-all duration-200"
+            aria-label="Menu"
+          >
+            <Menu size={16} />
+          </button>
+        </div>
+
+        <main className="flex-1 scrollbar-none relative z-10 h-full overflow-y-auto overflow-x-hidden">
           <div className="courses-page px-5 sm:px-8 lg:px-10 xl:px-14 2xl:px-16 py-8 sm:py-10 lg:py-12">
             {/* Hero */}
             <section className="courses-page-hero mb-10 lg:mb-12 home-fade-up">
@@ -121,7 +182,7 @@ const Courses = () => {
                   Find your <span className="text-[#3d5a86]">programme</span>
                 </h1>
                 <p className="text-base text-[#6b645a] leading-relaxed max-w-2xl">
-                  {CATALOG_COURSES.length} pathways across {deptCount} departments — preview details, then sign in from the menu to enrol.
+                  {courses.length} pathways across {departments.length - 1} departments — preview details, then sign in from the menu to enrol.
                 </p>
                 <button
                   type="button"
@@ -135,7 +196,7 @@ const Courses = () => {
 
               <div className="courses-page-hero__stats flex flex-wrap gap-2 sm:gap-3">
                 <div className="home-stat-pill home-stat-pill--blue min-w-22">
-                  <span className="text-lg font-bold text-[#2c2824] tabular-nums">{CATALOG_COURSES.length}</span>
+                  <span className="text-lg font-bold text-[#2c2824] tabular-nums">{courses.length}</span>
                   <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Total</span>
                 </div>
                 <div className="home-stat-pill home-stat-pill--green min-w-22">
@@ -154,18 +215,18 @@ const Courses = () => {
               <div className="rounded-2xl border border-[#e8e2d9]/80 bg-white/55 backdrop-blur-md p-5 sm:p-6 lg:p-7 shadow-[0_12px_40px_-20px_rgba(74,106,155,0.12)] w-full">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-2">
-                    <SlidersHorizontal size={16} className="text-[#4a6a9b]" />
+                    <SlidersHorizontal size={16} className="text-[#2563eb]" />
                     <span className="text-sm font-semibold text-[#2c2824]">Refine results</span>
                   </div>
                   <span className="text-xs text-[#9b9288]">
-                    {filtered.length} of {CATALOG_COURSES.length} shown
+                    {filtered.length} of {courses.length} shown
                   </span>
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-5">
                   {(
                     [
-                      { id: 'all' as const, label: 'All levels', count: CATALOG_COURSES.length },
+                      { id: 'all' as const, label: 'All levels', count: courses.length },
                       { id: 'Certificate' as const, label: 'Certificate', count: certCount },
                       { id: 'Diploma' as const, label: 'Diploma', count: dipCount },
                     ] as const
@@ -190,7 +251,7 @@ const Courses = () => {
                       placeholder="Search by title, code, or department..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 bg-white/90 border border-[#e8e2d9] rounded-xl text-sm text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20 focus:border-[#4a6a9b]/30"
+                      className="w-full pl-10 pr-4 py-2.5 bg-white/90 border border-[#e8e2d9] rounded-xl text-sm text-[#2c2824] placeholder:text-[#b0a89e] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb]/30"
                     />
                   </div>
                   <div className="courses-page-dept-filters flex flex-wrap gap-2">
@@ -252,7 +313,7 @@ const Courses = () => {
 
             {filtered.length > 0 && (
               <div className="flex items-center gap-2 py-6 text-xs text-[#9b9288] border-t border-[#e8e2d9]/60 mt-2">
-                <Sparkles size={12} className="text-[#4a6a9b] shrink-0" />
+                <Sparkles size={12} className="text-[#2563eb] shrink-0" />
                 Sign in from the sidebar to enrol in a programme
               </div>
             )}

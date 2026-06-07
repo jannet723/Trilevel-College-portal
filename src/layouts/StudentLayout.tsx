@@ -18,7 +18,20 @@ const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: S
   const navigate = useNavigate();
   const { logout, userProfile } = useAuth();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { lastAction, clearLastAction } = useEnrollment();
+
+  const handleMobileMenuClick = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+    // Expand sidebar when opening mobile menu
+    if (!isMobileSidebarOpen) {
+      setIsSidebarCollapsed(false);
+    }
+  };
+
+  const closeMobileSidebar = () => {
+    setIsMobileSidebarOpen(false);
+  };
 
   useEffect(() => {
     if (!lastAction) return;
@@ -28,12 +41,31 @@ const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: S
 
   return (
     <div className="h-screen flex bg-[#f8f6f2] overflow-hidden font-['Inter',system-ui,-apple-system,sans-serif] portal-light">
-      <StudentSidebar
-        isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={() => setIsSidebarCollapsed((c) => !c)}
-        onSignOut={async () => { await logout(); navigate('/'); }}
-        userProfile={userProfile}
-      />
+      {/* Mobile Sidebar Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-20 md:hidden"
+          onClick={closeMobileSidebar}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar - Hidden on mobile, visible on md and up, overlay on mobile when open */}
+      <div
+        className={`fixed md:relative top-0 left-0 h-full z-30 md:z-auto transition-transform duration-300 ${
+          isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        <StudentSidebar
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed((c) => !c)}
+          onSignOut={async () => {
+            await logout();
+            navigate('/');
+          }}
+          userProfile={userProfile}
+        />
+      </div>
 
       <div className="flex-1 min-h-0 min-w-0 flex flex-col relative">
         <div className="home-hero-mesh pointer-events-none absolute inset-0" aria-hidden />
@@ -48,7 +80,7 @@ const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: S
             }`}
           >
             {lastAction.type === 'enroll' && <CheckCircle2 size={18} />}
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium whitespace-nowrap">
               {lastAction.type === 'enroll' ? 'Enrolled in' : 'Removed'} {lastAction.title}
             </span>
             <button type="button" onClick={clearLastAction} className="opacity-60 hover:opacity-100">
@@ -59,7 +91,13 @@ const StudentLayout = ({ children, title, subtitle, showBack = true, backTo }: S
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-none relative z-10">
           <div className="home-page-shell px-5 sm:px-8 lg:px-10 xl:px-12 py-6 sm:py-8">
-            <StudentPageHeader title={title} subtitle={subtitle} showBack={showBack} backTo={backTo} />
+            <StudentPageHeader
+              title={title}
+              subtitle={subtitle}
+              showBack={showBack}
+              backTo={backTo}
+              onMenuClick={handleMobileMenuClick}
+            />
             <div className="w-full">{children}</div>
           </div>
         </main>

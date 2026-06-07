@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BookOpen,
@@ -14,7 +14,12 @@ import {
   ChevronRight,
   X,
 } from 'lucide-react';
-import { CATALOG_COURSES, type CatalogCourse } from '../../data/courses';
+import {
+  getCatalog,
+  saveCatalog,
+  subscribeCatalog,
+  type CatalogCourse,
+} from '../../data/courses';
 import AdminLayout from '../../layouts/AdminLayout';
 
 type AdminCourse = CatalogCourse;
@@ -58,7 +63,7 @@ const EmptyState: React.FC<{
 
 const ManageCourses = () => {
   const navigate = useNavigate();
-  const [courses, setCourses] = useState<AdminCourse[]>(() => [...CATALOG_COURSES]);
+  const [courses, setCourses] = useState<AdminCourse[]>(() => getCatalog());
   const [activeTab, setActiveTab] = useState<'all' | 'active' | 'pending'>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -123,7 +128,9 @@ const ManageCourses = () => {
 
   const handleConfirmDelete = () => {
     if (selectedCourse) {
-      setCourses((prev) => prev.filter((c) => c.id !== selectedCourse.id));
+      const next = courses.filter((c) => c.id !== selectedCourse.id);
+      setCourses(next);
+      saveCatalog(next);
     }
     setShowDeleteModal(false);
     setSelectedCourse(null);
@@ -139,18 +146,24 @@ const ManageCourses = () => {
         students: 0,
         progress: 0,
       };
-      setCourses((prev) => [newCourse, ...prev]);
+      const next = [newCourse, ...courses];
+      setCourses(next);
+      saveCatalog(next);
     } else if (selectedCourse) {
-      setCourses((prev) =>
-        prev.map((c) =>
-          c.id === selectedCourse.id ? { ...c, ...formData } : c
-        )
-      );
+      const next = courses.map((c) => (c.id === selectedCourse.id ? { ...c, ...formData } : c));
+      setCourses(next);
+      saveCatalog(next);
     }
     setShowFormModal(false);
     setSelectedCourse(null);
     setFormData(emptyForm());
   };
+
+  // Keep in sync if catalog changes elsewhere
+  useEffect(() => {
+    const un = subscribeCatalog((list) => setCourses(list));
+    return un;
+  }, []);
 
   return (
     <AdminLayout title="Courses" subtitle="Manage certificate and diploma programmes" backTo="/admin/dashboard">
@@ -158,7 +171,7 @@ const ManageCourses = () => {
             <button
               type="button"
               onClick={openAddModal}
-              className="px-5 py-2.5 bg-[#4a6a9b] text-white rounded-xl text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm flex items-center gap-2"
+              className="px-5 py-2.5 bg-[#2563eb] text-white rounded-xl text-sm font-medium hover:bg-[#1e40af] transition shadow-sm flex items-center gap-2"
             >
               <Plus size={16} />
               Add Course
@@ -348,7 +361,7 @@ const ManageCourses = () => {
                       <button
                         type="button"
                         onClick={() => navigate(`/admin/upload-materials?course=${course.id}`)}
-                        className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-[#4a6a9b] text-white hover:bg-[#3d5a86] shadow-sm transition-all duration-200"
+                        className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-[#2563eb] text-white hover:bg-[#1e40af] shadow-sm transition-all duration-200"
                       >
                         Upload Materials
                       </button>
@@ -445,7 +458,7 @@ const ManageCourses = () => {
                   placeholder="Brief course description"
                 />
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 <div>
                   <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Level</label>
                   <select
@@ -456,6 +469,15 @@ const ManageCourses = () => {
                     <option value="Certificate">Certificate</option>
                     <option value="Diploma">Diploma</option>
                   </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Duration</label>
+                  <input
+                    value={formData.duration}
+                    onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                    className="w-full px-3 py-2 border border-[#e0d9d0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20"
+                    placeholder="e.g. 6 months"
+                  />
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase tracking-[0.15em] text-[#9b9288] mb-1.5">Units</label>
@@ -489,7 +511,7 @@ const ManageCourses = () => {
               </button>
               <button
                 onClick={handleSaveCourse}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-[#4a6a9b] text-white hover:bg-[#3d5a86] transition text-sm font-medium"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-[#2563eb] text-white hover:bg-[#1e40af] transition text-sm font-medium"
               >
                 {formMode === 'add' ? 'Add Course' : 'Save Changes'}
               </button>

@@ -77,7 +77,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword((value) => !value)}
-                  className="absolute inset-y-0 right-3 flex items-center text-[#8c8c8c] hover:text-[#4a6a9b]"
+                  className="absolute inset-y-0 right-3 flex items-center text-[#8c8c8c] hover:text-[#2563eb]"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -101,10 +101,10 @@ const Login = () => {
           </form>
 
           <div className="mt-4 flex flex-col gap-3 text-sm">
-            <Link to="/?forgot=1" className="text-[#4a6a9b] hover:text-[#2c4a7a] text-center">
+            <Link to="/?forgot=1" className="text-[#2563eb] hover:text-[#1e40af] text-center">
               Forgot password?
             </Link>
-            <Link to="/?register=1" className="rounded-2xl border border-[#e8e2d9] bg-[#faf7f3] px-4 py-3 text-center text-sm font-semibold text-[#2c4a7a] hover:bg-[#f3f1ee]">
+            <Link to="/?register=1" className="rounded-2xl border border-[#e8e2d9] bg-[#faf7f3] px-4 py-3 text-center text-sm font-semibold text-[#1e40af] hover:bg-[#f3f1ee]">
               Create an account
             </Link>
           </div>
