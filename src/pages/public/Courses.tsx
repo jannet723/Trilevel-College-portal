@@ -59,8 +59,13 @@ const Courses = () => {
   }, [navigate]);
 
   const goToMyCourses = useCallback(() => {
+    if (!user) {
+      // prompt sign in when not authenticated
+      setShowSignIn(true);
+      return;
+    }
     navigate('/student/my-courses');
-  }, [navigate]);
+  }, [navigate, user]);
 
   const handleMobileMenuClick = () => {
     setIsMobileSidebarOpen(!isMobileSidebarOpen);
