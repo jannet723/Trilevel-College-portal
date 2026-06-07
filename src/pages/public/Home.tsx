@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { CATALOG_COURSES, type CatalogCourse, type CourseLevel } from "../../data/courses";
+import { CATALOG_COURSES, getCatalog, subscribeCatalog, type CatalogCourse, type CourseLevel } from "../../data/courses";
 import PublicCourseCard from "../../components/public/PublicCourseCard";
 import PublicCourseDetailModal from "../../components/public/PublicCourseDetailModal";
 import RegisterOverlay from "../../components/public/RegisterOverlay";
@@ -23,10 +23,8 @@ import HomePortalPeek from "../../components/public/HomePortalPeek";
 const FEATURED_COUNT = 6;
 const HERO_WORDS = ["business", "technology", "hospitality", "theology", "community"];
 
-const deptCount = new Set(CATALOG_COURSES.map((c) => c.department)).size;
-
-const bentoTiles = [
-  { value: String(CATALOG_COURSES.length), label: "Programmes", accent: "blue" },
+const bentoTiles = (count: number, deptCount: number) => [
+  { value: String(count), label: "Programmes", accent: "blue" },
   { value: "2", label: "Qualification levels", accent: "green" },
   { value: String(deptCount), label: "Departments", accent: "wine" },
   { value: "24/7", label: "Portal access", accent: "blue" },
@@ -109,13 +107,18 @@ export default function TrilevelLogin() {
     return () => window.clearInterval(id);
   }, []);
 
-  const departments = useMemo(
-    () => ["all", ...Array.from(new Set(CATALOG_COURSES.map((c) => c.department))).sort()],
-    []
-  );
+  const [courses, setCourses] = useState<CatalogCourse[]>(() => getCatalog());
+
+  useEffect(() => {
+    const unsub = subscribeCatalog((list) => setCourses(list));
+    return unsub;
+  }, []);
+
+  const departments = useMemo(() => ["all", ...Array.from(new Set(courses.map((c) => c.department))).sort()], [courses]);
+  const deptCount = departments.length - 1;
 
   const filteredFeatured = useMemo(() => {
-    return CATALOG_COURSES.filter((c) => {
+    return courses.filter((c) => {
       const levelOk = levelFilter === "all" || c.level === levelFilter;
       const deptOk = deptFilter === "all" || c.department === deptFilter;
       return levelOk && deptOk;
@@ -225,7 +228,7 @@ export default function TrilevelLogin() {
                   </p>
 
                   <div className="flex flex-wrap gap-2 pt-2">
-                    {bentoTiles.map((t) => (
+                    {bentoTiles(courses.length, deptCount).map((t) => (
                       <div key={t.label} className={`home-stat-pill home-stat-pill--${t.accent}`}>
                         <span className="text-lg font-bold text-[#2c2824] tabular-nums">{t.value}</span>
                         <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">{t.label}</span>
@@ -310,7 +313,7 @@ export default function TrilevelLogin() {
                   <h2 className="home-display text-2xl sm:text-3xl text-[#2c2824]">Find your path</h2>
                 </div>
                 <Link to="/courses" className="home-view-all-link shrink-0">
-                  All {CATALOG_COURSES.length} programmes
+                  All {courses.length} programmes
                   <ArrowUpRight size={16} />
                 </Link>
               </div>

@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, BookOpen, Search, Sparkles, SlidersHorizontal, Menu } from 'lucide-react';
-import { CATALOG_COURSES, type CatalogCourse, type CourseLevel } from '../../data/courses';
+import {
+  getCatalog,
+  subscribeCatalog,
+  type CatalogCourse,
+  type CourseLevel,
+} from '../../data/courses';
 import PublicCourseCard from '../../components/public/PublicCourseCard';
 import PublicCourseDetailModal from '../../components/public/PublicCourseDetailModal';
 import RegisterOverlay from '../../components/public/RegisterOverlay';
@@ -13,14 +18,13 @@ import { useEnrollment } from '../../context/EnrollmentContext';
 
 type LevelFilter = 'all' | CourseLevel;
 
-const deptCount = new Set(CATALOG_COURSES.map((c) => c.department)).size;
-
 const Courses = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
+  const [courses, setCourses] = useState<CatalogCourse[]>(() => getCatalog());
   const [selectedCourse, setSelectedCourse] = useState<CatalogCourse | null>(null);
   const [showRegister, setShowRegister] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
@@ -78,13 +82,15 @@ const Courses = () => {
     if (register || signin) setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  const departments = useMemo(
-    () => ['all', ...Array.from(new Set(CATALOG_COURSES.map((c) => c.department))).sort()],
-    []
-  );
+  useEffect(() => {
+    const unsub = subscribeCatalog((list) => setCourses(list));
+    return unsub;
+  }, []);
+
+  const departments = useMemo(() => ['all', ...Array.from(new Set(courses.map((c) => c.department))).sort()], [courses]);
 
   const filtered = useMemo(() => {
-    return CATALOG_COURSES.filter((course) => {
+    return courses.filter((course) => {
       const q = search.toLowerCase();
       const matchesSearch =
         !q ||
@@ -97,8 +103,8 @@ const Courses = () => {
     });
   }, [search, levelFilter, departmentFilter]);
 
-  const certCount = CATALOG_COURSES.filter((c) => c.level === 'Certificate').length;
-  const dipCount = CATALOG_COURSES.filter((c) => c.level === 'Diploma').length;
+  const certCount = courses.filter((c) => c.level === 'Certificate').length;
+  const dipCount = courses.filter((c) => c.level === 'Diploma').length;
   const modalOpen = showRegister || showSignIn || showForgot;
 
   return (
@@ -176,7 +182,7 @@ const Courses = () => {
                   Find your <span className="text-[#3d5a86]">programme</span>
                 </h1>
                 <p className="text-base text-[#6b645a] leading-relaxed max-w-2xl">
-                  {CATALOG_COURSES.length} pathways across {deptCount} departments — preview details, then sign in from the menu to enrol.
+                  {courses.length} pathways across {departments.length - 1} departments — preview details, then sign in from the menu to enrol.
                 </p>
                 <button
                   type="button"
@@ -190,7 +196,7 @@ const Courses = () => {
 
               <div className="courses-page-hero__stats flex flex-wrap gap-2 sm:gap-3">
                 <div className="home-stat-pill home-stat-pill--blue min-w-22">
-                  <span className="text-lg font-bold text-[#2c2824] tabular-nums">{CATALOG_COURSES.length}</span>
+                  <span className="text-lg font-bold text-[#2c2824] tabular-nums">{courses.length}</span>
                   <span className="text-[10px] uppercase tracking-wider text-[#9b9288]">Total</span>
                 </div>
                 <div className="home-stat-pill home-stat-pill--green min-w-22">
@@ -213,14 +219,14 @@ const Courses = () => {
                     <span className="text-sm font-semibold text-[#2c2824]">Refine results</span>
                   </div>
                   <span className="text-xs text-[#9b9288]">
-                    {filtered.length} of {CATALOG_COURSES.length} shown
+                    {filtered.length} of {courses.length} shown
                   </span>
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-5">
                   {(
                     [
-                      { id: 'all' as const, label: 'All levels', count: CATALOG_COURSES.length },
+                      { id: 'all' as const, label: 'All levels', count: courses.length },
                       { id: 'Certificate' as const, label: 'Certificate', count: certCount },
                       { id: 'Diploma' as const, label: 'Diploma', count: dipCount },
                     ] as const
