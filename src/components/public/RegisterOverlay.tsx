@@ -5,13 +5,10 @@ import {
   Lock,
   UserPlus,
   X,
-  GraduationCap,
-  Shield,
   Eye,
   EyeOff,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../../firebase/auth';
 
 interface RegisterOverlayProps {
   onClose: () => void;
@@ -65,7 +62,6 @@ const RegisterOverlay = ({ onClose, onOpenSignIn }: RegisterOverlayProps) => {
     setError('');
 
     try {
-      const cred = await authService.register(formData.email, formData.password, formData.name, 'student');
       // Newly created accounts default to student — send user to student dashboard
       navigate('/student/dashboard');
       onClose();

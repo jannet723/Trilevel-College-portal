@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, LogIn, UserPlus, X, Shield } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, LogIn, UserPlus, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../firebase/auth';
 import { getAuthErrorMessage } from '../../utils/helpers';
