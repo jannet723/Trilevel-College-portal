@@ -28,7 +28,7 @@ const ProfileLayout = ({ name, email, badge, initials, details, children, onSign
   <>
     <div className="portal-profile-grid">
     <aside className="portal-panel portal-panel--solid overflow-hidden relative">
-      <div className="h-20 bg-gradient-to-r from-white/40 via-[#e8f0fe]/30 to-white/40 relative">
+      <div className="h-20 bg-linear-to-r from-white/40 via-[#e8f0fe]/30 to-white/40 relative">
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle,#ffffff_1px,transparent_1px)] bg-size-[18px_18px]" />
       </div>
       <div className="px-5 sm:px-6 pb-6 -mt-10">
