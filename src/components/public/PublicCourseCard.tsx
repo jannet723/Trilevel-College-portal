@@ -20,8 +20,8 @@ const PublicCourseCard = ({ course, variant = 'full', onView, enrolled }: Public
 
   return (
     <article
-      className={`group relative bg-white/55 backdrop-blur-md border border-[#e8e2d9]/80 rounded-2xl overflow-hidden transition-all duration-300 hover:bg-white/75 hover:border-[#4a6a9b]/25 hover:shadow-[0_12px_40px_-12px_rgba(74,106,155,0.18)] hover:-translate-y-0.5 ${
-        isCompact ? 'p-3.5' : 'p-5'
+      className={`group relative bg-white/55 backdrop-blur-md border border-[#e8e2d9]/80 rounded-2xl overflow-hidden transition-all duration-300 hover:bg-white/75 hover:border-[#4a6a9b]/25 hover:shadow-[0_16px_48px_-14px_rgba(74,106,155,0.18)] hover:-translate-y-0.5 ${
+        isCompact ? 'p-3.5' : 'p-6'
       }`}
     >
       {enrolled && (
@@ -35,10 +35,10 @@ const PublicCourseCard = ({ course, variant = 'full', onView, enrolled }: Public
       <div className={`flex ${isCompact ? 'gap-3 items-start' : 'gap-4 items-start mb-4'}`}>
         <div
           className={`shrink-0 rounded-xl bg-[#f8f6f2] border border-[#e8e2d9] flex items-center justify-center text-[#4a6a9b] group-hover:scale-105 transition-transform ${
-            isCompact ? 'w-10 h-10' : 'w-12 h-12'
+            isCompact ? 'w-10 h-10' : 'w-14 h-14'
           }`}
         >
-          <Icon size={isCompact ? 18 : 22} strokeWidth={1.75} />
+          <Icon size={isCompact ? 18 : 26} strokeWidth={1.75} />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5 mb-1">
@@ -51,7 +51,7 @@ const PublicCourseCard = ({ course, variant = 'full', onView, enrolled }: Public
           </div>
           <h3
             className={`font-semibold text-[#2c2824] leading-snug group-hover:text-[#4a6a9b] transition-colors ${
-              isCompact ? 'text-sm line-clamp-2' : 'text-base'
+              isCompact ? 'text-sm line-clamp-2' : 'text-lg'
             }`}
             style={{ fontFamily: 'Georgia, serif' }}
           >
@@ -62,27 +62,27 @@ const PublicCourseCard = ({ course, variant = 'full', onView, enrolled }: Public
       </div>
 
       {!isCompact && (
-        <p className="text-sm text-[#6b645a] leading-relaxed line-clamp-2 mb-4">{course.description}</p>
+        <p className="text-base text-[#6b645a] leading-relaxed line-clamp-2 mb-4">{course.description}</p>
       )}
 
       <div className={`flex items-center justify-between ${isCompact ? 'mt-2 pt-2 border-t border-[#e8e2d9]/60' : ''}`}>
-        <div className="flex items-center gap-3 text-[10px] text-[#9b9288]">
+        <div className="flex items-center gap-3 text-[11px] text-[#9b9288]">
           <span className="flex items-center gap-1">
-            <Clock size={11} />
+            <Clock size={12} />
             {course.duration}
           </span>
           <span className="flex items-center gap-1">
-            <BookOpen size={11} />
+            <BookOpen size={12} />
             {course.units} units
           </span>
         </div>
         <button
           type="button"
           onClick={() => onView?.(course)}
-          className="inline-flex items-center gap-0.5 text-[11px] font-medium text-[#4a6a9b] hover:text-[#2c4a7a] transition-colors"
+          className="inline-flex items-center gap-0.5 text-[12px] font-medium text-[#4a6a9b] hover:text-[#2c4a7a] transition-colors"
         >
           View
-          <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+          <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
     </article>
