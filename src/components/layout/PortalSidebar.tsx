@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { PanelLeft, PanelLeftClose, LogOut, User } from 'lucide-react';
+import { PanelLeft, PanelLeftClose, User } from 'lucide-react';
 import SidebarNavIcon from './SidebarNavIcon';
 
 export interface PortalNavItem {
@@ -28,7 +28,6 @@ const PortalSidebar = ({
   userProfile,
   isCollapsed,
   onToggleCollapse,
-  onSignOut,
 }: PortalSidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();

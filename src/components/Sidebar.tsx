@@ -16,7 +16,7 @@ interface SidebarProps {
   onSignOut: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ role, isCollapsed, onToggleCollapse, onSignOut }) => {
+const Sidebar: React.FC<SidebarProps> = ({ role, isCollapsed, onToggleCollapse }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
