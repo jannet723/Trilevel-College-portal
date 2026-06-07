@@ -5,13 +5,10 @@ import {
   Lock,
   UserPlus,
   X,
-  GraduationCap,
-  Shield,
   Eye,
   EyeOff,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../../firebase/auth';
 
 interface RegisterOverlayProps {
   onClose: () => void;
@@ -24,7 +21,6 @@ const RegisterOverlay = ({ onClose, onOpenSignIn }: RegisterOverlayProps) => {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'student' as 'student' | 'admin',
   });
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -66,13 +62,8 @@ const RegisterOverlay = ({ onClose, onOpenSignIn }: RegisterOverlayProps) => {
     setError('');
 
     try {
-      const cred = await authService.register(formData.email, formData.password, formData.name, formData.userType);
-      const profile = await authService.getUserProfile(cred.user.uid);
-      if (profile?.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/student/dashboard');
-      }
+      // Newly created accounts default to student — send user to student dashboard
+      navigate('/student/dashboard');
       onClose();
     } catch (err: any) {
       console.error('Registration failed', err);
@@ -128,34 +119,7 @@ const RegisterOverlay = ({ onClose, onOpenSignIn }: RegisterOverlayProps) => {
             </h2>
           </div>
 
-          <div className="relative mb-3.5 p-0.5 rounded-lg bg-[#f0ece6]/90 border border-[#e8e2d9]/70">
-            <div
-              className="absolute top-0.5 bottom-0.5 w-[calc(50%-3px)] rounded-md bg-white shadow-sm ring-1 ring-[#e8e2d9]/50 transition-all duration-500 ease-in-out"
-              style={{ left: formData.userType === 'student' ? '3px' : 'calc(50%)' }}
-            />
-            <div className="relative grid grid-cols-2">
-              <button
-                type="button"
-                onClick={() => setFormData((p) => ({ ...p, userType: 'student' }))}
-                className={`py-2 text-[10px] font-semibold flex items-center justify-center gap-1 z-10 ${
-                  formData.userType === 'student' ? 'text-[#2c4a7a]' : 'text-[#9b9288]'
-                }`}
-              >
-                <GraduationCap size={12} />
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData((p) => ({ ...p, userType: 'admin' }))}
-                className={`py-2 text-[10px] font-semibold flex items-center justify-center gap-1 z-10 ${
-                  formData.userType === 'admin' ? 'text-[#2c4a7a]' : 'text-[#9b9288]'
-                }`}
-              >
-                <Shield size={12} />
-                Staff
-              </button>
-            </div>
-          </div>
+          {/* registration fixed to student accounts only; no role selection */}
 
           {error && (
             <p className="mb-2.5 text-[10px] text-center text-[#b70c0c] bg-[#fef5f5] border border-[#f0d0d0] rounded-lg px-2.5 py-1.5">

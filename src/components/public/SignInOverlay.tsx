@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, LogIn, UserPlus, X, Shield } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, LogIn, UserPlus, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../firebase/auth';
 import { getAuthErrorMessage } from '../../utils/helpers';
@@ -18,7 +18,6 @@ const SignInOverlay = ({ onClose, onOpenRegister, onOpenForgot }: SignInOverlayP
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [userType, setUserType] = useState<'student' | 'admin'>('student');
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [error, setError] = useState('');
@@ -45,15 +44,7 @@ const SignInOverlay = ({ onClose, onOpenRegister, onOpenForgot }: SignInOverlayP
     try {
       const cred = await authService.login(email, password);
       const profile = await authService.getUserProfile(cred.user.uid);
-      
-      // Check if user selected admin but doesn't have admin role
-      if (userType === 'admin' && profile?.role !== 'admin') {
-        setError('Admin access denied. This account does not have administrator privileges.');
-        setIsSubmitting(false);
-        return;
-      }
-      
-      // Route based on actual stored role
+      // Route based on stored role
       const isAdmin = profile?.role === 'admin';
       if (isAdmin) {
         navigate('/admin/dashboard');
@@ -96,28 +87,7 @@ const SignInOverlay = ({ onClose, onOpenRegister, onOpenForgot }: SignInOverlayP
             <p className="text-xs text-[#9b9288]">Sign in to your portal</p>
           </div>
 
-          <div className="relative mb-4 p-0.5 rounded-lg bg-[#f0ece6]/90 border border-[#e8e2d9]/70">
-            <div
-              className="absolute top-0.5 bottom-0.5 w-[calc(50%-3px)] rounded-md bg-white shadow-sm transition-all duration-500"
-              style={{ left: userType === 'student' ? '3px' : 'calc(50%)' }}
-            />
-            <div className="relative grid grid-cols-2">
-              <button
-                type="button"
-                onClick={() => setUserType('student')}
-                className={`py-2 text-[10px] font-semibold z-10 ${userType === 'student' ? 'text-[#2c4a7a]' : 'text-[#9b9288]'}`}
-              >
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => setUserType('admin')}
-                className={`py-2 text-[10px] font-semibold z-10 ${userType === 'admin' ? 'text-[#2c4a7a]' : 'text-[#9b9288]'}`}
-              >
-                Admin
-              </button>
-            </div>
-          </div>
+          {/* No role selection - sign in covers both students and admins based on stored role */}
 
           <form onSubmit={handleSubmit} className="space-y-2.5">
             <div className={`sign-in-field flex items-center gap-2.5 rounded-lg px-3 py-2 ${emailFocused ? 'sign-in-field--active' : ''}`}>
@@ -149,12 +119,7 @@ const SignInOverlay = ({ onClose, onOpenRegister, onOpenForgot }: SignInOverlayP
                 <EyeIcon show={showPassword} />
               </button>
             </div>
-            {userType === 'admin' && (
-              <p className="text-[10px] text-[#6b645a] flex gap-1.5 px-1">
-                <Shield size={11} className="text-[#4a6a9b] shrink-0 mt-0.5" />
-                Admin access may require verification.
-              </p>
-            )}
+            {/* admin note removed since role is determined by account data */}
             {error && (
               <p className="text-[10px] text-center text-[#b70c0c] bg-[#fef5f5] border border-[#f0d0d0] rounded-lg px-2.5 py-1.5">
                 {error}
