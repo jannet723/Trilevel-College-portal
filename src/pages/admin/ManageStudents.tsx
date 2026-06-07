@@ -186,7 +186,7 @@ const ManageStudents = () => {
           <input
             type="text"
             placeholder="Search students..."
-            className="pl-10 pr-4 py-2.5 bg-white/80 border border-[#e0d9d0] rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#4a6a9b]/20 focus:border-[#4a6a9b]/30 text-sm text-[#2c2824] placeholder:text-[#b0a89e] transition-all"
+            className="pl-10 pr-4 py-2.5 bg-white/80 border border-[#e0d9d0] rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb]/30 text-sm text-[#2c2824] placeholder:text-[#b0a89e] transition-all"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -195,7 +195,7 @@ const ManageStudents = () => {
         <button
           type="button"
           onClick={() => navigate('/admin/students/new')}
-          className="px-5 py-2.5 bg-[#4a6a9b] text-white rounded-xl text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm flex items-center gap-2"
+          className="px-5 py-2.5 bg-[#2563eb] text-white rounded-xl text-sm font-medium hover:bg-[#1e40af] transition shadow-sm flex items-center gap-2"
         >
           <Plus size={16} />
           Add Student
@@ -209,8 +209,8 @@ const ManageStudents = () => {
               <p className="text-[10px] uppercase tracking-[0.15em] text-[#b0a89e]">Total Students</p>
               <p className="text-2xl font-semibold text-[#2c2824] mt-1">{students.length}</p>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-[#e8f0fe] flex items-center justify-center">
-              <Users size={18} className="text-[#4a6a9b]" />
+              <div className="w-10 h-10 rounded-lg bg-[#e8f0fe] flex items-center justify-center">
+              <Users size={18} className="text-[#2563eb]" />
             </div>
           </div>
         </div>
@@ -261,7 +261,7 @@ const ManageStudents = () => {
                   onClick={() => setFilterStatus(status.toLowerCase())}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
                     filterStatus === status.toLowerCase()
-                      ? 'bg-[#4a6a9b] text-white shadow-sm'
+                      ? 'bg-[#2563eb] text-white shadow-sm'
                       : 'bg-white/60 text-[#6b645a] hover:bg-[#eae5dd] border border-[#e8e2d9]'
                   }`}
                 >
@@ -280,7 +280,7 @@ const ManageStudents = () => {
                   onClick={() => setFilterYear(year.toLowerCase())}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
                     filterYear === year.toLowerCase()
-                      ? 'bg-[#4a6a9b] text-white shadow-sm'
+                      ? 'bg-[#2563eb] text-white shadow-sm'
                       : 'bg-white/60 text-[#6b645a] hover:bg-[#eae5dd] border border-[#e8e2d9]'
                   }`}
                 >
@@ -342,7 +342,7 @@ const ManageStudents = () => {
                   <tr key={idx} className="border-b border-[#e8e2d9] hover:bg-[#faf8f5] transition-colors group">
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-[#4a6a9b] flex items-center justify-center text-white text-xs font-medium shadow-sm">
+                        <div className="w-9 h-9 rounded-lg bg-[#2563eb] flex items-center justify-center text-white text-xs font-medium shadow-sm">
                           {student.avatar}
                         </div>
                         <div>
@@ -370,11 +370,11 @@ const ManageStudents = () => {
                     <td className="px-5 py-3">
                       {student.performance > 0 ? (
                         <div className="flex items-center gap-2">
-                          <span className={`text-sm font-medium ${student.performance >= 80 ? 'text-[#4a7c5e]' : student.performance >= 60 ? 'text-[#4a6a9b]' : 'text-[#d4a34b]'}`}>
+                          <span className={`text-sm font-medium ${student.performance >= 80 ? 'text-[#4a7c5e]' : student.performance >= 60 ? 'text-[#2563eb]' : 'text-[#d4a34b]'}`}>
                             {student.performance}%
                           </span>
                           <div className="w-16 h-1.5 bg-[#e8e2d9] rounded-full overflow-hidden">
-                            <div className="h-full bg-[#4a6a9b] rounded-full" style={{ width: `${student.performance}%` }} />
+                            <div className="h-full bg-[#2563eb] rounded-full" style={{ width: `${student.performance}%` }} />
                           </div>
                         </div>
                       ) : (
@@ -385,7 +385,7 @@ const ManageStudents = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => navigate(`/admin/students/${student.id}`)}
-                          className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#4a6a9b] hover:bg-[#e8f0fe] transition"
+                          className="p-1.5 rounded-lg text-[#9b9288] hover:text-[#2563eb] hover:bg-[#e8f0fe] transition"
                           title="View Student"
                         >
                           <Eye size={14} />

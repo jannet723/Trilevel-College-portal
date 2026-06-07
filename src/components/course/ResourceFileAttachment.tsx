@@ -60,7 +60,7 @@ const ResourceFileAttachment = ({ file, compact = false }: ResourceFileAttachmen
     <div className={`rounded-xl border border-[#e8e2d9]/70 bg-white overflow-hidden ${compact ? '' : 'mt-3'}`}>
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#faf8f5]/90 border-b border-[#e8e2d9]/50">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-9 h-9 rounded-lg bg-[#e8f0fe] border border-[#d4e2f7] flex items-center justify-center shrink-0 text-[#4a6a9b]">
+          <div className="w-9 h-9 rounded-lg bg-[#e8f0fe] border border-[#d4e2f7] flex items-center justify-center shrink-0 text-[#2563eb]">
             {getFileIcon()}
           </div>
           <div className="min-w-0">
@@ -74,7 +74,7 @@ const ResourceFileAttachment = ({ file, compact = false }: ResourceFileAttachmen
               {isText ? (
                 <button
                   onClick={handleViewText}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#e0d9d0] text-[#6b645a] hover:bg-white hover:text-[#4a6a9b] transition"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#e0d9d0] text-[#6b645a] hover:bg-white hover:text-[#2563eb] transition"
                 >
                   <ExternalLink size={12} />
                   View
@@ -84,7 +84,7 @@ const ResourceFileAttachment = ({ file, compact = false }: ResourceFileAttachmen
                   href={file.dataUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#e0d9d0] text-[#6b645a] hover:bg-white hover:text-[#4a6a9b] transition"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#e0d9d0] text-[#6b645a] hover:bg-white hover:text-[#2563eb] transition"
                 >
                   <ExternalLink size={12} />
                   Open
@@ -95,7 +95,7 @@ const ResourceFileAttachment = ({ file, compact = false }: ResourceFileAttachmen
           <a
             href={file.dataUrl}
             download={file.fileName}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#4a6a9b]/10 text-[#4a6a9b] hover:bg-[#4a6a9b]/20 transition"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#2563eb]/10 text-[#2563eb] hover:bg-[#2563eb]/20 transition"
           >
             <Download size={12} />
             Download
@@ -166,7 +166,7 @@ const ResourceFileAttachment = ({ file, compact = false }: ResourceFileAttachmen
               <a
                 href={file.dataUrl}
                 download={file.fileName}
-                className="px-4 py-2 rounded-lg bg-[#4a6a9b] text-white hover:bg-[#3d5a86] transition text-sm font-medium flex items-center gap-2"
+                className="px-4 py-2 rounded-lg bg-[#2563eb] text-white hover:bg-[#1e40af] transition text-sm font-medium flex items-center gap-2"
               >
                 <Download size={14} />
                 Download

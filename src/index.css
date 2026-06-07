@@ -76,7 +76,7 @@
 
 .portal-page-header nav button:hover,
 .portal-page-header nav button:hover span {
-  color: #4a6a9b;
+  color: #2563eb;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -221,7 +221,7 @@ code {
 }
 
 .sign-in-submit {
-  background: #4a6a9b;
+  background: #2563eb;
   box-shadow: 0 4px 16px -4px rgba(47, 47, 228, 0.35);
 }
 
@@ -350,7 +350,7 @@ code {
   width: 2px;
   height: 1rem;
   border-radius: 0 1px 1px 0;
-  background: #4a6a9b;
+  background: #2563eb;
   opacity: 0.55;
 }
 
@@ -384,12 +384,12 @@ code {
 .home-sidebar-nav-icon--active {
   background: transparent;
   border: none;
-  color: #3d5a86;
+  color: #1e40af;
   box-shadow: none;
 }
 
 .home-sidebar-nav-item--active .home-sidebar-nav-icon {
-  color: #3d5a86;
+  color: #1e40af;
 }
 
 .home-sidebar-portal {
@@ -441,10 +441,10 @@ code {
   border-radius: 9999px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #4a6a9b 80%, #6b8fc7 100%);
-  border: 2px solid #3d5a86;
+  background: linear-gradient(135deg, #2563eb 80%, #60a5fa 100%);
+  border: 2px solid #1e40af;
   color: #fff;
-  box-shadow: 0 2px 8px 0 rgba(74,106,155,0.18), 0 0 0 2px #fff3;
+  box-shadow: 0 2px 8px 0 rgba(37,99,235,0.18), 0 0 0 2px #fff3;
   transition: box-shadow 0.2s, border-color 0.2s;
 }
 
@@ -472,7 +472,7 @@ code {
 }
 
 .home-sidebar-cta-primary {
-  background: #4a6a9b;
+  background: #2563eb;
   box-shadow: none;
   transition: background 0.22s ease, filter 0.22s ease;
 }
@@ -543,7 +543,7 @@ code {
 }
 
 .home-hero-title {
-  color: #3d5a86;
+  color: #1e40af;
   text-wrap: balance;
 }
 
@@ -555,7 +555,7 @@ code {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #4a6a9b;
+  color: #2563eb;
   margin-bottom: 0.75rem;
 }
 
@@ -567,17 +567,17 @@ code {
   border-radius: 0.75rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #2c4a7a;
+  color: #1e40af;
   background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(74, 106, 155, 0.35);
-  box-shadow: 0 4px 14px -6px rgba(74, 106, 155, 0.2);
+  border: 1px solid rgba(37,99,235,0.35);
+  box-shadow: 0 4px 14px -6px rgba(37,99,235,0.2);
   transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .home-view-all-link:hover {
   background: #fff;
-  border-color: rgba(74, 106, 155, 0.5);
-  box-shadow: 0 8px 22px -8px rgba(74, 106, 155, 0.25);
+  border-color: rgba(37,99,235,0.5);
+  box-shadow: 0 8px 22px -8px rgba(37,99,235,0.25);
 }
 
 .home-view-all-link:active {
@@ -695,8 +695,8 @@ code {
   font-size: 0.875rem;
   font-weight: 600;
   color: #fff;
-  background: #4a6a9b;
-  box-shadow: 0 8px 24px -8px rgba(47, 47, 228, 0.45);
+  background: #2563eb;
+  box-shadow: 0 8px 24px -8px rgba(37,99,235,0.45);
   transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
@@ -718,9 +718,9 @@ code {
   border-radius: 0.875rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #2c4a7a;
+  color: #1e40af;
   background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(74, 106, 155, 0.3);
+  border: 1px solid rgba(37,99,235,0.3);
   transition: background 0.2s, border-color 0.2s, transform 0.15s;
 }
 
@@ -743,11 +743,11 @@ code {
 
 .home-stat-pill:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px -10px rgba(74, 106, 155, 0.2);
+  box-shadow: 0 8px 20px -10px rgba(37,99,235,0.2);
 }
 
 .home-stat-pill--blue {
-  border-color: rgba(74, 106, 155, 0.2);
+  border-color: rgba(37,99,235,0.2);
 }
 .home-stat-pill--green {
   border-color: rgba(74, 124, 94, 0.2);
@@ -846,7 +846,7 @@ code {
 
 .home-bento-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 40px -16px rgba(74, 106, 155, 0.18);
+  box-shadow: 0 16px 40px -16px rgba(37,99,235,0.18);
 }
 
 .home-bento-card--blue {
@@ -878,23 +878,23 @@ code {
 
 .home-filter-chip:hover {
   background: #fff;
-  border-color: rgba(74, 106, 155, 0.25);
-  color: #2c4a7a;
+  border-color: rgba(37,99,235,0.25);
+  color: #1e40af;
 }
 
 .home-filter-chip--active {
-  background: #4a6a9b;
+  background: #2563eb;
   border-color: transparent;
   color: #fff;
   box-shadow: 0 4px 14px -6px rgba(74, 106, 155, 0.45);
 }
 
 .home-filter-chip--dept.home-filter-chip--active {
-  background: #4a6a9b;
+  background: #2563eb;
 }
 
 .home-portal-window {
-  box-shadow: 0 20px 50px -24px rgba(74, 106, 155, 0.22);
+  box-shadow: 0 20px 50px -24px rgba(37,99,235,0.22);
 }
 
 /* Portal dashboard shared UI */
@@ -914,8 +914,18 @@ code {
   position: relative;
   border-radius: 1.25rem;
   overflow: hidden;
-  background: #3d5a86;
+  background: #1e40af;
   box-shadow: 0 16px 48px -20px rgba(44, 40, 36, 0.35);
+}
+
+/* Glass variant of portal hero for non-fullwidth cards */
+.portal-hero--glass {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(232, 226, 217, 0.65);
+  box-shadow: 0 8px 30px -22px rgba(74, 106, 155, 0.04);
+  color: #2c2824;
 }
 
 .portal-hero::before {
@@ -939,7 +949,7 @@ code {
 
 .portal-stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px -14px rgba(74, 106, 155, 0.15);
+  box-shadow: 0 12px 32px -14px rgba(37,99,235,0.15);
 }
 
 .portal-stat-card--empty {
@@ -962,14 +972,14 @@ code {
 }
 
 .btn-primary {
-  background: #4a6a9b;
-  box-shadow: 0 4px 16px -4px rgba(47, 47, 228, 0.35);
+  background: #2563eb;
+  box-shadow: 0 4px 16px -4px rgba(37,99,235,0.35);
   color: #fff;
   transition: box-shadow 0.2s ease, transform 0.15s ease, filter 0.2s ease;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 10px 24px -8px rgba(47, 47, 228, 0.45);
+  box-shadow: 0 10px 24px -8px rgba(37,99,235,0.45);
   filter: brightness(1.04);
 }
 
@@ -984,6 +994,66 @@ code {
   transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
+/* Lightweight outlined hover for hero area (no card) */
+.hero-area {
+  transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+  border-radius: 0.75rem;
+}
+.hero-area:hover {
+  /* keep area hover subtle, inner element shows outline */
+  transform: translateY(-0.5px);
+}
+
+/* Inner constrained hero wrapper - only this receives hover outline */
+.hero-inner {
+  display: inline-block;
+  max-width: min(880px, 86%);
+  padding: 1rem 1.25rem;
+  border-radius: 28px 10px 28px 10px; /* distinctive asymmetric shape */
+  transition: box-shadow 0.18s ease, transform 0.12s ease;
+  position: relative;
+  overflow: visible;
+}
+.hero-inner:hover {
+  transform: translateY(-3px);
+}
+
+/* Simple outline that appears on hover around the hero-inner without additional blue shadow */
+.hero-inner::after {
+  content: '';
+  position: absolute;
+  inset: -8px; /* small gap around the element */
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1.6px solid rgba(37,99,235,0.18);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.98);
+  transition: opacity 200ms ease, transform 200ms ease, visibility 0ms linear 200ms;
+}
+.hero-area:hover .hero-inner::after {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  transition-delay: 0s;
+}
+
+/* Soft primary button: keeps the blue hue but with a softer feel and no heavy shadow */
+.btn-soft-primary {
+  background: rgba(37,99,235,0.12);
+  color: #2563eb;
+  border: 1px solid rgba(37,99,235,0.18);
+  box-shadow: none;
+  transition: background 0.16s ease, transform 0.12s ease;
+}
+.btn-soft-primary:hover {
+  background: rgba(37,99,235,0.18);
+  transform: translateY(-1px);
+}
+.btn-soft-primary:active {
+  transform: translateY(0);
+}
+
 .btn-secondary:hover {
   border-color: rgba(74, 106, 155, 0.35);
   background: #fff;
@@ -995,13 +1065,13 @@ code {
 }
 
 .btn-ghost {
-  color: #4a6a9b;
+  color: #2563eb;
   transition: color 0.2s ease, background 0.2s ease;
 }
 
 .btn-ghost:hover {
-  color: #2c4a7a;
-  background: rgba(74, 106, 155, 0.06);
+  color: #1e40af;
+  background: rgba(37,99,235,0.06);
 }
 
 /* Student course learning page */
@@ -1027,9 +1097,9 @@ code {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #4a6a9b;
-  background: rgba(74, 106, 155, 0.08);
-  border: 1px solid rgba(74, 106, 155, 0.15);
+  color: #2563eb;
+  background: rgba(37,99,235,0.08);
+  border: 1px solid rgba(37,99,235,0.15);
 }
 
 .learn-chip {
@@ -1061,7 +1131,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: conic-gradient(#4a6a9b var(--progress), #e8e2d9 0);
+  background: conic-gradient(#2563eb var(--progress), #e8e2d9 0);
   position: relative;
 }
 
@@ -1284,7 +1354,7 @@ code {
 .learn-workspace__progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: #4a6a9b;
+  background: #2563eb;
   transition: width 0.6s ease-out;
 }
 
@@ -1444,7 +1514,7 @@ code {
   padding: 0 0.2rem;
   border-radius: 0.3rem;
   font-size: 9px;
-  color: #4a6a9b;
+  color: #2563eb;
   background: rgba(74, 106, 155, 0.1);
   border: 1px solid rgba(74, 106, 155, 0.15);
 }
@@ -1504,7 +1574,7 @@ code {
 }
 
 .learn-path__item--active .learn-path__item-marker:not(.learn-path__item-marker--done) {
-  background: #4a6a9b;
+  background: #2563eb;
   border-color: #4a6a9b;
 }
 

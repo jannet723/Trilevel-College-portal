@@ -26,7 +26,7 @@ const iconBg: Record<string, string> = {
 const ProfileLayout = ({ name, email, badge, initials, details, children }: ProfileLayoutProps) => (
   <div className="portal-profile-grid">
     <aside className="portal-panel portal-panel--solid overflow-hidden">
-      <div className="h-24 bg-[#3d5a86] relative">
+      <div className="h-24 bg-[#1e40af] relative">
         <div className="absolute inset-0 opacity-[0.06] bg-[radial-gradient(circle,#ffffff_1px,transparent_1px)] bg-size-[18px_18px]" />
       </div>
       <div className="px-5 sm:px-6 pb-6 -mt-12">

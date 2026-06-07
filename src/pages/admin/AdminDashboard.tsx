@@ -94,7 +94,7 @@ const AdminDashboard = () => {
               <button
                 type="button"
                 onClick={() => navigate('/admin/approvals')}
-                className="px-5 py-2.5 bg-[#4a6a9b] text-white rounded-xl text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm flex items-center gap-2"
+                className="px-5 py-2.5 bg-[#2563eb] text-white rounded-xl text-sm font-medium hover:bg-[#1e40af] transition shadow-sm flex items-center gap-2"
               >
                 <UserCheck size={16} />
                 Review Approvals

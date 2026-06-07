@@ -72,16 +72,16 @@ function MaterialCardHeader({
             <Clock size={10} />
             Updated {new Date(resource.updatedAt).toLocaleDateString()}
             {showChevron && (
-              <span className="ml-2 text-[#4a6a9b]">{isExpanded ? '· Tap to collapse' : '· Tap to open'}</span>
+              <span className="ml-2 text-[#2563eb]">{isExpanded ? '· Tap to collapse' : '· Tap to open'}</span>
             )}
           </p>
         </div>
       </div>
       {showChevron && (
-        <ChevronDown
-          size={18}
-          className={`text-[#9b9288] shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
-        />
+            <ChevronDown
+              size={18}
+              className={`text-[#9b9288] shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+            />
       )}
       {adminActions}
     </div>
@@ -205,7 +205,7 @@ const CourseLearningMaterials = ({
                 aria-expanded={isOpen}
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <Layers size={16} className="text-[#4a6a9b] shrink-0" />
+                  <Layers size={16} className="text-[#2563eb] shrink-0" />
                   <h3 className="font-semibold text-[#2c2824] text-sm truncate">{unit}</h3>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -221,7 +221,7 @@ const CourseLearningMaterials = ({
             ) : (
               <div className="px-5 py-3.5 border-b border-[#e8e2d9]/70 bg-[#faf8f5] flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <Layers size={16} className="text-[#4a6a9b]" />
+                  <Layers size={16} className="text-[#2563eb]" />
                   <h3 className="font-semibold text-[#2c2824] text-sm">{unit}</h3>
                 </div>
                 <span className="text-[10px] text-[#9b9288] uppercase tracking-wider">

@@ -203,7 +203,7 @@ const UploadMaterials = () => {
             />
             <div className="text-center pointer-events-none">
               <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-[#e8f0fe] flex items-center justify-center">
-                <Upload size={24} className="text-[#4a6a9b]" />
+                <Upload size={24} className="text-[#2563eb]" />
               </div>
               <h3 className="text-lg font-medium text-[#2c2824] mb-2">Drag & drop files here</h3>
               <p className="text-sm text-[#9b9288] mb-4">
@@ -223,7 +223,7 @@ const UploadMaterials = () => {
           {selectedFiles.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-[#e8e2d9] p-5">
               <h3 className="font-semibold text-[#2c2824] mb-3 flex items-center gap-2">
-                <FileText size={16} className="text-[#4a6a9b]" />
+                 <FileText size={16} className="text-[#2563eb]" />
                 Selected Files ({selectedFiles.length})
               </h3>
               <div className="space-y-2">
@@ -231,7 +231,7 @@ const UploadMaterials = () => {
                   <div key={`${file.name}-${index}`} className="flex items-center justify-between p-3 bg-[#faf8f5] rounded-lg">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-8 h-8 rounded-lg bg-[#e8f0fe] flex items-center justify-center shrink-0">
-                        <FileText size={14} className="text-[#4a6a9b]" />
+                        <FileText size={14} className="text-[#2563eb]" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-[#2c2824] truncate">{file.name}</p>

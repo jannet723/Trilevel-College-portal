@@ -15,7 +15,6 @@ import {
   X,
 } from 'lucide-react';
 import {
-  CATALOG_COURSES,
   getCatalog,
   saveCatalog,
   subscribeCatalog,
@@ -172,7 +171,7 @@ const ManageCourses = () => {
             <button
               type="button"
               onClick={openAddModal}
-              className="px-5 py-2.5 bg-[#4a6a9b] text-white rounded-xl text-sm font-medium hover:bg-[#3d5a86] transition shadow-sm flex items-center gap-2"
+              className="px-5 py-2.5 bg-[#2563eb] text-white rounded-xl text-sm font-medium hover:bg-[#1e40af] transition shadow-sm flex items-center gap-2"
             >
               <Plus size={16} />
               Add Course
@@ -362,7 +361,7 @@ const ManageCourses = () => {
                       <button
                         type="button"
                         onClick={() => navigate(`/admin/upload-materials?course=${course.id}`)}
-                        className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-[#4a6a9b] text-white hover:bg-[#3d5a86] shadow-sm transition-all duration-200"
+                        className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-[#2563eb] text-white hover:bg-[#1e40af] shadow-sm transition-all duration-200"
                       >
                         Upload Materials
                       </button>
@@ -512,7 +511,7 @@ const ManageCourses = () => {
               </button>
               <button
                 onClick={handleSaveCourse}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-[#4a6a9b] text-white hover:bg-[#3d5a86] transition text-sm font-medium"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-[#2563eb] text-white hover:bg-[#1e40af] transition text-sm font-medium"
               >
                 {formMode === 'add' ? 'Add Course' : 'Save Changes'}
               </button>

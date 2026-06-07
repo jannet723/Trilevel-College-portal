@@ -182,7 +182,7 @@ export default function TrilevelLogin() {
           <button
             type="button"
             onClick={handleMobileMenuClick}
-            className="p-1.5 rounded-lg border border-[#e8e2d9] bg-white text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#4a6a9b] transition-all duration-200"
+            className="p-1.5 rounded-lg border border-[#e8e2d9] bg-white text-[#6b645a] hover:bg-[#faf8f5] hover:text-[#2563eb] transition-all duration-200"
             aria-label="Menu"
           >
             <Menu size={16} />
@@ -269,7 +269,7 @@ export default function TrilevelLogin() {
               </div>
               <div className="home-bento">
                 <div className="home-bento-card home-bento-card--wide home-bento-card--blue p-6 sm:p-8 flex flex-col justify-end min-h-50">
-                  <GraduationCap className="text-[#4a6a9b] mb-4" size={32} />
+                  <GraduationCap className="text-[#2563eb] mb-4" size={32} />
                   <h3 className="text-xl font-semibold text-[#2c2824] mb-2">Certificates & diplomas</h3>
                   <p className="text-sm text-[#6b645a] max-w-sm">
                     Practical pathways across business, tech, hospitality, and more.
@@ -291,7 +291,7 @@ export default function TrilevelLogin() {
                 </div>
                 <div className="home-bento-card home-bento-card--accent p-6 sm:p-8 flex flex-col justify-center min-h-50 relative overflow-hidden">
                   <div className="absolute top-4 right-4 w-16 h-16 border border-[#e8e2d9] rounded-full opacity-40" />
-                  <div className="absolute bottom-6 left-6 w-24 h-24 border border-[#4a6a9b]/20 rounded-2xl opacity-50" />
+                  <div className="absolute bottom-6 left-6 w-24 h-24 border border-[#2563eb]/20 rounded-2xl opacity-50" />
                   <p className="home-display text-2xl text-[#2c2824] leading-snug relative z-10">
                     Your journey starts with one enrolment.
                   </p>

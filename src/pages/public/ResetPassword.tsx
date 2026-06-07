@@ -186,7 +186,7 @@ const ResetPassword = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((value) => !value)}
-                    className="absolute inset-y-0 right-3 flex items-center text-[#8c8c8c] hover:text-[#4a6a9b]"
+                    className="absolute inset-y-0 right-3 flex items-center text-[#8c8c8c] hover:text-[#2563eb]"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -211,7 +211,7 @@ const ResetPassword = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((value) => !value)}
-                    className="absolute inset-y-0 right-3 flex items-center text-[#8c8c8c] hover:text-[#4a6a9b]"
+                    className="absolute inset-y-0 right-3 flex items-center text-[#8c8c8c] hover:text-[#2563eb]"
                     aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                   >
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
