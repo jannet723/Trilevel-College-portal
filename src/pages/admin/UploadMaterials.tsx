@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import AdminEmptyState from '../../components/AdminEmptyState';
 import AdminLayout from '../../layouts/AdminLayout';
-import { CATALOG_COURSES, getCourseById } from '../../data/courses';
+import { getCatalog, subscribeCatalog, getCourseById } from '../../data/courses';
 import { useCourseResources } from '../../context/CourseResourcesContext';
 import type { CourseResource, CourseResourceType } from '../../types/courseResource';
 import {
@@ -70,6 +70,13 @@ const UploadMaterials = () => {
         .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
     [resources]
   );
+
+  const [courses, setCourses] = useState(() => getCatalog());
+
+  useEffect(() => {
+    const un = subscribeCatalog((list) => setCourses(list));
+    return un;
+  }, []);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -361,7 +368,7 @@ const UploadMaterials = () => {
                   onChange={(e) => setCourseId(e.target.value)}
                 >
                   <option value="">Select a course...</option>
-                  {CATALOG_COURSES.map((c) => (
+                  {courses.map((c) => (
                     <option key={c.id} value={String(c.id)}>
                       {c.title}
                     </option>

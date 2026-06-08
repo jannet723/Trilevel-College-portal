@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Sparkles, SlidersHorizontal } from 'lucide-react';
-import { CATALOG_COURSES, type CourseLevel } from '../../data/courses';
+import { getCatalog, subscribeCatalog, type CatalogCourse, type CourseLevel } from '../../data/courses';
 import PublicCourseCard from '../../components/public/PublicCourseCard';
 import { useEnrollment } from '../../context/EnrollmentContext';
 import StudentLayout from '../../layouts/StudentLayout';
@@ -14,15 +14,13 @@ const StudentCourses = () => {
   const [search, setSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all');
   const [departmentFilter, setDepartmentFilter] = useState<string>('all');
+  const [courses, setCourses] = useState<CatalogCourse[]>(() => getCatalog());
 
-  const departments = useMemo(
-    () => ['all', ...Array.from(new Set(CATALOG_COURSES.map((c) => c.department))).sort()],
-    []
-  );
+  const departments = useMemo(() => ['all', ...Array.from(new Set(courses.map((c) => c.department))).sort()], [courses]);
 
   const filtered = useMemo(() => {
     const query = search.toLowerCase();
-    return CATALOG_COURSES.filter((course) => {
+    return courses.filter((course) => {
       const matchesSearch =
         !query ||
         course.title.toLowerCase().includes(query) ||
@@ -34,8 +32,13 @@ const StudentCourses = () => {
     });
   }, [search, levelFilter, departmentFilter]);
 
-  const certCount = CATALOG_COURSES.filter((course) => course.level === 'Certificate').length;
-  const dipCount = CATALOG_COURSES.filter((course) => course.level === 'Diploma').length;
+  const certCount = courses.filter((course) => course.level === 'Certificate').length;
+  const dipCount = courses.filter((course) => course.level === 'Diploma').length;
+
+  useEffect(() => {
+    const un = subscribeCatalog((list) => setCourses(list));
+    return un;
+  }, []);
 
   return (
     <StudentLayout title="Courses" subtitle="Browse available programmes and start your enrolment." backTo="/student/dashboard">
@@ -46,7 +49,7 @@ const StudentCourses = () => {
               <span className="text-xs uppercase tracking-[0.24em] text-[#9b9288]">Student catalogue</span>
               <h1 className="mt-3 text-3xl font-semibold text-[#2c2824]">Browse courses</h1>
               <p className="mt-3 text-sm text-[#6b645a] leading-relaxed">
-                {CATALOG_COURSES.length} programmes across {departments.length - 1} departments. Select a course to complete the full student enrolment form.
+                {courses.length} programmes across {departments.length - 1} departments. Select a course to complete the full student enrolment form.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
