@@ -1,3 +1,6 @@
+import { db } from '../firebase/config';
+import { doc, onSnapshot, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+
 export type CourseLevel = 'Certificate' | 'Diploma';
 export type CourseStatus = 'Active' | 'Pending';
 
@@ -230,6 +233,9 @@ function persistCatalog(list: CatalogCourse[]) {
   }
 }
 
+const REMOTE_DOC_PATH = { collection: 'catalog', docId: 'courses' };
+const remoteDocRef = () => doc(db, REMOTE_DOC_PATH.collection, REMOTE_DOC_PATH.docId);
+
 // simple subscriber model so pages update when admin changes catalog
 type CatalogSubscriber = (list: CatalogCourse[]) => void;
 const subscribers: CatalogSubscriber[] = [];
@@ -248,6 +254,46 @@ function notify() {
 // initialize
 _catalog = loadCatalog();
 
+// Try to initialize from Firestore and listen for realtime updates.
+async function initRemoteCatalog() {
+  try {
+    const r = await getDoc(remoteDocRef());
+    if (r.exists()) {
+      const data = r.data();
+      if (Array.isArray(data?.courses)) {
+        _catalog = data.courses as CatalogCourse[];
+        persistCatalog(_catalog);
+        notify();
+      }
+    }
+
+    // realtime listener
+    const unsub = onSnapshot(
+      remoteDocRef(),
+      (snap) => {
+        if (!snap.exists()) return;
+        const d = snap.data();
+        if (Array.isArray(d?.courses)) {
+          _catalog = d.courses as CatalogCourse[];
+          persistCatalog(_catalog);
+          notify();
+        }
+      },
+      (err) => {
+        console.error('Failed to listen to remote catalog', err);
+      }
+    );
+
+    return unsub;
+  } catch (err) {
+    console.error('Failed to initialize remote catalog', err);
+    return () => {};
+  }
+}
+
+// start remote sync (fire-and-forget)
+initRemoteCatalog();
+
 export const getCatalog = (): CatalogCourse[] => _catalog.slice();
 
 export const subscribeCatalog = (cb: CatalogSubscriber) => {
@@ -263,6 +309,15 @@ export const saveCatalog = (next: CatalogCourse[]) => {
   _catalog = next.slice();
   persistCatalog(_catalog);
   notify();
+
+  // attempt to persist remotely
+  (async () => {
+    try {
+      await setDoc(remoteDocRef(), { courses: _catalog, updatedAt: serverTimestamp() });
+    } catch (err) {
+      console.error('Failed to save catalog to remote', err);
+    }
+  })();
 };
 
 export const getCourseById = (id: string | number): CatalogCourse | undefined => {

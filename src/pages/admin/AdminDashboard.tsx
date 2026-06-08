@@ -14,7 +14,7 @@ import {
   Activity,
   Sparkles,
 } from 'lucide-react';
-import { CATALOG_COURSES, getCatalog, subscribeCatalog } from '../../data/courses';
+import { getCatalog, subscribeCatalog } from '../../data/courses';
 import AdminEmptyState from '../../components/AdminEmptyState';
 import AdminLayout from '../../layouts/AdminLayout';
 
@@ -237,7 +237,7 @@ const AdminDashboard = () => {
               <Activity size={18} className="text-[#4a6a9b]" />
             </div>
             <div>
-              <p className="font-medium text-[#2c2824] text-sm">{CATALOG_COURSES.length} programmes in catalog</p>
+              <p className="font-medium text-[#2c2824] text-sm">{courses.length} programmes in catalog</p>
               <p className="text-xs text-[#9b9288]">Certificates and diplomas ready for student enrolment</p>
             </div>
           </div>
